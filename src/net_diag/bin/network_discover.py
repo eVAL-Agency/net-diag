@@ -7,6 +7,12 @@ from typing import Union
 import re
 
 
+_debug = False
+
+def debug(msg: str):
+	if _debug:
+		print('[DEBUG] %s' % msg, file=sys.stderr)
+
 def _parse_value(var_bind):
 	"""
 	Parse a raw value from SNMP to a more human-readable format.
@@ -33,6 +39,7 @@ def scan_snmp_single(host: str, community: str, lookup: str) -> Union[str,None]:
 	:return:
 	"""
 
+	debug('Performing single key lookup for %s' % lookup)
 	ret = {}
 
 	# snmpEngine, authData, transportTarget, contextData, nonRepeaters, maxRepetitions, *varBinds
@@ -47,14 +54,19 @@ def scan_snmp_single(host: str, community: str, lookup: str) -> Union[str,None]:
 	errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 	if errorIndication:
 		# Usually indicates no SNMP on target device or credentials were incorrect.
+		debug(errorIndication.__str__())
 		return None
 	else:
 		if errorStatus:  # SNMP agent errors
-			#print('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
+			debug('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
 			return None
 		else:
 			for varBind in varBinds:  # SNMP response contents
-				return _parse_value(varBind)
+				key = varBind[0].getOid().__str__()
+				val = _parse_value(varBind)
+
+				debug('%s = %s' % (key, val))
+				return val
 			# pprint(' = '.join([key, val])) # DEBUG
 
 	return ret
@@ -69,13 +81,13 @@ def scan_snmp(host: str, community: str, lookup: str) -> dict:
 	:param lookup:
 	:return:
 	"""
-
+	debug('performing walk lookup for %s' % lookup)
 	ret = {}
 
 	iterator = hlapi.bulkCmd(
 		hlapi.SnmpEngine(),
 		hlapi.CommunityData(community, mpModel=0),
-		hlapi.UdpTransportTarget((host, 161), timeout=2, retries=0),
+		hlapi.UdpTransportTarget((host, 161), timeout=10, retries=0),
 		hlapi.ContextData(),
 		False,
 		5,
@@ -86,15 +98,19 @@ def scan_snmp(host: str, community: str, lookup: str) -> dict:
 		while True:
 			errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 			if errorIndication:
-				return {}
+				# Usually indicates no SNMP on target device or credentials were incorrect.
+				debug(errorIndication.__str__())
+				return ret
 			else:
 				if errorStatus:  # SNMP agent errors
-					return {}
-					#print('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'), file=sys.stderr)
+					debug('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
+					return ret
 				else:
 					for varBind in varBinds:  # SNMP response contents
 						key = varBind[0].getOid().__str__()
 						val = _parse_value(varBind)
+
+						debug('%s = %s' % (key, val))
 
 						if key[0:len(lookup)] != lookup:
 							raise StopIteration
@@ -256,8 +272,12 @@ def run():
 	parser.add_argument('--ip', required=True)
 	parser.add_argument('-c', '--community', default='public')
 	parser.add_argument('--format', default='json', choices=('json', 'csv'))
+	parser.add_argument('--debug', action='store_true')
 
 	options = parser.parse_args()
+
+	if options.debug:
+		_debug = True
 
 	hosts = []
 	ips_found = []
