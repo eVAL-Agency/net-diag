@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "net_diag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9.16"
+authors = [
+    {name = "Charlie Powell", email = "cdp1337@veraciousnetwork.com"},
+]
+license = {text = "GNU AGPLv3"}
+keywords = ["network", "diagnostics", "snmp"]
+dependencies = [
+    "ruff>=0.8.3",
+    'python-dateutil>=2.8',
+    'six>=1.16',
+    'ipcalc>=1.99',
+    'icmplib>=3.0.4',
+    'dnspython>=2.6.1',
+    'pysnmplib>=0.1.2',
+    'argparse>=1.4.0',
+]
+
+[project.scripts]
+network_discover = "net_diag.bin.network_discover:run"
