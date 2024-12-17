@@ -24,5 +24,10 @@ dependencies = [
     'argparse>=1.4.0',
 ]
 
+[project.optional-dependencies]
+dev = [
+    'pyinstaller>=4.5.1',
+]
+
 [project.scripts]
 network_discover = "net_diag.bin.network_discover:run"
