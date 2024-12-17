@@ -7,11 +7,17 @@ from typing import Union
 import re
 
 
-_debug = False
+class Debug:
+	"""
+	Simple debug logging class, prints to stderr
+	"""
+	_debug = False
 
-def debug(msg: str):
-	if _debug:
-		print('[DEBUG] %s' % msg, file=sys.stderr)
+	@classmethod
+	def log(cls, msg: str):
+		if cls._debug:
+			print('[DEBUG] %s' % msg, file=sys.stderr)
+
 
 def _parse_value(var_bind):
 	"""
@@ -39,13 +45,14 @@ def scan_snmp_single(host: str, community: str, lookup: str) -> Union[str,None]:
 	:return:
 	"""
 
-	debug('Performing single key lookup for %s' % lookup)
-	ret = {}
+	error_responses = (
+		'No Such Object currently exists at this OID',
+	)
 
 	# snmpEngine, authData, transportTarget, contextData, nonRepeaters, maxRepetitions, *varBinds
 	iterator = hlapi.getCmd(
 		hlapi.SnmpEngine(),
-		hlapi.CommunityData(community, mpModel=0),
+		hlapi.CommunityData(community, mpModel=1),
 		hlapi.UdpTransportTarget((host, 161), timeout=2, retries=0),
 		hlapi.ContextData(),
 		hlapi.ObjectType(hlapi.ObjectIdentity(lookup))
@@ -54,22 +61,23 @@ def scan_snmp_single(host: str, community: str, lookup: str) -> Union[str,None]:
 	errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 	if errorIndication:
 		# Usually indicates no SNMP on target device or credentials were incorrect.
-		debug(errorIndication.__str__())
+		Debug.log(errorIndication.__str__())
 		return None
 	else:
 		if errorStatus:  # SNMP agent errors
-			debug('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
+			Debug.log('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
 			return None
 		else:
 			for varBind in varBinds:  # SNMP response contents
 				key = varBind[0].getOid().__str__()
 				val = _parse_value(varBind)
 
-				debug('%s = %s' % (key, val))
+				Debug.log('%s = %s' % (key, val))
+				if val in error_responses:
+					return None
 				return val
-			# pprint(' = '.join([key, val])) # DEBUG
 
-	return ret
+	return None
 
 
 def scan_snmp(host: str, community: str, lookup: str) -> dict:
@@ -81,12 +89,11 @@ def scan_snmp(host: str, community: str, lookup: str) -> dict:
 	:param lookup:
 	:return:
 	"""
-	debug('performing walk lookup for %s' % lookup)
 	ret = {}
 
 	iterator = hlapi.bulkCmd(
 		hlapi.SnmpEngine(),
-		hlapi.CommunityData(community, mpModel=0),
+		hlapi.CommunityData(community, mpModel=1),
 		hlapi.UdpTransportTarget((host, 161), timeout=10, retries=0),
 		hlapi.ContextData(),
 		False,
@@ -99,24 +106,23 @@ def scan_snmp(host: str, community: str, lookup: str) -> dict:
 			errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
 			if errorIndication:
 				# Usually indicates no SNMP on target device or credentials were incorrect.
-				debug(errorIndication.__str__())
+				Debug.log(errorIndication.__str__())
 				return ret
 			else:
 				if errorStatus:  # SNMP agent errors
-					debug('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
+					Debug.log('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
 					return ret
 				else:
 					for varBind in varBinds:  # SNMP response contents
 						key = varBind[0].getOid().__str__()
 						val = _parse_value(varBind)
 
-						debug('%s = %s' % (key, val))
+						Debug.log('%s = %s' % (key, val))
 
 						if key[0:len(lookup)] != lookup:
 							raise StopIteration
 
 						ret[key] = val
-						# pprint(' = '.join([key, val])) # DEBUG
 	except StopIteration:
 		pass
 
@@ -135,6 +141,10 @@ class Host:
 		self.contact = None
 		self.floor = None
 		self.location = None
+		self.type = None
+		self.manufacturer = None
+		self.model = None
+		self.os_version = None
 		self.descr = None
 
 	def get_snmp_descr(self, community: str) -> Union[str,None]:
@@ -144,6 +154,7 @@ class Host:
 		:return:
 		"""
 		lookup = '1.3.6.1.2.1.1.1.0'
+		Debug.log('Scanning for DESCR - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
 	def get_snmp_mac(self, community: str) -> Union[str,None]:
@@ -152,8 +163,16 @@ class Host:
 		:param community:
 		:return:
 		"""
-		lookup = '1.3.6.1.2.1.2.2.1.6.1'
-		return scan_snmp_single(self.ip, community, lookup)
+		lookup = '1.3.6.1.2.1.2.2.1.6'
+		Debug.log('Scanning for MAC - %s' % lookup)
+		# Each device may have multiple interfaces.
+		addresses = scan_snmp(self.ip, community, lookup)
+		for key, val in addresses.items():
+			if val == '00:00:00:00:00:00':
+				# Some devices will return a MAC of all 0's for an interface that is not in use.
+				continue
+
+			return val
 
 	def get_snmp_hostname(self, community: str) -> Union[str,None]:
 		"""
@@ -162,6 +181,7 @@ class Host:
 		:return:
 		"""
 		lookup = '1.3.6.1.2.1.1.5.0'
+		Debug.log('Scanning for hostname - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
 	def get_snmp_contact(self, community: str) -> Union[str,None]:
@@ -171,6 +191,7 @@ class Host:
 		:return:
 		"""
 		lookup = '1.3.6.1.2.1.1.4.0'
+		Debug.log('Scanning for contact - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
 	def get_snmp_location(self, community: str) -> Union[str,None]:
@@ -180,6 +201,27 @@ class Host:
 		:return:
 		"""
 		lookup = '1.3.6.1.2.1.1.6.0'
+		Debug.log('Scanning for location - %s' % lookup)
+		return scan_snmp_single(self.ip, community, lookup)
+
+	def get_snmp_firmware(self, community: str) -> Union[str,None]:
+		"""
+		Perform a basic SNMP scan to get the firmware version of the device.
+		:param community:
+		:return:
+		"""
+		lookup = '1.3.6.1.2.1.16.19.2.0'
+		Debug.log('Scanning for firmware version - %s' % lookup)
+		return scan_snmp_single(self.ip, community, lookup)
+
+	def get_snmp_model(self, community: str) -> Union[str,None]:
+		"""
+		Perform a basic SNMP scan to get the model version of the device.
+		:param community:
+		:return:
+		"""
+		lookup = '1.3.6.1.2.1.16.19.3.0'
+		Debug.log('Scanning for model - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
 	def scan_snmp_details(self, community: str):
@@ -192,8 +234,7 @@ class Host:
 		if val is None:
 			# Initial lookup of DESCR failed; do not try to continue.
 			return
-
-		self.descr = val
+		self._store_descr(val)
 
 		mac = self.get_snmp_mac(community)
 		if mac is not None:
@@ -206,6 +247,14 @@ class Host:
 		contact = self.get_snmp_contact(community)
 		if contact is not None:
 			self.contact = contact
+
+		firmware = self.get_snmp_firmware(community)
+		if firmware is not None:
+			self.os_version = firmware
+
+		model = self.get_snmp_model(community)
+		if model is not None:
+			self.model = model
 
 		location = self.get_snmp_location(community)
 		if location is not None:
@@ -248,6 +297,24 @@ class Host:
 		else:
 			self.location = val
 
+	def _store_descr(self, val: str):
+		"""
+		Parse and store the description of the device.
+		:param val:
+		:return:
+		"""
+
+		if val is None:
+			return
+
+		self.descr = val
+		parts = val.split(';')
+		if re.match(r'^ ; AXIS .* Network Camera', val):
+			self.manufacturer = 'AXIS'
+			self.model = parts[1][5:].strip()
+			self.type = parts[2].strip()
+			self.os_version = parts[3].strip()
+
 	def __repr__(self):
 		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} contact:{self.contact} location:{self.location} descr:{self.descr}>'
 
@@ -259,6 +326,10 @@ class Host:
 			'contact': self.contact,
 			'floor': self.floor,
 			'location': self.location,
+			'type': self.type,
+			'manufacturer': self.manufacturer,
+			'model': self.model,
+			'os_version': self.os_version,
 			'descr': self.descr
 		}
 
@@ -269,15 +340,16 @@ def run():
 		description='Discover network devices using SNMP'
 	)
 
-	parser.add_argument('--ip', required=True)
-	parser.add_argument('-c', '--community', default='public')
-	parser.add_argument('--format', default='json', choices=('json', 'csv'))
-	parser.add_argument('--debug', action='store_true')
+	parser.add_argument('--ip', required=True, help='IP address to start the scan from')
+	parser.add_argument('-c', '--community', default='public', help='SNMP community string to use')
+	parser.add_argument('--format', default='json', choices=('json', 'csv'), help='Output format')
+	parser.add_argument('--debug', action='store_true', help='Enable debug output')
+	parser.add_argument('--single', action='store_true', help='Scan a single host and do not discover neighbors')
 
 	options = parser.parse_args()
 
 	if options.debug:
-		_debug = True
+		Debug._debug = True
 
 	hosts = []
 	ips_found = []
@@ -295,10 +367,13 @@ def run():
 			hosts.append(h)
 
 			# Walk the ARP table of the device to discover more devices
-			if h.descr:
-				print('[%s of %s] - Retrieving neighbors from ARP table on %s' % (len(hosts), len(ips_found), h.ip), file=sys.stderr)
-			neighbors = h.get_neighbors_from_snmp(options.community)
-			#neighbors = []
+			if options.single:
+				neighbors = []
+			else:
+				if h.descr:
+					print('[%s of %s] - Retrieving neighbors from ARP table on %s' % (len(hosts), len(ips_found), h.ip), file=sys.stderr)
+				neighbors = h.get_neighbors_from_snmp(options.community)
+
 			for ip, mac in neighbors:
 				if ip not in ips_found:
 					child_host = Host(ip)
