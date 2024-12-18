@@ -30,12 +30,12 @@ def _parse_value(var_bind):
 	if val[0:2] == '0x':
 		# Pretty-printed MAC addresses have a "0x" prefix and no punctuation.
 		# Drop the "0x" and add ':' every 2 characters
-		val = ':'.join([val[2:][i:i+2] for i in range(0, len(val[2:]), 2)])
+		val = ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
 
 	return val
 
 
-def scan_snmp_single(host: str, community: str, lookup: str) -> Union[str,None]:
+def scan_snmp_single(host: str, community: str, lookup: str) -> Union[str, None]:
 	"""
 	Scan a given host (with a community string) for a given OID.
 
@@ -65,7 +65,7 @@ def scan_snmp_single(host: str, community: str, lookup: str) -> Union[str,None]:
 		return None
 	else:
 		if errorStatus:  # SNMP agent errors
-			Debug.log('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
+			Debug.log('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex) - 1] if errorIndex else '?'))
 			return None
 		else:
 			for varBind in varBinds:  # SNMP response contents
@@ -110,7 +110,7 @@ def scan_snmp(host: str, community: str, lookup: str) -> dict:
 				return ret
 			else:
 				if errorStatus:  # SNMP agent errors
-					Debug.log('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex)-1] if errorIndex else '?'))
+					Debug.log('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex) - 1] if errorIndex else '?'))
 					return ret
 				else:
 					for varBind in varBinds:  # SNMP response contents
@@ -147,7 +147,7 @@ class Host:
 		self.os_version = None
 		self.descr = None
 
-	def get_snmp_descr(self, community: str) -> Union[str,None]:
+	def get_snmp_descr(self, community: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP scan to get the description of the device.
 		:param community:
@@ -157,7 +157,7 @@ class Host:
 		Debug.log('Scanning for DESCR - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
-	def get_snmp_mac(self, community: str) -> Union[str,None]:
+	def get_snmp_mac(self, community: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP scan to get the MAC Address of the device.
 		:param community:
@@ -174,7 +174,7 @@ class Host:
 
 			return val
 
-	def get_snmp_hostname(self, community: str) -> Union[str,None]:
+	def get_snmp_hostname(self, community: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP scan to get the MAC Address of the device.
 		:param community:
@@ -184,7 +184,7 @@ class Host:
 		Debug.log('Scanning for hostname - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
-	def get_snmp_contact(self, community: str) -> Union[str,None]:
+	def get_snmp_contact(self, community: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP scan to get the MAC Address of the device.
 		:param community:
@@ -194,7 +194,7 @@ class Host:
 		Debug.log('Scanning for contact - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
-	def get_snmp_location(self, community: str) -> Union[str,None]:
+	def get_snmp_location(self, community: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP scan to get the MAC Address of the device.
 		:param community:
@@ -204,7 +204,7 @@ class Host:
 		Debug.log('Scanning for location - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
-	def get_snmp_firmware(self, community: str) -> Union[str,None]:
+	def get_snmp_firmware(self, community: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP scan to get the firmware version of the device.
 		:param community:
@@ -214,7 +214,7 @@ class Host:
 		Debug.log('Scanning for firmware version - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
-	def get_snmp_model(self, community: str) -> Union[str,None]:
+	def get_snmp_model(self, community: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP scan to get the model version of the device.
 		:param community:
@@ -276,7 +276,7 @@ class Host:
 		lookup = '1.3.6.1.2.1.3.1.1.2'
 		neighbors = scan_snmp(self.ip, community, lookup)
 		for key, val in neighbors.items():
-			ip = '.'.join(key[len(lookup)+1:].split('.')[2:])
+			ip = '.'.join(key[len(lookup) + 1:].split('.')[2:])
 			ret.append((ip, val))
 
 		return ret
@@ -293,7 +293,7 @@ class Host:
 		floor_match = re.match(r'^FL([0-9A-Z]+) ', val)
 		if floor_match:
 			self.floor = floor_match.group(1)
-			self.location = val[len(self.floor)+2:].strip()
+			self.location = val[len(self.floor) + 2:].strip()
 		else:
 			self.location = val
 
@@ -316,7 +316,7 @@ class Host:
 			self.os_version = parts[3].strip()
 
 	def __repr__(self):
-		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} contact:{self.contact} location:{self.location} descr:{self.descr}>'
+		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} descr:{self.descr}>'
 
 	def to_dict(self):
 		return {
