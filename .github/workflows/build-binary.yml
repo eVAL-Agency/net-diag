@@ -7,8 +7,10 @@ concurrency: production
 
 on:
   push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'           # Push events to every tag not containing /
+    branches:
+      - master
+    #tags:
+    #  - 'v[0-9]+.[0-9]+.[0-9]+'           # Push events to every tag not containing /
 
 jobs:
   prep-release:
@@ -26,7 +28,7 @@ jobs:
         tag_name: ${{ github.ref }}
         body_path: RELEASE.md
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-linux:
     runs-on: ubuntu-latest
