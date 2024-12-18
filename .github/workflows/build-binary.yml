@@ -25,8 +25,8 @@ jobs:
       with:
         draft: false
         prerelease: false
-        release_name: Network Diagnostics ${{ github.ref }}
-        tag_name: ${{ github.ref }}
+        release_name: Network Diagnostics ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
         body_path: RELEASE.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
