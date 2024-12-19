@@ -14,7 +14,6 @@ authors = [
 license = {text = "GNU AGPLv3"}
 keywords = ["network", "diagnostics", "snmp"]
 dependencies = [
-    'ruff>=0.8.3',
     'python-dateutil>=2.8',
     'six>=1.16',
     'ipcalc>=1.99',
@@ -32,4 +31,4 @@ dev = [
 ]
 
 [project.scripts]
-network_discover = "net_diag.bin.network_discover:run"
+network_discover = "net_diag.network_discover:run"
