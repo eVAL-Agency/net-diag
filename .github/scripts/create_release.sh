@@ -19,11 +19,21 @@ if [ "$REF" == "" ]; then
 	exit 1
 fi
 
+if [ "$PROJECT" == "" ]; then
+	echo "ERROR - No 'PROJECT' environment variable set!"
+	echo "Example YAML step:"
+	echo "      - name: Create Release"
+	echo "        id: create_release"
+	echo "        env:"
+	echo "          PROJECT: Name of Project"
+	exit 1
+fi
+
 if [[ "$REF" =~ "refs/heads/" ]]; then
 	BRANCH="${REF//refs\/heads\//}"
 	TAG="$BRANCH-$(date +%Y%m%d%H%M%S)"
 	echo "Creating release with tag $TAG"
-	URL="$(gh release create $BRANCH -d -p -F RELEASE.md)"
+	URL="$(gh release create $BRANCH -d -p -F RELEASE.md --title "$PROJECT $TAG")"
 	if [ $? -eq 0 ]; then
 		echo "RELEASE_URL=$URL" >> $GITHUB_ENV
 	else
@@ -32,7 +42,12 @@ if [[ "$REF" =~ "refs/heads/" ]]; then
 elif [[ "$REF" =~ "refs/tags" ]]; then
 	TAG="${REF//refs\/tags\//}"
 	echo "Creating release with tag $TAG"
-	gh release create "$TAG" -d -F RELEASE.md
+	URL="$(gh release create "$TAG" -d -F RELEASE.md --title "$PROJECT $TAG")"
+	if [ $? -eq 0 ]; then
+		echo "RELEASE_URL=$URL" >> $GITHUB_ENV
+	else
+		exit 1
+	fi
 else
 	echo "ERROR - Invalid 'REF' environment variable value!"
 	echo "Expected 'REF' to be either 'refs/heads/...' or 'refs/tags/...'"
