@@ -20,9 +20,13 @@ if [ "$REF" == "" ]; then
 fi
 
 if [[ "$REF" =~ "refs/heads/" ]]; then
-	gh release create -d -p -F RELEASE.md
+	TAG="${REF//refs\/heads\//}-$(date +%Y%m%d%H%M%S)"
+	echo "Creating release with tag $TAG"
+	gh release create "$TAG" -d -p -F RELEASE.md
 elif [[ "$REF" =~ "refs/tags" ]]; then
-	gh release create -d -F RELEASE.md
+	TAG="${REF//refs\/tags\//}"
+	echo "Creating release with tag $TAG"
+	gh release create "$TAG" -d -F RELEASE.md
 else
 	echo "ERROR - Invalid 'REF' environment variable value!"
 	echo "Expected 'REF' to be either 'refs/heads/...' or 'refs/tags/...'"
