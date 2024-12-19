@@ -20,9 +20,10 @@ if [ "$REF" == "" ]; then
 fi
 
 if [[ "$REF" =~ "refs/heads/" ]]; then
-	TAG="${REF//refs\/heads\//}-$(date +%Y%m%d%H%M%S)"
+	BRANCH="${REF//refs\/heads\//}"
+	TAG="$BRANCH-$(date +%Y%m%d%H%M%S)"
 	echo "Creating release with tag $TAG"
-	gh release create "$TAG" -d -p -F RELEASE.md
+	gh release create "$TAG" -d -p -F RELEASE.md --target $BRANCH
 elif [[ "$REF" =~ "refs/tags" ]]; then
 	TAG="${REF//refs\/tags\//}"
 	echo "Creating release with tag $TAG"
