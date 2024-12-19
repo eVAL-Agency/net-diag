@@ -42,14 +42,6 @@ jobs:
         run: |
           pyinstaller -F src/net_diag/bin/network_discover.py
       - name: Create Release
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REF: ${{ github.ref_name }}
-          PROJECT: "Network Diagnostics"
-        run: bash .github/scripts/create_release.sh
+        run: gh release create ${{ github.ref_name }} -d -p -F RELEASE.md --title "Network Diagnostics testing"
       - name: Upload Release
-        env:
-          REF: ${{ github.ref }}
-          GITHUB_TOKEN: ${{ github.token }}
-        run: bash .github/scripts/upload_release.sh dist/network_discover
+        run: gh release upload ${{ github.ref_name }} --clobber dist/network_discover
