@@ -49,7 +49,7 @@ elif [[ "$REF" =~ "refs/tags" ]]; then
 		exit 1
 	fi
 else
-	echo "ERROR - Invalid 'REF' environment variable value!"
+	echo "ERROR - Invalid 'REF' environment variable value! ($REF)"
 	echo "Expected 'REF' to be either 'refs/heads/...' or 'refs/tags/...'"
 	exit 1
 fi

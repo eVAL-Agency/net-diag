@@ -45,7 +45,7 @@ jobs:
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REF: ${{ github.ref }}
+          REF: ${{ github.ref_name }}
           PROJECT: "Network Diagnostics"
         run: bash .github/scripts/create_release.sh
       - name: Upload Release
