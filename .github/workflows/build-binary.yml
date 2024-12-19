@@ -24,4 +24,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REF: ${{ github.ref }}
+          PROJECT: "Network Diagnostics"
         run: bash .github/scripts/create_release.sh
