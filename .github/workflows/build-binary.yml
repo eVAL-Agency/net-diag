@@ -13,96 +13,15 @@ on:
     #  - 'v[0-9]+.[0-9]+.[0-9]+'           # Push events to every tag not containing /
 
 jobs:
-  prep-release:
+  build-linux:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        draft: false
-        prerelease: false
-        release_name: Network Diagnostics ${{ github.ref_name }}
-        tag_name: ${{ github.ref_name }}
-        body_path: RELEASE.md
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-linux:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10"]
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install flake8 pytest
-          python -m pip install -e .[dev]
-      - name: Lint with flake8
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --ignore=W191 --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --ignore=W191 --max-complexity=15 --max-line-length=127 --statistics
-      - name: Build binary
-        run: |
-          pyinstaller -F src/net_diag/bin/network_discover.py
-      - name: Upload Release
-        uses: actions/upload-release-asset@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create Release
+        id: create_release
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          #asset_path: ./release/${{ steps.archive.outputs.filename }}
-          asset_path: ./dist/network_discover
-          asset_name: network_discover
-          asset_content_type: application/octet-stream
-
-  build-windows:
-    runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10"]
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        python -m pip install -e .[dev]
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --ignore=W191 --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --ignore=W191 --max-complexity=15 --max-line-length=127 --statistics
-    - name: Build binary
-      run: |
-        pyinstaller -F src/net_diag/bin/network_discover.py
-    - name: Upload Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        #asset_path: ./release/${{ steps.archive.outputs.filename }}
-        asset_path: ./dist/network_discover.exe
-        asset_name: network_discover.exe
-        asset_content_type: application/octet-stream
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REF: ${{ github.ref }}
+        run: bash .github/scripts/create_release.sh
