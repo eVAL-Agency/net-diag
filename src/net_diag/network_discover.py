@@ -5,6 +5,8 @@ from pysnmp import hlapi
 import argparse
 from typing import Union
 import re
+from mac_vendor_lookup import MacLookup
+import socket
 
 
 class Debug:
@@ -171,6 +173,9 @@ class Host:
 			if val == '00:00:00:00:00:00':
 				# Some devices will return a MAC of all 0's for an interface that is not in use.
 				continue
+			if val == '':
+				# Some devices will return just a blank string for their interfaces
+				continue
 
 			return val
 
@@ -224,12 +229,55 @@ class Host:
 		Debug.log('Scanning for model - %s' % lookup)
 		return scan_snmp_single(self.ip, community, lookup)
 
-	def scan_snmp_details(self, community: str):
+	def scan_details(self, community: str):
 		"""
 		Perform a full scan of the device to store all details.
 		:param community:
 		:return:
 		"""
+
+		self._scan_snmp(community)
+
+		if self.hostname is None:
+			try:
+				Debug.log('Hostname not set, trying a socket to resolve')
+				self.hostname = socket.gethostbyaddr(self.ip)[0]
+				Debug.log('%s = %s' % (self.ip, self.hostname))
+			except socket.herror:
+				Debug.log('socket lookup failed')
+				pass
+
+		if self.manufacturer is None and self.mac is not None:
+			try:
+				Debug.log('Manufacturer not set, trying a MAC lookup to resolve')
+				self.manufacturer = MacLookup().lookup(self.mac)
+				Debug.log('%s = %s' % (self.mac, self.manufacturer))
+			except Exception:
+				Debug.log('MAC address lookup failed')
+				pass
+
+	def get_neighbors_from_snmp(self, community: str):
+		"""
+		Perform a scan of the ARP table of the device to find neighbors.
+		:param community:
+		:return:
+		"""
+
+		if self.descr is None:
+			# If no snmp scan performed for the base device already, (or it failed),
+			# do not attempt to perform a neighbor scan.
+			return []
+
+		ret = []
+		lookup = '1.3.6.1.2.1.3.1.1.2'
+		neighbors = scan_snmp(self.ip, community, lookup)
+		for key, val in neighbors.items():
+			ip = '.'.join(key[len(lookup) + 1:].split('.')[2:])
+			ret.append((ip, val))
+
+		return ret
+
+	def _scan_snmp(self, community: str):
 		val = self.get_snmp_descr(community)
 		if val is None:
 			# Initial lookup of DESCR failed; do not try to continue.
@@ -259,27 +307,6 @@ class Host:
 		location = self.get_snmp_location(community)
 		if location is not None:
 			self._store_location(location)
-
-	def get_neighbors_from_snmp(self, community: str):
-		"""
-		Perform a scan of the ARP table of the device to find neighbors.
-		:param community:
-		:return:
-		"""
-
-		if self.descr is None:
-			# If no snmp scan performed for the base device already, (or it failed),
-			# do not attempt to perform a neighbor scan.
-			return []
-
-		ret = []
-		lookup = '1.3.6.1.2.1.3.1.1.2'
-		neighbors = scan_snmp(self.ip, community, lookup)
-		for key, val in neighbors.items():
-			ip = '.'.join(key[len(lookup) + 1:].split('.')[2:])
-			ret.append((ip, val))
-
-		return ret
 
 	def _store_location(self, val: str):
 		"""
@@ -363,7 +390,7 @@ def run():
 		while len(hosts_queue) > 0:
 			h = hosts_queue.pop(0)
 			print('[%s of %s] - Scanning details for %s' % (len(hosts) + 1, len(ips_found), h.ip), file=sys.stderr)
-			h.scan_snmp_details(options.community)
+			h.scan_details(options.community)
 			hosts.append(h)
 
 			# Walk the ARP table of the device to discover more devices

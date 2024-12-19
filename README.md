@@ -5,6 +5,9 @@ Collection of network diagnostic scripts, useful for technicians.
 
 ## Network Discover (SNMP)
 
+Scan a network, (starting with a single host), for neighbors and host details.
+Since this operates via SNMP, it CAN provide MAC details over a layer-3 network, (ie: a VPN).
+
 Options:
 
 * --ip (REQUIRED): Starting IP (usually gateway or a core switch)
@@ -12,6 +15,20 @@ Options:
 * --format: Output format, either "json" or "csv" (default: json)
 * --debug: Include to print debug information on stderr
 * --single: Only scan a single host (useful for debugging)
+
+Fields provided:
+
+* ip
+* mac
+* hostname
+* contact
+* floor
+* location
+* type
+* manufacturer
+* model
+* os_version
+* descr
 
 Example usage:
 
@@ -81,4 +98,43 @@ Run the application from source
 ```bash
 source venv/bin/activate
 python src/net_diag/network_discover.py --ip 192.168.1.1 --community somestring --format json --debug
+```
+
+
+## Debugging
+
+The use of the `--debug` flag will print all details from lookups.
+Use this flag, (possibly along with `--single` to target the specific IP), when providing feedback
+for data lookups.
+
+Example:
+
+```bash
+python src/net_diag/network_discover.py --ip 192.168.253.100 --community somepass --format csv --single --debug
+
+# Printed to stderr:
+[1 of 1] - Scanning details for 192.168.253.100
+[DEBUG] Scanning for DESCR - 1.3.6.1.2.1.1.1.0
+[DEBUG] 1.3.6.1.2.1.1.1.0 = UAP-AC-Pro-Gen2 6.6.77.15402
+[DEBUG] Scanning for MAC - 1.3.6.1.2.1.2.2.1.6
+[DEBUG] 1.3.6.1.2.1.2.2.1.6.1 = 
+[DEBUG] 1.3.6.1.2.1.2.2.1.6.2 = 74:ac:b9:bc:41:fa
+[DEBUG] 1.3.6.1.2.1.2.2.1.6.3 = 
+[DEBUG] 1.3.6.1.2.1.2.2.1.6.4 = 74:ac:b9:bd:41:fa
+[DEBUG] 1.3.6.1.2.1.2.2.1.6.5 = 74:ac:b9:be:41:fa
+[DEBUG] No SNMP response received before timeout
+[DEBUG] Scanning for hostname - 1.3.6.1.2.1.1.5.0
+[DEBUG] 1.3.6.1.2.1.1.5.0 = FL01WifiLobby
+[DEBUG] Scanning for contact - 1.3.6.1.2.1.1.4.0
+[DEBUG] 1.3.6.1.2.1.1.4.0 = Charlie Powell
+[DEBUG] Scanning for firmware version - 1.3.6.1.2.1.16.19.2.0
+[DEBUG] 1.3.6.1.2.1.16.19.2.0 = No Such Object currently exists at this OID
+[DEBUG] Scanning for model - 1.3.6.1.2.1.16.19.3.0
+[DEBUG] 1.3.6.1.2.1.16.19.3.0 = No Such Object currently exists at this OID
+[DEBUG] Scanning for location - 1.3.6.1.2.1.1.6.0
+[DEBUG] 1.3.6.1.2.1.1.6.0 = FL01 Lobby
+
+# Printed to stdout:
+ip,mac,hostname,contact,floor,location,type,manufacturer,model,os_version,descr
+192.168.253.100,74:ac:b9:bc:41:fa,FL01WifiLobby,Charlie Powell,01,Lobby,,Ubiquiti Networks Inc.,,,UAP-AC-Pro-Gen2 6.6.77.15402
 ```
