@@ -80,5 +80,5 @@ Run the application from source
 
 ```bash
 source venv/bin/activate
-python src/network_discover.py --ip 192.168.1.1 --community somestring --format json --debug
+python src/net_diag/network_discover.py --ip 192.168.1.1 --community somestring --format json --debug
 ```
