@@ -23,9 +23,11 @@ if [[ "$REF" =~ "refs/heads/" ]]; then
 	BRANCH="${REF//refs\/heads\//}"
 	TAG="$BRANCH-$(date +%Y%m%d%H%M%S)"
 	echo "Creating release with tag $TAG"
-	URL="$(gh release create -d -p -F RELEASE.md --target $BRANCH)"
+	URL="$(gh release create $BRANCH -d -p -F RELEASE.md)"
 	if [ $? -eq 0 ]; then
 		echo "RELEASE_URL=$URL" >> $GITHUB_ENV
+	else
+		exit 1
 	fi
 elif [[ "$REF" =~ "refs/tags" ]]; then
 	TAG="${REF//refs\/tags\//}"
