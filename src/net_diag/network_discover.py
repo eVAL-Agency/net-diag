@@ -7,6 +7,8 @@ from typing import Union
 import re
 from mac_vendor_lookup import MacLookup
 import socket
+import ipaddress
+from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
 
 
 class Debug:
@@ -129,6 +131,37 @@ def scan_snmp(host: str, community: str, lookup: str) -> dict:
 		pass
 
 	return ret
+
+
+def is_local_ip(ip: str) -> bool:
+	"""
+	Check if the given IP is a local-only IP
+
+	(currently only supports IPv4 addresses)
+	:param ip:
+	:return:
+	"""
+	n_val = int(ipaddress.IPv4Address(ip))
+	ranges = (
+		# 127.0.0.0 - 127.255.255.255
+		(0x7F000000, 0x7FFFFFFF),
+		# 169.254.0.0 - 169.254.255.255
+		(0xA9FE0000, 0xA9FEFFFF),
+		# 192.0.2.0 - 192.0.2.255
+		(0xC0000200, 0xC00002FF),
+		# 198.51.100.0 - 198.51.100.255
+		(0xC6336400, 0xC63364FF),
+		# 203.0.113.0 - 203.0.113.255
+		(0xCB007100, 0xCB0071FF),
+		# 224.0.0.0 - 239.255.255.255
+		(0xE0000000, 0xEFFFFFFF),
+		# 240.0.0.0 - 255.255.255.254
+		(0xF0000000, 0xFFFFFFFF)
+	)
+	for set in ranges:
+		if set[0] <= n_val <= set[1]:
+			return True
+	return False
 
 
 class Host:
@@ -277,6 +310,94 @@ class Host:
 
 		return ret
 
+	def sync_to_suitecrm(self, sync: SuiteCRMSync):
+		"""
+		:param sync:
+		:raises SuiteCRMSyncException:
+		:return:
+		"""
+		if self.mac is None:
+			print('No MAC address found for SuiteCRM sync on %s' % self.ip, file=sys.stderr)
+			return
+
+		Debug.log('Searching for devices with MAC %s' % self.mac)
+		ret = sync.find(
+			'MSP_Devices',
+			{'mac_pri': self.mac, 'mac_sec': self.mac, 'mac_oob': self.mac},
+			operator='OR',
+			fields=(
+				'id',
+				'ip_pri',
+				'mac_pri',
+				'ip_sec',
+				'mac_sec',
+				'ip_oob',
+				'mac_oob',
+				'name',
+				'loc_room',
+				'loc_floor',
+				'manufacturer',
+				'model',
+				'os_version',
+				'type',
+				'description'
+			)
+		)
+		Debug.log('Found %s device(s)' % len(ret))
+
+		if len(ret) == 0:
+			# No records located, create
+			data = {
+				'ip_pri': self.ip,
+				'mac_pri': self.mac,
+				'name': self.hostname,
+				'loc_room': self.location,
+				'loc_floor': self.floor,
+				'manufacturer': self.manufacturer,
+				'model': self.model,
+				'os_version': self.os_version,
+				'type': self.type,
+				'description': self.descr
+			}
+			Debug.log('Creating device record for %s: (%s)' % (self.ip, json.dumps(data)))
+			sync.create('MSP_Devices', data)
+		elif len(ret) == 1:
+			# Update only, (do not overwrite existing data)
+			if ret[0]['mac_sec'] == self.mac:
+				ip_key = 'ip_sec'
+			elif ret[0]['mac_oob'] == self.mac:
+				ip_key = 'ip_oob'
+			else:
+				ip_key = 'ip_pri'
+
+			data = {}
+			if ret[0][ip_key] != self.ip:
+				data[ip_key] = self.ip
+			if not ret[0]['name'] and self.hostname:
+				data['name'] = self.hostname
+			if not ret[0]['loc_room'] and self.location:
+				data['loc_room'] = self.location
+			if not ret[0]['loc_floor'] and self.floor:
+				data['loc_floor'] = self.floor
+			if not ret[0]['manufacturer'] and self.manufacturer:
+				data['manufacturer'] = self.manufacturer
+			if not ret[0]['model'] and self.model:
+				data['model'] = self.model
+			if not ret[0]['os_version'] and self.os_version:
+				data['os_version'] = self.os_version
+			if not ret[0]['type'] and self.type:
+				data['type'] = self.type
+			if not ret[0]['description'] and self.descr:
+				data['description'] = self.descr
+
+			if len(data) > 0:
+				Debug.log('Updating device record for %s: %s' % (self.ip, json.dumps(data)))
+				sync.update('MSP_Devices', ret[0]['id'], data)
+			else:
+				Debug.log('No updates required for %s' % self.ip)
+		else:
+			print('Multiple records found for %s' % self.mac, file=sys.stderr)
+
 	def _scan_snmp(self, community: str):
 		val = self.get_snmp_descr(community)
 		if val is None:
@@ -364,56 +485,86 @@ class Host:
 def run():
 	parser = argparse.ArgumentParser(
 		prog='network_discover.py',
-		description='Discover network devices using SNMP'
+		description='''Discover network devices using SNMP.
+Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentation.'''
 	)
 
 	parser.add_argument('--ip', required=True, help='IP address to start the scan from')
 	parser.add_argument('-c', '--community', default='public', help='SNMP community string to use')
-	parser.add_argument('--format', default='json', choices=('json', 'csv'), help='Output format')
+	parser.add_argument('--format', default='json', choices=('json', 'csv', 'suitecrm'), help='Output format')
 	parser.add_argument('--debug', action='store_true', help='Enable debug output')
 	parser.add_argument('--single', action='store_true', help='Scan a single host and do not discover neighbors')
+	parser.add_argument('--crm-url', help='URL of the SuiteCRM instance')
+	parser.add_argument('--crm-client-id', help='Client ID for the SuiteCRM instance')
+	parser.add_argument('--crm-client-secret', help='Client secret for the SuiteCRM instance')
 
 	options = parser.parse_args()
+
+	hosts = ()
+	sync = None
 
 	if options.debug:
 		Debug._debug = True
 
+	if options.format == 'suitecrm':
+		sync = SuiteCRMSync(options.crm_url, options.crm_client_id, options.crm_client_secret)
+		try:
+			# Perform a connection to check credentials prior to scanning for hosts
+			sync.get_token()
+		except SuiteCRMSyncException as e:
+			print('Failed to connect to SuiteCRM: %s' % e, file=sys.stderr)
+			sys.exit(1)
+
+	try:
+		hosts = scan(options.ip, options.community, single=options.single)
+	except KeyboardInterrupt:
+		print('Exiting scan', file=sys.stderr)
+		# Either exit the scan if it requires additional work or continue to output the results
+		if options.format == 'suitecrm':
+			return
+		else:
+			pass
+
+	finalize_results(options.format, hosts, sync=sync)
+
+
+def scan(starting_ip: str, community: str, single: bool = False):
 	hosts = []
 	ips_found = []
 	hosts_queue = []
 
 	# Perform a scan starting with the host specified
-	hosts_queue.append(Host(options.ip))
-	ips_found.append(options.ip)
+	hosts_queue.append(Host(starting_ip))
+	ips_found.append(starting_ip)
 
-	try:
-		while len(hosts_queue) > 0:
-			h = hosts_queue.pop(0)
-			print('[%s of %s] - Scanning details for %s' % (len(hosts) + 1, len(ips_found), h.ip), file=sys.stderr)
-			h.scan_details(options.community)
-			hosts.append(h)
+	while len(hosts_queue) > 0:
+		h = hosts_queue.pop(0)
+		print('[%s of %s] - Scanning details for %s' % (len(hosts) + 1, len(ips_found), h.ip), file=sys.stderr)
+		h.scan_details(community)
+		hosts.append(h)
 
-			# Walk the ARP table of the device to discover more devices
-			if options.single:
-				neighbors = []
-			else:
-				if h.descr:
-					print('[%s of %s] - Retrieving neighbors from ARP table on %s' % (len(hosts), len(ips_found), h.ip), file=sys.stderr)
-				neighbors = h.get_neighbors_from_snmp(options.community)
+		# Walk the ARP table of the device to discover more devices
+		if single:
+			neighbors = []
+		else:
+			if h.descr:
+				print('[%s of %s] - Retrieving neighbors from ARP table on %s' % (len(hosts), len(ips_found), h.ip), file=sys.stderr)
+			neighbors = h.get_neighbors_from_snmp(community)
 
-			for ip, mac in neighbors:
-				if ip not in ips_found:
-					child_host = Host(ip)
-					child_host.mac = mac
-					hosts_queue.append(child_host)
-					ips_found.append(ip)
-	except KeyboardInterrupt:
-		print('Exiting scan', file=sys.stderr)
-		pass
+		for ip, mac in neighbors:
+			if ip not in ips_found and not is_local_ip(ip):
+				child_host = Host(ip)
+				child_host.mac = mac
+				hosts_queue.append(child_host)
+				ips_found.append(ip)
 
-	if options.format == 'json':
+	return hosts
+
+
+def finalize_results(format: str, hosts: list, sync: Union[SuiteCRMSync, None] = None):
+	if format == 'json':
 		print(json.dumps([h.to_dict() for h in hosts], indent=2))
-	elif options.format == 'csv':
+	elif format == 'csv':
 		# Grab a new host just to retrieve the dictionary keys on the object
 		generic = Host('test')
 		# Set the header (and fields)
@@ -421,6 +572,13 @@ def run():
 		writer.writeheader()
 		for h in hosts:
 			writer.writerow(h.to_dict())
+	elif format == 'suitecrm':
+		for h in hosts:
+			try:
+				print('Syncing %s to SuiteCRM' % h.ip)
+				h.sync_to_suitecrm(sync)
+			except SuiteCRMSyncException as e:
+				print('Failed to sync %s to SuiteCRM: %s' % (h.ip, e), file=sys.stderr)
 	else:
 		print('Unknown format requested', file=sys.stderr)
 

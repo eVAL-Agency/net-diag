@@ -8,15 +8,18 @@ Collection of network diagnostic scripts, useful for technicians.
 Scan a network, (starting with a single host), for neighbors and host details.
 Since this operates via SNMP, it CAN provide MAC details over a layer-3 network, (ie: a VPN).
 
-Options:
+### Options
 
 * --ip (REQUIRED): Starting IP (usually gateway or a core switch)
 * --community: SNMP community string (default: public)
-* --format: Output format, either "json" or "csv" (default: json)
+* --format: Output format, either "json", "csv", or "suitecrm" (default: json)
 * --debug: Include to print debug information on stderr
 * --single: Only scan a single host (useful for debugging)
+* --crm-url: URL of the SuiteCRM instance
+* --crm-client-id: Client ID for the SuiteCRM instance
+* --crm-client-secret: Client secret for the SuiteCRM instance
 
-Fields provided:
+### Fields provided
 
 * ip
 * mac
@@ -30,7 +33,9 @@ Fields provided:
 * os_version
 * descr
 
-Example usage:
+### Example usage
+
+Simple usage, write scan results to a local file
 
 ```bash
 network_discover --ip 10.10.10.1 --community public --format csv > network.csv
@@ -61,6 +66,36 @@ ip,mac,hostname,contact,floor,location,type,manufacturer,model,os_version,descr
 10.10.10.106,,UBNT,root@localhost,,Unknown,,,,,UAP 4.3.28.11361
 10.10.10.120,00:11:22:33:44:61,,,,,,,,,
 ```
+
+If using the MSP plugin for SuiteCRM or another compatible library, 
+using `--format suitecrm` can sync data directly to the device database.
+
+This functionality requires oauth to be configured for your instance and a client ID/secret to be provided.
+
+Required roles are:
+
+* MSP_Devices read/list
+* MSP_Devices edit
+* MSP_Devices create
+
+```bash
+network_discover --ip=192.168.0.1 --format=suitecrm --crm-url=crm.yourdomain.tld --crm-client-id=123456-1234-1234-123456789 --crm-client-secret=oauth_secret_key -c public
+
+# Example output
+[65 of 163] - Scanning details for 192.168.0.100
+[66 of 163] - Scanning details for 192.168.0.143
+[67 of 163] - Scanning details for 192.168.0.150
+[68 of 163] - Scanning details for 192.168.0.151
+[69 of 163] - Scanning details for 192.168.0.152
+...
+Syncing 192.168.0.73 to SuiteCRM
+Syncing 192.168.0.75 to SuiteCRM
+Syncing 192.168.0.76 to SuiteCRM
+Syncing 192.168.0.77 to SuiteCRM
+
+
+```
+
 
 
 ## Network Diagnostic (@todo)
