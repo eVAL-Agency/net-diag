@@ -1,26 +1,23 @@
 import sys
 import json
 import csv
-from pysnmp import hlapi
+import threading
+from time import sleep
+
 import argparse
 from typing import Union
 import re
 from mac_vendor_lookup import MacLookup
 import socket
 import ipaddress
+import logging
+from datetime import datetime
+import multiprocessing
+from queue import Empty
+
+from net_diag.libs.snmputils import snmp_parse_descr, snmp_lookup_single, snmp_lookup_bulk
 from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
-
-
-class Debug:
-	"""
-	Simple debug logging class, prints to stderr
-	"""
-	_debug = False
-
-	@classmethod
-	def log(cls, msg: str):
-		if cls._debug:
-			print('[DEBUG] %s' % msg, file=sys.stderr)
+from net_diag.libs.nativeping import ping
 
 
 def _parse_value(var_bind):
@@ -37,100 +34,6 @@ def _parse_value(var_bind):
 		val = ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
 
 	return val
-
-
-def scan_snmp_single(host: str, community: str, lookup: str) -> Union[str, None]:
-	"""
-	Scan a given host (with a community string) for a given OID.
-
-	:param host:
-	:param community:
-	:param lookup:
-	:return:
-	"""
-
-	error_responses = (
-		'No Such Object currently exists at this OID',
-	)
-
-	# snmpEngine, authData, transportTarget, contextData, nonRepeaters, maxRepetitions, *varBinds
-	iterator = hlapi.getCmd(
-		hlapi.SnmpEngine(),
-		hlapi.CommunityData(community, mpModel=1),
-		hlapi.UdpTransportTarget((host, 161), timeout=2, retries=0),
-		hlapi.ContextData(),
-		hlapi.ObjectType(hlapi.ObjectIdentity(lookup))
-	)
-
-	errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
-	if errorIndication:
-		# Usually indicates no SNMP on target device or credentials were incorrect.
-		Debug.log(errorIndication.__str__())
-		return None
-	else:
-		if errorStatus:  # SNMP agent errors
-			Debug.log('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex) - 1] if errorIndex else '?'))
-			return None
-		else:
-			for varBind in varBinds:  # SNMP response contents
-				key = varBind[0].getOid().__str__()
-				val = _parse_value(varBind)
-
-				Debug.log('%s = %s' % (key, val))
-				if val in error_responses:
-					return None
-				return val
-
-	return None
-
-
-def scan_snmp(host: str, community: str, lookup: str) -> dict:
-	"""
-	Scan a given host (with a community string) for a given OID.
-
-	:param host:
-	:param community:
-	:param lookup:
-	:return:
-	"""
-	ret = {}
-
-	iterator = hlapi.bulkCmd(
-		hlapi.SnmpEngine(),
-		hlapi.CommunityData(community, mpModel=1),
-		hlapi.UdpTransportTarget((host, 161), timeout=10, retries=0),
-		hlapi.ContextData(),
-		False,
-		5,
-		hlapi.ObjectType(hlapi.ObjectIdentity(lookup))
-	)
-
-	try:
-		while True:
-			errorIndication, errorStatus, errorIndex, varBinds = next(iterator)
-			if errorIndication:
-				# Usually indicates no SNMP on target device or credentials were incorrect.
-				Debug.log(errorIndication.__str__())
-				return ret
-			else:
-				if errorStatus:  # SNMP agent errors
-					Debug.log('%s at %s' % (errorStatus.prettyPrint(), varBinds[int(errorIndex) - 1] if errorIndex else '?'))
-					return ret
-				else:
-					for varBind in varBinds:  # SNMP response contents
-						key = varBind[0].getOid().__str__()
-						val = _parse_value(varBind)
-
-						Debug.log('%s = %s' % (key, val))
-
-						if key[0:len(lookup)] != lookup:
-							raise StopIteration
-
-						ret[key] = val
-	except StopIteration:
-		pass
-
-	return ret
 
 
 def is_local_ip(ip: str) -> bool:
@@ -181,6 +84,54 @@ class Host:
 		self.model = None
 		self.os_version = None
 		self.descr = None
+		self.address = None
+		self.city = None
+		self.state = None
+		self.log_lines = ''
+		self.reachable = False
+		self.neighbors = None
+
+	def log(self, msg: str):
+		"""
+		Log a debug message to the debugger logger and to this device's internal log
+
+		:param msg:
+		:return:
+		"""
+		self.log_lines += '[%s] %s\n' % (datetime.now().isoformat(), msg)
+		logging.debug(msg)
+
+	def ping(self):
+		"""
+		Ping the host to see if it is reachable
+		:return:
+		"""
+		self.log('Pinging %s' % (self.ip,))
+		self.reachable = ping(self.ip)
+		self.log('Reachable' if self.reachable else 'Not reachable')
+
+	def is_available(self) -> bool:
+		"""
+		Check if this device is available on the network
+
+		Checks both ping and SNMP, as either could be disabled.
+		:return:
+		"""
+		return self.reachable or self.descr is not None
+
+	def _snmp_single_lookup(self, community: str, name: str, oid: str) -> Union[str, None]:
+		"""
+		Perform a basic SNMP scan to get some value
+		:param community:
+		:return:
+		"""
+		self.log('Scanning for %s - OID:%s' % (name, oid))
+		val = snmp_lookup_single(self.ip, community, oid)
+		if val is None:
+			self.log('OID does not exist or value was NULL')
+		else:
+			self.log('Raw response: [%s]' % val)
+		return val
 
 	def get_snmp_descr(self, community: str) -> Union[str, None]:
 		"""
@@ -188,9 +139,7 @@ class Host:
 		:param community:
 		:return:
 		"""
-		lookup = '1.3.6.1.2.1.1.1.0'
-		Debug.log('Scanning for DESCR - %s' % lookup)
-		return scan_snmp_single(self.ip, community, lookup)
+		return self._snmp_single_lookup(community, 'DESCR', '1.3.6.1.2.1.1.1.0')
 
 	def get_snmp_mac(self, community: str) -> Union[str, None]:
 		"""
@@ -199,28 +148,32 @@ class Host:
 		:return:
 		"""
 		lookup = '1.3.6.1.2.1.2.2.1.6'
-		Debug.log('Scanning for MAC - %s' % lookup)
+		self.log('Scanning for MAC - OID:%s' % lookup)
 		# Each device may have multiple interfaces.
-		addresses = scan_snmp(self.ip, community, lookup)
+		addresses = snmp_lookup_bulk(self.ip, community, lookup)
 		for key, val in addresses.items():
-			if val == '00:00:00:00:00:00':
+			self.log('Raw response: [%s]' % val)
+			if val == '0x000000000000':
 				# Some devices will return a MAC of all 0's for an interface that is not in use.
 				continue
 			if val == '':
 				# Some devices will return just a blank string for their interfaces
 				continue
 
+			if val[0:2] == '0x':
+				# SNMP-provided MAC addresses will have a 0x prefix
+				# Drop that and add ':' every 2 characters to be more MAC-like
+				val = ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
+
 			return val
 
 	def get_snmp_hostname(self, community: str) -> Union[str, None]:
 		"""
-		Perform a basic SNMP scan to get the MAC Address of the device.
+		Perform a basic SNMP scan to get the hostname of the device.
 		:param community:
 		:return:
 		"""
-		lookup = '1.3.6.1.2.1.1.5.0'
-		Debug.log('Scanning for hostname - %s' % lookup)
-		return scan_snmp_single(self.ip, community, lookup)
+		return self._snmp_single_lookup(community, 'hostname', '1.3.6.1.2.1.1.5.0')
 
 	def get_snmp_contact(self, community: str) -> Union[str, None]:
 		"""
@@ -228,9 +181,7 @@ class Host:
 		:param community:
 		:return:
 		"""
-		lookup = '1.3.6.1.2.1.1.4.0'
-		Debug.log('Scanning for contact - %s' % lookup)
-		return scan_snmp_single(self.ip, community, lookup)
+		return self._snmp_single_lookup(community, 'contact', '1.3.6.1.2.1.1.4.0')
 
 	def get_snmp_location(self, community: str) -> Union[str, None]:
 		"""
@@ -238,9 +189,7 @@ class Host:
 		:param community:
 		:return:
 		"""
-		lookup = '1.3.6.1.2.1.1.6.0'
-		Debug.log('Scanning for location - %s' % lookup)
-		return scan_snmp_single(self.ip, community, lookup)
+		return self._snmp_single_lookup(community, 'location', '1.3.6.1.2.1.1.6.0')
 
 	def get_snmp_firmware(self, community: str) -> Union[str, None]:
 		"""
@@ -248,9 +197,7 @@ class Host:
 		:param community:
 		:return:
 		"""
-		lookup = '1.3.6.1.2.1.16.19.2.0'
-		Debug.log('Scanning for firmware version - %s' % lookup)
-		return scan_snmp_single(self.ip, community, lookup)
+		return self._snmp_single_lookup(community, 'firmware version', '1.3.6.1.2.1.16.19.2.0')
 
 	def get_snmp_model(self, community: str) -> Union[str, None]:
 		"""
@@ -258,9 +205,7 @@ class Host:
 		:param community:
 		:return:
 		"""
-		lookup = '1.3.6.1.2.1.16.19.3.0'
-		Debug.log('Scanning for model - %s' % lookup)
-		return scan_snmp_single(self.ip, community, lookup)
+		return self._snmp_single_lookup(community, 'model', '1.3.6.1.2.1.16.19.3.0')
 
 	def scan_details(self, community: str):
 		"""
@@ -273,20 +218,20 @@ class Host:
 
 		if self.hostname is None:
 			try:
-				Debug.log('Hostname not set, trying a socket to resolve')
+				self.log('Hostname not set, trying a socket to resolve')
 				self.hostname = socket.gethostbyaddr(self.ip)[0]
-				Debug.log('%s = %s' % (self.ip, self.hostname))
+				self.log('%s = %s' % (self.ip, self.hostname))
 			except socket.herror:
-				Debug.log('socket lookup failed')
+				self.log('socket lookup failed')
 				pass
 
 		if self.manufacturer is None and self.mac is not None:
 			try:
-				Debug.log('Manufacturer not set, trying a MAC lookup to resolve')
+				self.log('Manufacturer not set, trying a MAC lookup to resolve')
 				self.manufacturer = MacLookup().lookup(self.mac)
-				Debug.log('%s = %s' % (self.mac, self.manufacturer))
+				self.log('%s = %s' % (self.mac, self.manufacturer))
 			except Exception:
-				Debug.log('MAC address lookup failed')
+				self.log('MAC address lookup failed')
 				pass
 
 	def get_neighbors_from_snmp(self, community: str):
@@ -296,18 +241,31 @@ class Host:
 		:return:
 		"""
 
+		if self.neighbors is not None:
+			return self.neighbors
+
 		if self.descr is None:
 			# If no snmp scan performed for the base device already, (or it failed),
 			# do not attempt to perform a neighbor scan.
+			self.neighbors = []
 			return []
 
 		ret = []
 		lookup = '1.3.6.1.2.1.3.1.1.2'
-		neighbors = scan_snmp(self.ip, community, lookup)
+		self.log('Scanning for neighbors - OID:%s' % lookup)
+		neighbors = snmp_lookup_bulk(self.ip, community, lookup)
 		for key, val in neighbors.items():
 			ip = '.'.join(key[len(lookup) + 1:].split('.')[2:])
+			if val[0:2] == '0x':
+				# SNMP-provided MAC addresses will have a 0x prefix
+				# Drop that and add ':' every 2 characters to be more MAC-like
+				val = ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
+
+			self.log('%s is at %s' % (ip, val))
 			ret.append((ip, val))
 
+		self.log('Found %s devices' % len(ret))
+		self.neighbors = ret
 		return ret
 
 	def sync_to_suitecrm(self, sync: SuiteCRMSync):
@@ -317,10 +275,10 @@ class Host:
 		:return:
 		"""
 		if self.mac is None:
-			print('No MAC address found for SuiteCRM sync on %s' % self.ip, file=sys.stderr)
+			logging.warning('No MAC address found for SuiteCRM sync on %s' % self.ip)
 			return
 
-		Debug.log('Searching for devices with MAC %s' % self.mac)
+		self.log('Searching for devices in SuiteCRM with MAC %s' % self.mac)
 		ret = sync.find(
 			'MSP_Devices',
 			{'mac_pri': self.mac, 'mac_sec': self.mac, 'mac_oob': self.mac},
@@ -336,6 +294,9 @@ class Host:
 				'name',
 				'loc_room',
 				'loc_floor',
+				'loc_address',
+				'loc_address_city',
+				'loc_address_state',
 				'manufacturer',
 				'model',
 				'os_version',
@@ -343,60 +304,82 @@ class Host:
 				'description'
 			)
 		)
-		Debug.log('Found %s device(s)' % len(ret))
+		self.log('Found %s device(s)' % len(ret))
 
 		if len(ret) == 0:
 			# No records located, create
-			data = {
-				'ip_pri': self.ip,
-				'mac_pri': self.mac,
-				'name': self.hostname,
-				'loc_room': self.location,
-				'loc_floor': self.floor,
-				'manufacturer': self.manufacturer,
-				'model': self.model,
-				'os_version': self.os_version,
-				'type': self.type,
-				'description': self.descr
-			}
-			Debug.log('Creating device record for %s: (%s)' % (self.ip, json.dumps(data)))
-			sync.create('MSP_Devices', data)
+			data = self._generate_suitecrm_payload(None)
+			self.log('Creating device record for %s: (%s)' % (self.ip, json.dumps(data)))
+			sync.create('MSP_Devices', data | {'discover_log': self.log_lines})
 		elif len(ret) == 1:
 			# Update only, (do not overwrite existing data)
-			if ret[0]['mac_sec'] == self.mac:
-				ip_key = 'ip_sec'
-			elif ret[0]['mac_oob'] == self.mac:
-				ip_key = 'ip_oob'
+			data = self._generate_suitecrm_payload(ret[0])
+			if len(data):
+				self.log('Syncing device record for %s: %s' % (self.ip, json.dumps(data)))
 			else:
-				ip_key = 'ip_pri'
-
-			data = {}
-			if ret[0][ip_key] != self.ip:
-				data[ip_key] = self.ip
-			if not ret[0]['name'] and self.hostname:
-				data['name'] = self.hostname
-			if not ret[0]['loc_room'] and self.location:
-				data['loc_room'] = self.location
-			if not ret[0]['loc_floor'] and self.floor:
-				data['loc_floor'] = self.floor
-			if not ret[0]['manufacturer'] and self.manufacturer:
-				data['manufacturer'] = self.manufacturer
-			if not ret[0]['model'] and self.model:
-				data['model'] = self.model
-			if not ret[0]['os_version'] and self.os_version:
-				data['os_version'] = self.os_version
-			if not ret[0]['type'] and self.type:
-				data['type'] = self.type
-			if not ret[0]['description'] and self.descr:
-				data['description'] = self.descr
-
-			if len(data) > 0:
-				Debug.log('Updating device record for %s: %s' % (self.ip, json.dumps(data)))
-				sync.update('MSP_Devices', ret[0]['id'], data)
-			else:
-				Debug.log('No updates required for %s' % self.ip)
+				self.log('No data changed for %s' % self.ip)
+			sync.update('MSP_Devices', ret[0]['id'], data | {'discover_log': self.log_lines})
 		else:
-			print('Multiple records found for %s' % self.mac, file=sys.stderr)
+			logging.warning('Multiple records found for %s' % self.mac)
+
+	def _generate_suitecrm_payload(self, server_data: Union[dict, None]) -> dict:
+		data = {}
+
+		# Fields that are guaranteed to be present; MAC and IP Address
+		# Mac determines where the IP gets stored, (primary/secondary/out-of-band)
+		mac = self.mac.lower()
+		if server_data is not None and server_data['mac_sec'].lower() == mac:
+			if server_data['ip_sec'] != self.ip:
+				data['ip_sec'] = self.ip
+		elif server_data is not None and server_data['mac_oob'].lower() == mac:
+			if server_data['ip_oob'] != self.ip:
+				data['ip_oob'] = self.ip
+		else:
+			if server_data is None or server_data['ip_pri'] != self.ip:
+				data['ip_pri'] = self.ip
+
+		if server_data is None:
+			# Mac gets set only for new records
+			# (otherwise it is the primary key used to lookup this record)
+			data['mac_pri'] = self.mac
+
+		# Fields that should always override inventory data
+		if self.address and (server_data is None or server_data['loc_address'] != self.address):
+			data['loc_address'] = self.address
+
+		if self.city and (server_data is None or server_data['loc_address_city'] != self.city):
+			data['loc_address_city'] = self.city
+
+		if self.state and (server_data is None or server_data['loc_address_state'] != self.state):
+			data['loc_address_state'] = self.state
+
+		# Fields that should only be set if they are present in the scan
+		# and not already set in the inventory data.
+		if self.hostname and (server_data is None or server_data['name'] == ''):
+			data['name'] = self.hostname
+
+		if self.location and (server_data is None or server_data['loc_room'] == ''):
+			data['loc_room'] = self.location
+
+		if self.floor and (server_data is None or server_data['loc_floor'] == ''):
+			data['loc_floor'] = self.floor
+
+		if self.manufacturer and (server_data is None or server_data['manufacturer'] == ''):
+			data['manufacturer'] = self.manufacturer
+
+		if self.model and (server_data is None or server_data['model'] == ''):
+			data['model'] = self.model
+
+		if self.os_version and (server_data is None or server_data['os_version'] == ''):
+			data['os_version'] = self.os_version
+
+		if self.type and (server_data is None or server_data['type'] == ''):
+			data['type'] = self.type
+
+		if self.descr and (server_data is None or server_data['description'] == ''):
+			data['description'] = self.descr
+
+		return data
 
 	def _scan_snmp(self, community: str):
 		val = self.get_snmp_descr(community)
@@ -456,12 +439,10 @@ class Host:
 			return
 
 		self.descr = val
-		parts = val.split(';')
-		if re.match(r'^ ; AXIS .* Network Camera', val):
-			self.manufacturer = 'AXIS'
-			self.model = parts[1][5:].strip()
-			self.type = parts[2].strip()
-			self.os_version = parts[3].strip()
+		data = snmp_parse_descr(val)
+		for key, value in data.items():
+			self.log('Parsed %s as [%s]' % (key, value))
+			setattr(self, key, value)
 
 	def __repr__(self):
 		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} descr:{self.descr}>'
@@ -478,109 +459,186 @@ class Host:
 			'manufacturer': self.manufacturer,
 			'model': self.model,
 			'os_version': self.os_version,
-			'descr': self.descr
+			'descr': self.descr,
+			'address': self.address,
+			'city': self.city,
+			'state': self.state
 		}
 
 
-def run():
-	parser = argparse.ArgumentParser(
-		prog='network_discover.py',
-		description='''Discover network devices using SNMP.
-Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentation.'''
-	)
+class Application:
+	def __init__(self):
+		self.queue = multiprocessing.Queue()
+		self.host_queue = multiprocessing.Queue()
+		self.hosts = []
+		self.threads = []
+		self.community = None
+		self.sync = None
+		self.excludes = []
+		self.format = None
 
-	parser.add_argument('--ip', required=True, help='IP address to start the scan from')
-	parser.add_argument('-c', '--community', default='public', help='SNMP community string to use')
-	parser.add_argument('--format', default='json', choices=('json', 'csv', 'suitecrm'), help='Output format')
-	parser.add_argument('--debug', action='store_true', help='Enable debug output')
-	parser.add_argument('--single', action='store_true', help='Scan a single host and do not discover neighbors')
-	parser.add_argument('--crm-url', help='URL of the SuiteCRM instance')
-	parser.add_argument('--crm-client-id', help='Client ID for the SuiteCRM instance')
-	parser.add_argument('--crm-client-secret', help='Client secret for the SuiteCRM instance')
+	def run(self):
+		self.setup()
 
-	options = parser.parse_args()
-
-	hosts = ()
-	sync = None
-
-	if options.debug:
-		Debug._debug = True
-
-	if options.format == 'suitecrm':
-		sync = SuiteCRMSync(options.crm_url, options.crm_client_id, options.crm_client_secret)
 		try:
-			# Perform a connection to check credentials prior to scanning for hosts
-			sync.get_token()
-		except SuiteCRMSyncException as e:
-			print('Failed to connect to SuiteCRM: %s' % e, file=sys.stderr)
-			sys.exit(1)
+			# Initialize the process threads
+			for n in range(1, multiprocessing.cpu_count()):
+				t = threading.Thread(target=self.worker)
+				self.threads.append(t)
+				t.start()
+				sleep(0.5)
 
-	try:
-		hosts = scan(options.ip, options.community, single=options.single)
-	except KeyboardInterrupt:
-		print('Exiting scan', file=sys.stderr)
-		# Either exit the scan if it requires additional work or continue to output the results
-		if options.format == 'suitecrm':
-			return
-		else:
+			# Wait for all threads to finish
+			for thread in self.threads:
+				thread.join()
+		except KeyboardInterrupt:
+			print('CTRL+C caught, clearing queue, please wait a moment', file=sys.stderr)
+			# Manually clear the queue by retrieving all items and just dropping them
+			while not self.queue.empty():
+				try:
+					self.queue.get(False)
+				except Empty:
+					pass
+			exit(1)
+		finally:
+			self.queue.close()
+			self.queue.join_thread()
+
+		# Move all hosts discovered from the host queue into a standard list
+		try:
+			print('Processing detected hosts', file=sys.stderr)
+
+			host_map = {}
+			while True:
+				host = self.host_queue.get(False)
+				if host.is_available() and host.ip not in self.excludes:
+					host_map[host.ip] = len(self.hosts)
+					self.hosts.append(host)
+		except Empty:
+			self.host_queue.close()
 			pass
 
-	finalize_results(options.format, hosts, sync=sync)
+		# Resolve any located MAC from the remote arp table
+		# This is important because hosts which do not have SNMP enabled should still have the MAC available.
+		for host in self.hosts:
+			if host.neighbors is not None:
+				for ip, mac in host.neighbors:
+					if ip in host_map:
+						# This IP is one of the devices we are scanning, update it's MAC if required
+						i = host_map[ip]
+						if self.hosts[i].mac is None:
+							self.hosts[i].mac = mac
 
+		self.finalize_results()
 
-def scan(starting_ip: str, community: str, single: bool = False):
-	hosts = []
-	ips_found = []
-	hosts_queue = []
+	def setup(self):
+		"""
+		Setup the application and prep everything needed to run the scan
+		:return:
+		"""
+		parser = argparse.ArgumentParser(
+			prog='network_discover.py',
+			description='''Discover network devices using SNMP.
+Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentation.'''
+		)
 
-	# Perform a scan starting with the host specified
-	hosts_queue.append(Host(starting_ip))
-	ips_found.append(starting_ip)
+		parser.add_argument('--net', required=True, help='Network to scan eg: 192.168.0.0/24')
+		parser.add_argument('-c', '--community', default='public', help='SNMP community string to use')
+		parser.add_argument('--format', default='json', choices=('json', 'csv', 'suitecrm'), help='Output format')
+		parser.add_argument('--debug', action='store_true', help='Enable debug output')
+		parser.add_argument('--crm-url', help='URL of the SuiteCRM instance')
+		parser.add_argument('--crm-client-id', help='Client ID for the SuiteCRM instance')
+		parser.add_argument('--crm-client-secret', help='Client secret for the SuiteCRM instance')
+		parser.add_argument('--address', help='Optional address for this scan (for reporting)')
+		parser.add_argument('--city', help='Optional city for this scan (for reporting)')
+		parser.add_argument('--state', help='Optional state for this scan (for reporting)')
+		parser.add_argument('--exclude', help='List of IPs to exclude from overall report, comma-separated')
 
-	while len(hosts_queue) > 0:
-		h = hosts_queue.pop(0)
-		print('[%s of %s] - Scanning details for %s' % (len(hosts) + 1, len(ips_found), h.ip), file=sys.stderr)
-		h.scan_details(community)
-		hosts.append(h)
+		options = parser.parse_args()
 
-		# Walk the ARP table of the device to discover more devices
-		if single:
-			neighbors = []
-		else:
-			if h.descr:
-				print('[%s of %s] - Retrieving neighbors from ARP table on %s' % (len(hosts), len(ips_found), h.ip), file=sys.stderr)
-			neighbors = h.get_neighbors_from_snmp(community)
+		self.community = options.community
+		self.excludes = options.exclude.split(',') if options.exclude else []
+		self.format = options.format
+		if options.debug:
+			logging.basicConfig(level=logging.DEBUG)
 
-		for ip, mac in neighbors:
-			if ip not in ips_found and not is_local_ip(ip):
-				child_host = Host(ip)
-				child_host.mac = mac
-				hosts_queue.append(child_host)
-				ips_found.append(ip)
-
-	return hosts
-
-
-def finalize_results(format: str, hosts: list, sync: Union[SuiteCRMSync, None] = None):
-	if format == 'json':
-		print(json.dumps([h.to_dict() for h in hosts], indent=2))
-	elif format == 'csv':
-		# Grab a new host just to retrieve the dictionary keys on the object
-		generic = Host('test')
-		# Set the header (and fields)
-		writer = csv.DictWriter(sys.stdout, fieldnames=list(generic.to_dict().keys()))
-		writer.writeheader()
-		for h in hosts:
-			writer.writerow(h.to_dict())
-	elif format == 'suitecrm':
-		for h in hosts:
+		if self.format == 'suitecrm':
+			self.sync = SuiteCRMSync(options.crm_url, options.crm_client_id, options.crm_client_secret)
 			try:
-				print('Syncing %s to SuiteCRM' % h.ip)
-				h.sync_to_suitecrm(sync)
+				# Perform a connection to check credentials prior to scanning for hosts
+				self.sync.get_token()
 			except SuiteCRMSyncException as e:
-				print('Failed to sync %s to SuiteCRM: %s' % (h.ip, e), file=sys.stderr)
-	else:
-		print('Unknown format requested', file=sys.stderr)
+				print('Failed to connect to SuiteCRM: %s' % e, file=sys.stderr)
+				sys.exit(1)
+
+		override = {}
+		if options.address:
+			override['address'] = options.address
+		if options.city:
+			override['city'] = options.city
+		if options.state:
+			override['state'] = options.state
+
+		# Build the queue of devices to scan
+		for ip in ipaddress.ip_network(options.net).hosts():
+			h = Host(str(ip))
+			for k, v in override.items():
+				setattr(h, k, v)
+			self.queue.put(('scan', h))
+
+	def worker(self):
+		while True:
+			try:
+				action, host = self.queue.get(False, 0.5)
+				if action == 'scan':
+					# Initial scan of the device
+					print('Scanning host %s' % (host.ip,), file=sys.stderr)
+					host.ping()
+					host.scan_details(self.community)
+					self.queue.put(('neighbors', host))
+				elif action == 'neighbors':
+					# Secondary scan, (now that the arp cache of the remote devices should be populated)
+					if host.descr:
+						print('Scanning host for neighbors %s' % (host.ip,), file=sys.stderr)
+						host.get_neighbors_from_snmp(self.community)
+					self.host_queue.put(host)
+				else:
+					logging.error('Unsupported action %s' % action)
+			except Empty:
+				# No more tasks left in the queue
+				print('Scanning thread finished', file=sys.stderr)
+				return
+			except ValueError:
+				# Usually occurs because user hit CTRL+C
+				print('Thread closing', file=sys.stderr)
+				return
+
+	def finalize_results(self):
+		if self.format == 'json':
+			print(json.dumps([h.to_dict() for h in self.hosts], indent=2))
+		elif self.format == 'csv':
+			# Grab a new host just to retrieve the dictionary keys on the object
+			generic = Host('test')
+			# Set the header (and fields)
+			writer = csv.DictWriter(sys.stdout, fieldnames=list(generic.to_dict().keys()))
+			writer.writeheader()
+			for h in self.hosts:
+				writer.writerow(h.to_dict())
+		elif self.format == 'suitecrm':
+			for h in self.hosts:
+				try:
+					print('Syncing %s to SuiteCRM' % h.ip)
+					h.sync_to_suitecrm(self.sync)
+				except SuiteCRMSyncException as e:
+					print('Failed to sync %s to SuiteCRM: %s' % (h.ip, e), file=sys.stderr)
+		else:
+			print('Unknown format requested', file=sys.stderr)
+
+
+def run():
+
+	app = Application()
+	app.run()
 
 
 if __name__ == '__main__':
