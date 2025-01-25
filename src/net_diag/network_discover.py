@@ -226,6 +226,11 @@ class Host:
 				self.log('socket lookup failed')
 				pass
 
+	def resolve_manufacturer(self):
+		"""
+		Resolve the manufacturer from the MAC address
+		:return:
+		"""
 		if (self.manufacturer is None or self.manufacturer == '') and self.mac is not None:
 			try:
 				self.log('Manufacturer not set, trying a MAC lookup to resolve')
@@ -521,6 +526,10 @@ class Application:
 						i = host_map[ip]
 						if self.hosts[i].mac is None:
 							self.hosts[i].mac = mac
+
+		# Perform any operations / lookups that require a MAC address
+		for host in self.hosts:
+			host.resolve_manufacturer()
 
 		self.finalize_results()
 
