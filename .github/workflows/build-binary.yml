@@ -49,7 +49,7 @@ jobs:
       - name: Upload release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh release upload ${{ github.ref_name }} --clobber net_diag-linux-${{ github.ref_name }}.tgz
+        run: gh release upload ${{ github.ref_name }} --clobber net_diag-linux-x86_64-${{ github.ref_name }}.tgz
 
   build-windows:
     runs-on: windows-latest
@@ -78,4 +78,4 @@ jobs:
       - name: Upload release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: gh release upload ${{ github.ref_name }} --clobber net_diag-windows-${{ github.ref_name }}.zip
+        run: gh release upload ${{ github.ref_name }} --clobber net_diag-windows-x86_64-${{ github.ref_name }}.zip
