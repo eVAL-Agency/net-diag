@@ -41,7 +41,7 @@ jobs:
       - name: Package binary
         run: |
           cp README.md LICENSE.md dist/
-          tar -czf net_diag-linux-${{ github.ref_name }}.tgz -C dist network_discover README.md LICENSE.md
+          tar -czf net_diag-linux-x86_64-${{ github.ref_name }}.tgz -C dist network_discover README.md LICENSE.md
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -74,7 +74,7 @@ jobs:
         run: pyinstaller -F src/net_diag/network_discover.py
       - name: Package binary
         run: |
-          Compress-Archive -DestinationPath net_diag-windows-${{ github.ref_name }}.zip -LiteralPath dist/network_discover.exe, README.md, LICENSE.md
+          Compress-Archive -DestinationPath net_diag-windows-x86_64-${{ github.ref_name }}.zip -LiteralPath dist/network_discover.exe, README.md, LICENSE.md
       - name: Upload release
         env:
           GITHUB_TOKEN: ${{ github.token }}
