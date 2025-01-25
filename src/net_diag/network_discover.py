@@ -13,6 +13,7 @@ import ipaddress
 import logging
 from datetime import datetime
 import multiprocessing
+from queue import Queue
 from queue import Empty
 
 from net_diag.libs.snmputils import snmp_parse_descr, snmp_lookup_single, snmp_lookup_bulk
@@ -61,8 +62,8 @@ def is_local_ip(ip: str) -> bool:
 		# 240.0.0.0 - 255.255.255.254
 		(0xF0000000, 0xFFFFFFFF)
 	)
-	for set in ranges:
-		if set[0] <= n_val <= set[1]:
+	for ip_set in ranges:
+		if ip_set[0] <= n_val <= ip_set[1]:
 			return True
 	return False
 
@@ -444,10 +445,10 @@ class Host:
 			self.log('Parsed %s as [%s]' % (key, value))
 			setattr(self, key, value)
 
-	def __repr__(self):
+	def __repr__(self) -> str:
 		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} descr:{self.descr}>'
 
-	def to_dict(self):
+	def to_dict(self) -> dict:
 		return {
 			'ip': self.ip,
 			'mac': self.mac,
@@ -468,8 +469,8 @@ class Host:
 
 class Application:
 	def __init__(self):
-		self.queue = multiprocessing.Queue()
-		self.host_queue = multiprocessing.Queue()
+		self.queue = Queue()
+		self.host_queue = Queue()
 		self.hosts = []
 		self.threads = []
 		self.community = None
@@ -482,7 +483,8 @@ class Application:
 
 		try:
 			# Initialize the process threads
-			for n in range(1, multiprocessing.cpu_count()):
+			print('Starting scan with %s threads' % multiprocessing.cpu_count(), file=sys.stderr)
+			for n in range(0, multiprocessing.cpu_count()):
 				t = threading.Thread(target=self.worker)
 				self.threads.append(t)
 				t.start()
@@ -500,23 +502,13 @@ class Application:
 				except Empty:
 					pass
 			exit(1)
-		finally:
-			self.queue.close()
-			self.queue.join_thread()
 
 		# Move all hosts discovered from the host queue into a standard list
-		try:
-			print('Processing detected hosts', file=sys.stderr)
-
-			host_map = {}
-			while True:
-				host = self.host_queue.get(False)
-				if host.is_available() and host.ip not in self.excludes:
-					host_map[host.ip] = len(self.hosts)
-					self.hosts.append(host)
-		except Empty:
-			self.host_queue.close()
-			pass
+		host_map = {}
+		for host in list(self.host_queue.queue):
+			if host.is_available() and host.ip not in self.excludes:
+				host_map[host.ip] = len(self.hosts)
+				self.hosts.append(host)
 
 		# Resolve any located MAC from the remote arp table
 		# This is important because hosts which do not have SNMP enabled should still have the MAC available.
@@ -524,7 +516,7 @@ class Application:
 			if host.neighbors is not None:
 				for ip, mac in host.neighbors:
 					if ip in host_map:
-						# This IP is one of the devices we are scanning, update it's MAC if required
+						# This IP is one of the devices we are scanning, update its MAC if required
 						i = host_map[ip]
 						if self.hosts[i].mac is None:
 							self.hosts[i].mac = mac

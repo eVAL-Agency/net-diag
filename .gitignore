@@ -1,4 +1,5 @@
 /src/net_diag.egg-info/
 /build/
 /dist/
+/venv/
 *.spec
