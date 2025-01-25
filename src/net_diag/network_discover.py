@@ -217,7 +217,7 @@ class Host:
 
 		self._scan_snmp(community)
 
-		if self.hostname is None:
+		if self.hostname is None or self.hostname == '':
 			try:
 				self.log('Hostname not set, trying a socket to resolve')
 				self.hostname = socket.gethostbyaddr(self.ip)[0]
@@ -226,7 +226,7 @@ class Host:
 				self.log('socket lookup failed')
 				pass
 
-		if self.manufacturer is None and self.mac is not None:
+		if (self.manufacturer is None or self.manufacturer == '') and self.mac is not None:
 			try:
 				self.log('Manufacturer not set, trying a MAC lookup to resolve')
 				self.manufacturer = MacLookup().lookup(self.mac)
@@ -483,8 +483,9 @@ class Application:
 
 		try:
 			# Initialize the process threads
-			print('Starting scan with %s threads' % multiprocessing.cpu_count(), file=sys.stderr)
-			for n in range(0, multiprocessing.cpu_count()):
+			thread_count = min(self.queue.qsize(), multiprocessing.cpu_count())
+			print('Starting scan with %s threads' % thread_count, file=sys.stderr)
+			for n in range(0, thread_count):
 				t = threading.Thread(target=self.worker)
 				self.threads.append(t)
 				t.start()
