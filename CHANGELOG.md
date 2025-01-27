@@ -1,3 +1,16 @@
+## v0.2.3 - 2025.01.27
+
+* Fix MAC to Manufacturer scanning
+* Scale thread count to match host count (for /32 scanning)
+
+
+## v0.2.2 - 2025.01.24
+
+* Switch Queue library
+* Increase number of threads by 1 (to match cpu threads)
+* Raspberry pi support (manual build step for now)
+
+
 ## v0.2.0 - 2025.01.24
 
 Multithreading support for SNMP scanning utility

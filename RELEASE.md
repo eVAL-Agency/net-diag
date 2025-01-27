@@ -1,3 +1,2 @@
-* Switch Queue library
-* Increase number of threads by 1 (to match cpu threads)
-* Raspberry pi support (manual build step for now)
+* Fix MAC to Manufacturer scanning
+* Scale thread count to match host count (for /32 scanning)
