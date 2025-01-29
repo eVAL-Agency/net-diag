@@ -21,6 +21,7 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 * --city: Optional city to include in the report
 * --state: Optional state to include in the report
 * --exclude: Optional list of IP addresses to exclude from the report
+* --exclude-self: Optional flag to exclude the host running the script from the report
 
 ### Fields provided
 
