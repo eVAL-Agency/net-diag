@@ -308,7 +308,8 @@ class Host:
 				'model',
 				'os_version',
 				'type',
-				'description'
+				'description',
+				'status'
 			)
 		)
 		self.log('Found %s device(s)' % len(ret))
@@ -328,6 +329,14 @@ class Host:
 			sync.update('MSP_Devices', ret[0]['id'], data | {'discover_log': self.log_lines})
 		else:
 			logging.warning('Multiple records found for %s' % self.mac)
+
+	def _generate_suitecrm_payload_if_different(self, server_data: Union[dict, None], data: dict, key: str, value: str):
+		if value and (server_data is None or server_data[key] != value):
+			data[key] = value
+
+	def _generate_suitecrm_payload_if_empty(self, server_data: Union[dict, None], data: dict, key: str, value: str):
+		if value and (server_data is None or server_data[key] == ''):
+			data[key] = value
 
 	def _generate_suitecrm_payload(self, server_data: Union[dict, None]) -> dict:
 		data = {}
@@ -351,40 +360,27 @@ class Host:
 			data['mac_pri'] = self.mac
 
 		# Fields that should always override inventory data
-		if self.address and (server_data is None or server_data['loc_address'] != self.address):
-			data['loc_address'] = self.address
-
-		if self.city and (server_data is None or server_data['loc_address_city'] != self.city):
-			data['loc_address_city'] = self.city
-
-		if self.state and (server_data is None or server_data['loc_address_state'] != self.state):
-			data['loc_address_state'] = self.state
+		self._generate_suitecrm_payload_if_different(server_data, data, 'loc_address', self.address)
+		self._generate_suitecrm_payload_if_different(server_data, data, 'loc_address_city', self.city)
+		self._generate_suitecrm_payload_if_different(server_data, data, 'loc_address_state', self.state)
+		self._generate_suitecrm_payload_if_different(
+			server_data,
+			data,
+			'status',
+			'active' if self.reachable else False
+		)
 
 		# Fields that should only be set if they are present in the scan
 		# and not already set in the inventory data.
-		if self.hostname and (server_data is None or server_data['name'] == ''):
-			data['name'] = self.hostname
-
-		if self.location and (server_data is None or server_data['loc_room'] == ''):
-			data['loc_room'] = self.location
-
-		if self.floor and (server_data is None or server_data['loc_floor'] == ''):
-			data['loc_floor'] = self.floor
-
-		if self.manufacturer and (server_data is None or server_data['manufacturer'] == ''):
-			data['manufacturer'] = self.manufacturer
-
-		if self.model and (server_data is None or server_data['model'] == ''):
-			data['model'] = self.model
-
-		if self.os_version and (server_data is None or server_data['os_version'] == ''):
-			data['os_version'] = self.os_version
-
-		if self.type and (server_data is None or server_data['type'] == ''):
-			data['type'] = self.type
-
-		if self.descr and (server_data is None or server_data['description'] == ''):
-			data['description'] = self.descr
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'name', self.hostname)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'loc_room', self.location)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'loc_floor', self.floor)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'manufacturer', self.manufacturer)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'model', self.model)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'os_version', self.os_version)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'type', self.type)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'description', self.descr)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'name', self.hostname)
 
 		return data
 
