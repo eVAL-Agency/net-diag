@@ -1,3 +1,10 @@
+## v0.2.5 - 2025.01.29
+
+* Ensure hostname for devices to be synced to SuiteCRM
+* Add jetstream DESCR
+* Set status to 'active' for devices that are online
+
+
 ## v0.2.4 - 2025.01.28
 
 * Add --exclude-self to list of options
