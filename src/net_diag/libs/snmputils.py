@@ -145,6 +145,11 @@ def snmp_parse_descr(descr: str) -> dict:
 			{'manufacturer': 'Hewlett Packard', 'type': 'Printer'}
 		),
 		(
+			# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
+			r'^JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots$',
+			{'type': 'Switch'}
+		),
+		(
 			# UAP-AC-Lite 6.6.77.15402
 			r'^(?P<model>UAP-AC-Lite) (?P<os_version>[^ ]+)$',
 			{'manufacturer': 'Ubiquiti Networks Inc.', 'type': 'WIFI'}
