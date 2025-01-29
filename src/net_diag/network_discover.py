@@ -521,14 +521,15 @@ class Application:
 
 		# Move all hosts discovered from the host queue into a standard list
 		host_map = {}
-		for host in list(self.host_queue.queue):
+		hosts = list(self.host_queue.queue)
+		for host in hosts:
 			if host.is_available() and host.ip not in self.excludes:
 				host_map[host.ip] = len(self.hosts)
 				self.hosts.append(host)
 
 		# Resolve any located MAC from the remote arp table
 		# This is important because hosts which do not have SNMP enabled should still have the MAC available.
-		for host in self.hosts:
+		for host in hosts:
 			if host.neighbors is not None:
 				for ip, mac in host.neighbors:
 					if ip in host_map:
