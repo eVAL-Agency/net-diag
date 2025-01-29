@@ -1,3 +1,4 @@
+import subprocess
 import sys
 import json
 import csv
@@ -555,6 +556,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('--city', help='Optional city for this scan (for reporting)')
 		parser.add_argument('--state', help='Optional state for this scan (for reporting)')
 		parser.add_argument('--exclude', help='List of IPs to exclude from overall report, comma-separated')
+		parser.add_argument('--exclude-self', action='store_true', help='Set to exclude the host running the scan')
 
 		options = parser.parse_args()
 
@@ -563,6 +565,13 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		self.format = options.format
 		if options.debug:
 			logging.basicConfig(level=logging.DEBUG)
+
+		if options.exclude_self:
+			# Include local IPs to be excluded too
+			# This is useful for dedicated scanning devices implanted in a client location
+			self.excludes += self.get_local_ips()
+
+		logging.debug('Excluding IPs: %s' % ', '.join(self.excludes))
 
 		if self.format == 'suitecrm':
 			self.sync = SuiteCRMSync(options.crm_url, options.crm_client_id, options.crm_client_secret)
@@ -635,6 +644,30 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 					print('Failed to sync %s to SuiteCRM: %s' % (h.ip, e), file=sys.stderr)
 		else:
 			print('Unknown format requested', file=sys.stderr)
+
+	def get_local_ips(self) -> list:
+		# Get IP and MAC address for this device
+		process = subprocess.run(['ip', '-j', 'address'], stdout=subprocess.PIPE)
+		ifaces = json.loads(process.stdout.decode().strip())
+		ips = []
+		for iface in ifaces:
+			if iface['operstate'] == 'DOWN':
+				continue
+
+			if 'LOOPBACK' in iface['flags']:
+				# Skip loopback interfaces
+				continue
+
+			if 'POINTOPOINT' in iface['flags']:
+				# Skip VPNs
+				continue
+
+			if len(iface['addr_info']) == 0:
+				# Skip interfaces with no IP set
+				continue
+
+			ips.append(iface['addr_info'][0]['local'])
+		return ips
 
 
 def run():

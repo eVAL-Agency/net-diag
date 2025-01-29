@@ -14,9 +14,19 @@ Features:
 
 License:
 	AGPLv3
+
+Version:
+	2025.01.28
+
+Changelog:
+	2025.01.28
+		* Added debug logging
+		* Create and update return server data
 """
 import json
+from typing import Union
 import time
+import logging
 from urllib import request
 from urllib.error import HTTPError
 from urllib import parse as urlparse
@@ -50,6 +60,66 @@ class SuiteCRMSync:
 		self.client_id = client_id
 		self.client_secret = client_secret
 
+	def _send(
+		self,
+		url: str,
+		method: str,
+		data: Union[dict, None] = None,
+		auth: bool = True,
+		sensitive: tuple = ()
+	):
+		headers = {
+			'Content-Type': 'application/json',
+			'Accept': 'application/json',
+		}
+		if auth:
+			headers['Authorization'] = 'Bearer %s' % self.get_token()
+
+		log_url = self.url + url
+		url = 'https://' + self.url + url
+		log_data = dict(data) if data is not None else None
+
+		if method.upper() == 'GET':
+			post_data = None
+			if data is not None:
+				url += ('&' if '?' in url else '?') + urlparse.urlencode(data)
+		else:
+			post_data = data
+
+		if post_data is not None:
+			for key in sensitive:
+				if key in log_data:
+					log_data[key] = log_data[key][0:4] + '********'
+			logging.debug('[suitecrmsync] Sending payload via %s to %s\n%s' % (method, log_url, json.dumps(log_data)))
+			req = request.Request(
+				url,
+				method=method,
+				headers=headers,
+				data=json.dumps(post_data).encode('utf-8')
+			)
+		else:
+			logging.debug('[suitecrmsync] Sending request via %s to %s' % (method, log_url))
+			req = request.Request(
+				url,
+				method=method,
+				headers=headers
+			)
+
+		response = ''
+		try:
+			ret = request.urlopen(req)
+			response = ret.read()
+			response_data = json.loads(response)
+			logging.debug('[suitecrmsync] Request completed successfully\n%s' % response)
+			return response_data
+		except HTTPError as e:
+			response = e.read()
+			logging.error('[suitecrmsync] Request failed\n%s' % response)
+			raise SuiteCRMSyncException()
+		except json.decoder.JSONDecodeError:
+			logging.error('[suitecrmsync] Failed to parse response\n%s' % response)
+			raise SuiteCRMSyncException()
+
 	def get_token(self) -> str:
 		"""
 		Get an access token from SuiteCRM based on OAuth2 client_id and client_secret
@@ -58,33 +128,26 @@ class SuiteCRMSync:
 		:return:
 		"""
 		if self.expires < int(time.time()):
+			logging.debug('[suitecrmsync] Token expired or not set yet, obtaining new token')
 			# Request an access token via OAuth2 from SuitCRM
-			req = request.Request(
-				'https://%s/Api/access_token' % self.url,
-				method='POST',
-				headers={
-					'Content-Type': 'application/json',
-					'Accept': 'application/json',
-				},
-				data=json.dumps({
-					'grant_type': 'client_credentials',
-					'client_id': self.client_id,
-					'client_secret': self.client_secret,
-				}).encode('utf-8')
-			)
 			try:
-				ret = request.urlopen(req)
-			except HTTPError as e:
-				raise SuiteCRMSyncAuthException(
-					'Failed to get access token, please check the credentials and server connectivity\n' + e.read()
+				data = self._send(
+					'/Api/access_token',
+					'POST',
+					{
+						'grant_type': 'client_credentials',
+						'client_id': self.client_id,
+						'client_secret': self.client_secret,
+					},
+					False,
+					('client_secret',)
 				)
-
-			try:
-				data = json.loads(ret.read())
 				self.token = data['access_token']
 				self.expires = int(time.time()) + data['expires_in'] - 60
-			except json.decoder.JSONDecodeError:
-				raise SuiteCRMSyncResponseException('Failed to parse access token response\n' + ret.read())
+			except SuiteCRMSyncException:
+				raise SuiteCRMSyncResponseException(
+					'Failed to get access token, please check the credentials and server connectivity'
+				)
 		return self.token
 
 	def update(self, object_type: str, object_id: str, data: dict):
@@ -97,30 +160,21 @@ class SuiteCRMSync:
 		:return
 		"""
 
-		# Send the device data to SuiteCRM
-		req = request.Request(
-			'https://%s/Api/V8/module' % self.url,
-			method='PATCH',
-			headers={
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Authorization': 'Bearer %s' % self.get_token(),
-			},
-			data=json.dumps({
-				'data': {
-					'type': object_type,
-					'id': object_id,
-					'attributes': data,
-				}
-			}).encode('utf-8')
-		)
-
+		# Send the UPDATE request to SuiteCRM
 		try:
-			request.urlopen(req)
-		except HTTPError as e:
-			raise SuiteCRMSyncDataException(
-				('Failed to update %s %s\n%s' % (object_type, object_id, e.read()))
+			return self._send(
+				'/Api/V8/module',
+				'PATCH',
+				{
+					'data': {
+						'type': object_type,
+						'id': object_id,
+						'attributes': data,
+					}
+				}
 			)
+		except SuiteCRMSyncException:
+			raise SuiteCRMSyncDataException('Failed to update %s %s\n%s' % (object_type, object_id, json.dumps(data)))
 
 	def create(self, object_type: str, data: dict):
 		"""
@@ -131,28 +185,19 @@ class SuiteCRMSync:
 		"""
 
 		# Send the device data to SuiteCRM
-		req = request.Request(
-			'https://%s/Api/V8/module' % self.url,
-			method='POST',
-			headers={
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Authorization': 'Bearer %s' % self.get_token(),
-			},
-			data=json.dumps({
-				'data': {
-					'type': object_type,
-					'attributes': data,
-				}
-			}).encode('utf-8')
-		)
-
 		try:
-			request.urlopen(req)
-		except HTTPError as e:
-			raise SuiteCRMSyncDataException(
-				('Failed to create %s\n%s' % (object_type, e.read()))
+			return self._send(
+				'/Api/V8/module',
+				'POST',
+				{
+					'data': {
+						'type': object_type,
+						'attributes': data,
+					}
+				}
 			)
+		except SuiteCRMSyncException:
+			raise SuiteCRMSyncDataException('Failed to create %s\n%s' % (object_type, json.dumps(data)))
 
 	def find(self, object_type: str, filters: dict, operator: str = 'AND', fields: [str] = ('id',)):
 		"""
@@ -197,31 +242,18 @@ class SuiteCRMSync:
 
 			params['filter[' + f_key + '][' + f_op + ']'] = f_val
 
-		url = 'https://%s/Api/V8/module/%s?%s' % (self.url, object_type, urlparse.urlencode(params))
-		req = request.Request(
-			url,
-			method='GET',
-			headers={
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Authorization': 'Bearer %s' % self.get_token(),
-			}
-		)
-
 		try:
-			ret = request.urlopen(req)
-		except HTTPError as e:
-			raise SuiteCRMSyncDataException(
-				('Failed to complete find for %s\n%s' % (url, e.read()))
+			data = self._send(
+				'/Api/V8/module/%s' % object_type,
+				'GET',
+				params
 			)
-
-		try:
-			data = json.loads(ret.read())
-		except json.decoder.JSONDecodeError:
-			raise SuiteCRMSyncResponseException('Failed to parse find response\n%s' % ret.read())
-
-		ret = []
-		for record in data['data']:
-			record['attributes']['id'] = record['id']
-			ret.append(record['attributes'])
-		return ret
+			ret = []
+			for record in data['data']:
+				if len(record['attributes']) == 0:
+					ret.append({'id': record['id']})
+				else:
+					ret.append(record['attributes'] | {'id': record['id']})
+			return ret
+		except SuiteCRMSyncException:
+			raise SuiteCRMSyncDataException('Failed to find %s\n%s' % (object_type, json.dumps(params)))
