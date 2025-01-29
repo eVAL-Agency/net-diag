@@ -1,3 +1,8 @@
+## v0.2.4 - 2025.01.28
+
+* Add --exclude-self to list of options
+
+
 ## v0.2.3 - 2025.01.27
 
 * Fix MAC to Manufacturer scanning
