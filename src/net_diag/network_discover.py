@@ -285,6 +285,9 @@ class Host:
 			logging.warning('No MAC address found for SuiteCRM sync on %s' % self.ip)
 			return
 
+		# SuiteCRM requires a hostname for devices
+		self.ensure_hostname()
+
 		self.log('Searching for devices in SuiteCRM with MAC %s' % self.mac)
 		ret = sync.find(
 			'MSP_Devices',
@@ -329,6 +332,16 @@ class Host:
 			sync.update('MSP_Devices', ret[0]['id'], data | {'discover_log': self.log_lines})
 		else:
 			logging.warning('Multiple records found for %s' % self.mac)
+
+	def ensure_hostname(self):
+		"""
+		Ensure this device has a hostname, (of at least something)
+
+		This is useful because SuiteCRM requires a name for devices
+		:return:
+		"""
+		if self.hostname is None or self.hostname == '':
+			self.hostname = self.ip
 
 	def _generate_suitecrm_payload_if_different(self, server_data: Union[dict, None], data: dict, key: str, value: str):
 		if value and (server_data is None or server_data[key] != value):
