@@ -1,3 +1,7 @@
+## v0.2.6 - 2025.05.07
+
+* Switch github runner to Ubuntu 22.04
+
 ## v0.2.5 - 2025.01.29
 
 * Ensure hostname for devices to be synced to SuiteCRM
