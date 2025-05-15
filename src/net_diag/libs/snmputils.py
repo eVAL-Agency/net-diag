@@ -146,7 +146,7 @@ def snmp_parse_descr(descr: str) -> dict:
 		),
 		(
 			# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
-			r'^JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots$',
+			r'^JetStream 24-Port Gigabit Smart PoE\+ Switch with 4 SFP Slots$',
 			{'type': 'Switch'}
 		),
 		(
