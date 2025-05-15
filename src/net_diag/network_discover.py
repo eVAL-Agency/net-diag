@@ -326,7 +326,7 @@ class Host:
 				self.log('MAC address lookup failed')
 				pass
 
-	def get_neighbors_from_snmp(self, community: str):
+	def get_snmp_neighbors(self, community: str):
 		"""
 		Perform a scan of the ARP table of the device to find neighbors.
 		:param community:
@@ -765,7 +765,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 					# Secondary scan, (now that the arp cache of the remote devices should be populated)
 					if host.descr:
 						print('Scanning host for neighbors %s' % (host.ip,), file=sys.stderr)
-						host.get_neighbors_from_snmp(self.community)
+						host.get_snmp_neighbors(self.community)
 					self.host_queue.put(host)
 				else:
 					logging.error('Unsupported action %s' % action)
