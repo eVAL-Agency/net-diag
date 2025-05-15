@@ -22,22 +22,6 @@ from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
 from net_diag.libs.nativeping import ping
 
 
-def _parse_value(var_bind):
-	"""
-	Parse a raw value from SNMP to a more human-readable format.
-	:param var_bind:
-	:return: str
-	"""
-	val = var_bind[1].prettyPrint()
-
-	if val[0:2] == '0x':
-		# Pretty-printed MAC addresses have a "0x" prefix and no punctuation.
-		# Drop the "0x" and add ':' every 2 characters
-		val = ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
-
-	return val
-
-
 def is_local_ip(ip: str) -> bool:
 	"""
 	Check if the given IP is a local-only IP
