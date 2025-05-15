@@ -96,10 +96,10 @@ def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 						key = var_bind[0].getOid().__str__()
 						val = var_bind[1].prettyPrint()
 
-						logging.debug('[snmp_lookup_bulk] %s = %s' % (key, val))
-
 						if key[0:len(oid)] != oid:
 							raise StopIteration
+
+						logging.debug('[snmp_lookup_bulk] %s = %s' % (key, val))
 
 						ret[key] = val
 	except StopIteration:
