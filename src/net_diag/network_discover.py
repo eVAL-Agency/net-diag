@@ -76,6 +76,7 @@ class Host:
 		self.log_lines = ''
 		self.reachable = False
 		self.neighbors = None
+		self.ports = None
 
 	def log(self, msg: str):
 		"""
@@ -119,6 +120,20 @@ class Host:
 			self.log('Raw response: [%s]' % val)
 		return val
 
+	def _snmp_single_bulk(self, community: str, name: str, oid: str) -> dict:
+		"""
+		Perform a basic SNMP scan to get some value
+		:param community:
+		:return:
+		"""
+		self.log('Scanning for %s - OID:%s' % (name, oid))
+		val = snmp_lookup_bulk(self.ip, community, oid)
+		if len(val) == 0:
+			self.log('OID does not exist or value was NULL')
+		else:
+			self.log('Found %s items' % len(val))
+		return val
+
 	def get_snmp_descr(self, community: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP scan to get the description of the device.
@@ -133,25 +148,17 @@ class Host:
 		:param community:
 		:return:
 		"""
-		lookup = '1.3.6.1.2.1.2.2.1.6'
-		self.log('Scanning for MAC - OID:%s' % lookup)
-		# Each device may have multiple interfaces.
-		addresses = snmp_lookup_bulk(self.ip, community, lookup)
+		addresses = self._snmp_single_bulk(community, 'MAC', '1.3.6.1.2.1.2.2.1.6')
 		for key, val in addresses.items():
-			self.log('Raw response: [%s]' % val)
-			if val == '0x000000000000':
-				# Some devices will return a MAC of all 0's for an interface that is not in use.
-				continue
-			if val == '':
-				# Some devices will return just a blank string for their interfaces
+			val = self._format_snmp_mac(val)
+			if val is None:
+				# Skip invalid MAC addresses
 				continue
 
-			if val[0:2] == '0x':
-				# SNMP-provided MAC addresses will have a 0x prefix
-				# Drop that and add ':' every 2 characters to be more MAC-like
-				val = ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
-
+			self.log('Found MAC address of %s' % val)
 			return val
+
+		return None
 
 	def get_snmp_hostname(self, community: str) -> Union[str, None]:
 		"""
@@ -192,6 +199,100 @@ class Host:
 		:return:
 		"""
 		return self._snmp_single_lookup(community, 'model', '1.3.6.1.2.1.16.19.3.0')
+
+	def get_snmp_ports(self, community: str) -> Union[dict, None]:
+		"""
+		Get port details for this device, (usually just switches)
+
+		:param community:
+		:return:
+		"""
+
+		ret = {}
+		name_lookup = '1.3.6.1.2.1.2.2.1.2'
+		names = self._snmp_single_bulk(community, 'Port Names', name_lookup)
+		if len(names) == 0:
+			self.log('Device does not contain any port information, skipping')
+			return None
+
+		for key, val in names.items():
+			port_id = key[len(name_lookup) + 1:]
+			ret[port_id] = {
+				'name': val,
+				'vlan_allow': [],
+			}
+
+		label_lookup = '1.3.6.1.2.1.31.1.1.1.18'
+		labels = self._snmp_single_bulk(community, 'Port Labels', label_lookup)
+		for key, val in labels.items():
+			port_id = key[len(label_lookup) + 1:]
+			ret[port_id]['label'] = val
+
+		mtu_lookup = '1.3.6.1.2.1.2.2.1.4'
+		mtus = self._snmp_single_bulk(community, 'Port MTUs', mtu_lookup)
+		for key, val in mtus.items():
+			port_id = key[len(mtu_lookup) + 1:]
+			ret[port_id]['mtu'] = int(val)
+
+		speed_lookup = '1.3.6.1.2.1.2.2.1.5'
+		speeds = self._snmp_single_bulk(community, 'Port Speeds', speed_lookup)
+		for key, val in speeds.items():
+			port_id = key[len(speed_lookup) + 1:]
+			ret[port_id]['speed'] = self._format_snmp_speed(val)
+
+		mac_lookup = '1.3.6.1.2.1.2.2.1.6'
+		macs = self._snmp_single_bulk(community, 'Port MACs', mac_lookup)
+		for key, val in macs.items():
+			port_id = key[len(mac_lookup) + 1:]
+			ret[port_id]['mac'] = self._format_snmp_mac(val)
+
+		admin_lookup = '1.3.6.1.2.1.2.2.1.7'
+		admin_statuses = self._snmp_single_bulk(community, 'Admin Status', admin_lookup)
+		for key, val in admin_statuses.items():
+			port_id = key[len(admin_lookup) + 1:]
+			ret[port_id]['admin_status'] = 'UP' if val == '1' else 'DOWN'
+
+		status_lookup = '1.3.6.1.2.1.2.2.1.8'
+		user_statuses = self._snmp_single_bulk(community, 'User Status', status_lookup)
+		for key, val in user_statuses.items():
+			port_id = key[len(status_lookup) + 1:]
+			ret[port_id]['user_status'] = 'UP' if val == '1' else 'DOWN'
+
+		vlan_pid_lookup = '1.3.6.1.2.1.17.7.1.4.5.1.1'
+		vlan_pids = self._snmp_single_bulk(community, 'Native VLAN', vlan_pid_lookup)
+		for key, val in vlan_pids.items():
+			port_id = key[len(vlan_pid_lookup) + 1:]
+			ret[port_id]['native_vlan'] = val
+
+		vlan_egress_lookup = '1.3.6.1.2.1.17.7.1.4.2.1.4'
+		if 'Linux UBNT' in self.descr:
+			# Ubiquiti devices have their port definitions reversed, (lowest port number at bit 0)
+			reversed = True
+		else:
+			# Specification calls for lowest port number at bit 63
+			reversed = False
+
+		vlan_egresses = self._snmp_single_bulk(community, 'VLAN Egress', vlan_egress_lookup)
+		for key, val in vlan_egresses.items():
+			vlan_id = key[len(vlan_egress_lookup) + 3:]
+			# Convert 0xf400040000000000 to an integer so we can check each bit
+			# This translates to 0b11110100000000000000010000000000
+			# where each port (left to right) is 1 or 0 if that VLAN is enabled on that port.
+			vlan_set = int(val[2:], 16)
+
+			for port, port_data in ret.items():
+				if int(port) >= 64:
+					# Only check the first 64 ports
+					break
+				if not reversed and vlan_set >> 64 - int(port) & 1 == 1:
+					# This port is enabled for this VLAN
+					port_data['vlan_allow'].append(vlan_id)
+					self.log('Port %s allows VLAN %s' % (port, vlan_id))
+				elif reversed and vlan_set >> int(port) & 1 == 1:
+					port_data['vlan_allow'].append(vlan_id)
+					self.log('Port %s allows VLAN %s' % (port, vlan_id))
+
+		return ret
 
 	def scan_details(self, community: str):
 		"""
@@ -247,10 +348,7 @@ class Host:
 		neighbors = snmp_lookup_bulk(self.ip, community, lookup)
 		for key, val in neighbors.items():
 			ip = '.'.join(key[len(lookup) + 1:].split('.')[2:])
-			if val[0:2] == '0x':
-				# SNMP-provided MAC addresses will have a 0x prefix
-				# Drop that and add ':' every 2 characters to be more MAC-like
-				val = ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
+			val = self._format_snmp_mac(val)
 
 			self.log('%s is at %s' % (ip, val))
 			ret.append((ip, val))
@@ -326,6 +424,51 @@ class Host:
 		"""
 		if self.hostname is None or self.hostname == '':
 			self.hostname = self.ip
+
+	def _format_snmp_mac(self, val: str) -> Union[str, None]:
+		"""
+		Format a MAC address from SNMP data to a more human-readable format
+
+		:param val:
+		:return:
+		"""
+		if val == '0x000000000000':
+			# Some devices will return a MAC of all 0's for an interface that is not in use.
+			return None
+
+		if val == '':
+			# Some devices will return just a blank string for their interfaces
+			return None
+
+		if val[0:2] == '0x':
+			# SNMP-provided MAC addresses will have a 0x prefix
+			# Drop that and add ':' every 2 characters to be more MAC-like
+			return ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
+
+		# No modifications required
+		return val
+
+	def _format_snmp_speed(self, val: str) -> Union[str, None]:
+		"""
+		Format a speed value from SNMP data to a more human-readable format
+
+		:param val:
+		:return:
+		"""
+		if val == '25000000000':
+			return '25gbps'
+		elif val == '10000000000':
+			return '10gbps'
+		elif val == '2500000000':
+			return '2.5gbps'
+		elif val == '1000000000':
+			return '1gbps'
+		elif val == '100000000':
+			return '100mbps'
+		elif val == '10000000':
+			return '10mbps'
+		else:
+			return val
 
 	def _generate_suitecrm_payload_if_different(self, server_data: Union[dict, None], data: dict, key: str, value: str):
 		if value and (server_data is None or server_data[key] != value):
@@ -412,6 +555,8 @@ class Host:
 		if location is not None:
 			self._store_location(location)
 
+		self.ports = self.get_snmp_ports(community)
+
 	def _store_location(self, val: str):
 		"""
 		Check if there is a floor indication ("FL...") in the location and separate that as the floor attribute
@@ -447,8 +592,8 @@ class Host:
 	def __repr__(self) -> str:
 		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} descr:{self.descr}>'
 
-	def to_dict(self) -> dict:
-		return {
+	def to_dict(self, fields: Union[list, None] = None) -> dict:
+		data = {
 			'ip': self.ip,
 			'mac': self.mac,
 			'hostname': self.hostname,
@@ -458,12 +603,19 @@ class Host:
 			'type': self.type,
 			'manufacturer': self.manufacturer,
 			'model': self.model,
+			'ports': self.ports,
 			'os_version': self.os_version,
 			'descr': self.descr,
 			'address': self.address,
 			'city': self.city,
 			'state': self.state
 		}
+
+		if fields is not None:
+			# Only include the fields specified in the list
+			data = {k: v for k, v in data.items() if k in fields}
+
+		return data
 
 
 class Application:
@@ -476,6 +628,7 @@ class Application:
 		self.sync = None
 		self.excludes = []
 		self.format = None
+		self.fields = None
 
 	def run(self):
 		self.setup()
@@ -551,12 +704,19 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('--state', help='Optional state for this scan (for reporting)')
 		parser.add_argument('--exclude', help='List of IPs to exclude from overall report, comma-separated')
 		parser.add_argument('--exclude-self', action='store_true', help='Set to exclude the host running the scan')
+		parser.add_argument(
+			'--fields',
+			help='''Comma-separated list of fields to include in the output, defaults to all fields if not defined.
+			Available fields are: ip, mac, hostname, contact, floor, location, type, manufacturer, model,
+			os_version, descr, address, city, state, ports'''
+		)
 
 		options = parser.parse_args()
 
 		self.community = options.community
 		self.excludes = options.exclude.split(',') if options.exclude else []
 		self.format = options.format
+		self.fields = options.fields.split(',') if options.fields else None
 		if options.debug:
 			logging.basicConfig(level=logging.DEBUG)
 
@@ -620,15 +780,15 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 	def finalize_results(self):
 		if self.format == 'json':
-			print(json.dumps([h.to_dict() for h in self.hosts], indent=2))
+			print(json.dumps([h.to_dict(self.fields) for h in self.hosts], indent=2))
 		elif self.format == 'csv':
 			# Grab a new host just to retrieve the dictionary keys on the object
 			generic = Host('test')
 			# Set the header (and fields)
-			writer = csv.DictWriter(sys.stdout, fieldnames=list(generic.to_dict().keys()))
+			writer = csv.DictWriter(sys.stdout, fieldnames=list(generic.to_dict(self.fields).keys()))
 			writer.writeheader()
 			for h in self.hosts:
-				writer.writerow(h.to_dict())
+				writer.writerow(h.to_dict(self.fields))
 		elif self.format == 'suitecrm':
 			for h in self.hosts:
 				try:
