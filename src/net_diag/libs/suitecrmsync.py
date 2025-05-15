@@ -199,7 +199,7 @@ class SuiteCRMSync:
 		except SuiteCRMSyncException:
 			raise SuiteCRMSyncDataException('Failed to create %s\n%s' % (object_type, json.dumps(data)))
 
-	def find(self, object_type: str, filters: dict, operator: str = 'AND', fields: [str] = ('id',)):
+	def find(self, object_type: str, filters: dict, operator: str = 'AND', fields: tuple[str, ...] = ('id',)):
 		"""
 
 		:param object_type:
