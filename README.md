@@ -10,7 +10,8 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 
 ### Options
 
-* --net (REQUIRED): Network to scan, in CIDR notation
+* --net: Single network to scan, in CIDR notation
+* --config: Configuration file to use for this scan
 * --community: SNMP community string (default: public)
 * --format: Output format, either "json", "csv", or "suitecrm" (default: json)
 * --debug: Include to print debug information on stderr
@@ -22,6 +23,7 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 * --state: Optional state to include in the report
 * --exclude: Optional list of IP addresses to exclude from the report
 * --exclude-self: Optional flag to exclude the host running the script from the report
+* --fields: Comma-separated list of fields to include in the output
 
 ### Fields provided
 
@@ -39,6 +41,47 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 * address
 * city
 * state
+* ports
+
+These fields can be modified with the `--fields` option to include or exclude specific fields from the output.
+
+
+### Configuration File
+
+For complex networks, a config file can be utilized to scan multiple networks at once.
+This can be beneficial when switches with the ARP tables are on a separate network from hosts.
+
+An example configuration file with 192.168.0.0/24 containing the network devices
+and 192.168.1.0/24 containing workstations:
+
+Default contains the parameters to apply to all targets, and each individual target can override these parameters.
+
+192.168.0.0 network has devices which support SNMP and ICMP, whereas devices on 192.168.1.0
+has devices which only support ICMP.
+
+```yaml
+default:
+  community: snmp-public-pass
+  address: 123 Here
+  city: Columbus
+  state: OH
+  format: json
+  exclude:
+    - 192.168.1.1
+targets:
+  - net: 192.168.0.0/24
+  - net: 192.168.1.0/24
+    scanners:
+      - icmp
+```
+
+Any command line parameter can be specified in both `default` and individual `targets` declarations.
+(For parameters which contain a `-`, use `_` instead, ie: `--crm-client-id` becomes `crm_client_id`.)
+
+### Scanners
+
+At the moment, only `ICMP` and `SNMP` scanners are supported. 
+By default, both are utilized but that behaviour can be modified via a config file.
 
 ### Examples
 
@@ -117,9 +160,58 @@ For logging, you do not care about the interface on the guest, as it's only ther
 This will allow you to scan that network using the gateway as a pivot point, but will ignore it when publishing results.
 
 
-## Network Diagnostic (@todo)
+## Network Diagnostic
 
-Yet to be reimplemented
+Provides a command line interface to gather network diagnostics from a host device,
+useful for diagnosing network and infrastructure issues.
+
+### Basic Usage
+
+Running with no options will prompt for which interface to monitor:
+
+```
+Please select a network interface to diagnose:
+
+1: enp6s0 (up,broadcast,running,multicast)
+2: docker0 (up,broadcast,multicast)
+3: VPN_Wireguard (up,pointopoint,running,noarp)
+4: wlx6c5ab06d580e (broadcast,multicast)
+
+Enter the number of the interface you want to diagnose: 
+```
+
+Or specify `-i (iface)` to specify the interface directly when running the command.
+
+### Example Output
+
+```
+Network Diagnostics
+
+Interface           ️✅  enp6s0
+Type                ️✅  ethernet
+Status              ️✅  UP
+Speed               ️✅  1.0 Gbps
+Duplex              ️✅  Full Duplex
+MTU                 ️✅  1500
+LLDP Peer           ️✅  US-8-60W - Port 4 [12:34:56:78:90:ab:cd] (US-8-60W, 7.0.50.15613, Linux 3.6.5)
+IP Address          ️✅  10.200.0.227/24
+Routes              ️✅  Default gateway 10.200.0.1, Direct access to 10.200.0.0/24
+Nameservers         ️✅  10.200.0.3
+Domain Name         ️✅  house.local
+Neighbors           ️✅  6 visible devices
+WAN IP              ️✅  1.2.3.4
+Internet Status     ️✅  Connected
+Latency             ️✅  50.17 ms
+DNS Resolution      ️✅  up.eval.bz -> 159.89.55.61
+```
+
+This UI is refreshed automatically every 2 seconds for near real-time updates.
+
+Wifi interfaces will show additional information, such as signal strength, noise, and channel.
+
+### JSON Support
+
+Specify `--json` as an argument to perform a single iteration of diagnostics and output the results in JSON format.
 
 
 ## Bundled dependencies

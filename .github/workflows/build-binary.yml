@@ -37,11 +37,13 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --ignore=W191 --max-complexity=15 --max-line-length=127 --statistics
       - name: Build binary
-        run: pyinstaller -F src/net_diag/network_discover.py
+        run: |
+          pyinstaller -F src/net_diag/network_discover.py
+          pyinstaller -F src/net_diag/network_diag.py
       - name: Package binary
         run: |
           cp README.md LICENSE.md dist/
-          tar -czf net_diag-linux-x86_64-${{ github.ref_name }}.tgz -C dist network_discover README.md LICENSE.md
+          tar -czf net_diag-linux-x86_64-${{ github.ref_name }}.tgz -C dist network_discover network_diag README.md LICENSE.md
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -71,10 +73,12 @@ jobs:
           python -m pip install flake8 pytest
           python -m pip install -e .[dev]
       - name: Build binary
-        run: pyinstaller -F src/net_diag/network_discover.py
+        run: |
+          pyinstaller -F src/net_diag/network_discover.py
+          pyinstaller -F src/net_diag/network_diag.py
       - name: Package binary
         run: |
-          Compress-Archive -DestinationPath net_diag-windows-x86_64-${{ github.ref_name }}.zip -LiteralPath dist/network_discover.exe, README.md, LICENSE.md
+          Compress-Archive -DestinationPath net_diag-windows-x86_64-${{ github.ref_name }}.zip -LiteralPath dist/network_discover.exe, dist/network_diag.exe, README.md, LICENSE.md
       - name: Upload release
         env:
           GITHUB_TOKEN: ${{ github.token }}

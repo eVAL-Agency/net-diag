@@ -1,1 +1,2 @@
-* Switch github runner to Ubuntu 22.04 to (hopefully) provide better compatibility.
+* Port network_diag to this project
+* Add support for config files for network scanning

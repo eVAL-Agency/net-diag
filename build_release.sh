@@ -24,5 +24,6 @@ if [ "$?" -ne 0 ]; then
 fi
 
 pyinstaller -F src/net_diag/network_discover.py
+pyinstaller -F src/net_diag/network_diag.py
 cp README.md LICENSE.md dist/
-tar -czf "build/net_diag-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)-$VERSION.tgz" -C dist network_discover README.md LICENSE.md
+tar -czf "build/net_diag-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m)-$VERSION.tgz" -C dist network_discover network_diag README.md LICENSE.md
