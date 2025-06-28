@@ -2,3 +2,4 @@
 * Fix ping to be more accurate and correct render errors
 * Fix spacing on fully-functional terminals
 * Fix exiting throwing an exception after compilation
+* Fix uncaught exceptions rendering to stderr

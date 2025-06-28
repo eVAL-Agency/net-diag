@@ -11,6 +11,7 @@ import psutil
 import os
 from net_diag.libs import net_utils
 import argparse
+import traceback
 
 _VERSION = '0.9.0'
 
@@ -34,7 +35,6 @@ class _Diagnostics:
 		self.errors = []
 
 	def run(self):
-
 		# Use PSUtil to get most of the network stats
 		self.if_stats = psutil.net_if_stats()[self.iface]
 		self.if_addresses = psutil.net_if_addrs()[self.iface]
@@ -294,6 +294,7 @@ class Application:
 		self.is_root = os.geteuid() == 0
 		self.has_lldp = os.path.exists('/sbin/lldptool')
 		self.lldp_enabled = False
+		self.curses_started = False
 
 		if self.iface is None:
 			# No interface set, prompt the user for which one they'd like.
@@ -339,6 +340,7 @@ class Application:
 		curses.noecho()
 		curses.cbreak()
 		self.window.keypad(True)
+		self.curses_started = True
 
 		labels = {
 			'address': 'IP Address',
@@ -348,6 +350,7 @@ class Application:
 			'internet': 'Internet Status',
 			'dns': 'DNS Resolution',
 			'lldp': 'LLDP Peer',
+			'ssid': 'SSID',
 		}
 
 		try:
@@ -398,14 +401,11 @@ class Application:
 		except KeyboardInterrupt:
 			# Catch CTRL+C
 			pass
-		except Exception as e:
+		except Exception:
 			# Catch any other exceptions
-			self.window.addstr(0, 0, f"!!!ERROR!!! {str(e)}")
-			# Print file where the error occurred
-			self.window.addstr(1, 0, f"Error occurred at line {sys.exc_info()[-1].tb_lineno}")
-			self.window.addstr(self.window.getmaxyx()[0] - 1, 0, "Paused, press any key to exit...")
-			self.window.refresh()
-			self.window.getch()
+			# Before doing anything, shutdown curses so errors can be printed to the terminal
+			self.shutdown_curses()
+			traceback.print_exc(file=sys.stderr)
 		finally:
 			self.exit()
 
@@ -419,6 +419,18 @@ class Application:
 		self.window.refresh()
 		self.window.getch()
 
+	def shutdown_curses(self):
+		"""
+		Shutdown the curses application and restore terminal settings.
+		:return:
+		"""
+		if self.curses_started:
+			curses.nocbreak()
+			curses.echo()
+			self.window.keypad(False)
+			curses.endwin()
+			self.curses_started = False
+
 	def exit(self, exit_code: int = 0):
 		"""
 		Shutdown the application and restore terminal settings.
@@ -426,10 +438,7 @@ class Application:
 		:param exit_code:
 		:return:
 		"""
-		curses.nocbreak()
-		curses.echo()
-		self.window.keypad(False)
-		curses.endwin()
+		self.shutdown_curses()
 		sys.exit(exit_code)
 
 
