@@ -9,7 +9,6 @@ from dns.exception import DNSException
 import socket
 import psutil
 import os
-import time
 from net_diag.libs import net_utils
 import argparse
 
@@ -248,14 +247,17 @@ class _Diagnostics:
 
 	def _run_latency(self):
 		# Check latency to a known good host
-		latency = time.perf_counter()
-		ping('up.eval.bz', 1, timeout=2)
-		latency = time.perf_counter() - latency
-		if latency < .1:
-			self.data['latency'] = f"{latency * 1000:.2f} ms"
-		else:
-			self.data['latency'] = f"{latency * 1000:.2f} ms"
+		res = ping('up.eval.bz', 1, timeout=2, return_latency=True)
+		if res is False:
+			self.data['latency'] = 'Ping Failed'
 			self.errors.append('latency')
+		elif res > 100:
+			# Successful, but high latency.
+			self.data['latency'] = f"{res:.2f} ms"
+			self.errors.append('latency')
+		else:
+			# Successful and low latency
+			self.data['latency'] = f"{res:.2f} ms"
 
 	def _run_dns(self):
 		# Perform a DNS lookup to check if DNS is working
