@@ -165,7 +165,7 @@ class _Diagnostics:
 			self.errors.append('lldp')
 		else:
 			if not self.has_lldp:
-				self.data['lldp'] = 'Install lldptool to use LLDP'
+				self.data['lldp'] = 'Install lldpad to use LLDP'
 				self.errors.append('lldp')
 			else:
 				if not self.lldp_enabled:
