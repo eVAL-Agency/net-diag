@@ -334,6 +334,7 @@ class Application:
 		print(json.dumps(diagnostics.data, indent=4, sort_keys=False))
 
 	def run(self):
+		counter = -1
 		diagnostics = _Diagnostics(self.iface)
 		self.window = curses.initscr()
 
@@ -353,6 +354,8 @@ class Application:
 			'ssid': 'SSID',
 		}
 
+		counter_icons = ['|....', '.|...', '..|..', '...|.', '....|', '...|.', '..|..', '.|...']
+
 		try:
 			while True:
 				diagnostics.run()
@@ -364,6 +367,12 @@ class Application:
 				]
 
 				self.window.addstr(0, 0, "Network Diagnostics v" + _VERSION)
+
+				counter += 1
+				if counter > 7:
+					counter = 0
+				# Display a rotating icon to indicate the application is working in the bottom right
+				self.window.addstr(self.window.getmaxyx()[0] - 1, self.window.getmaxyx()[1] - 8, counter_icons[counter])
 
 				line = 2
 				for key, value in diagnostics.data.items():
