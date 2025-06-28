@@ -1,6 +1,13 @@
+## v0.9.0 - 2025.06.27
+
+* Port network_diag to this project
+* Add support for config files for network scanning
+
+
 ## v0.2.6 - 2025.05.07
 
 * Switch github runner to Ubuntu 22.04
+
 
 ## v0.2.5 - 2025.01.29
 

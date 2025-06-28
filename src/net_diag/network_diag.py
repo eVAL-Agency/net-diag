@@ -5,6 +5,7 @@ import requests
 from net_diag.libs.nativeping import ping
 import ipcalc
 from dns import resolver
+from dns.exception import DNSException
 import socket
 import psutil
 import os
@@ -258,7 +259,12 @@ class _Diagnostics:
 
 	def _run_dns(self):
 		# Perform a DNS lookup to check if DNS is working
-		q = resolver.resolve('up.eval.bz', 'A', lifetime=0.5)
+		q = []
+		try:
+			q = resolver.resolve('up.eval.bz', 'A', lifetime=0.5)
+		except DNSException as e:
+			self.data['dns'] = str(e)
+			self.errors.append('dns')
 		if len(q) >= 1:
 			# If we got a response, DNS is working
 			self.data['dns'] = 'up.eval.bz -> ' + str(q[0].address)
