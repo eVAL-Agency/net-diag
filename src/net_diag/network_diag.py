@@ -370,11 +370,10 @@ class Application:
 						self.window.addstr(line, 0, key.capitalize())
 
 					if key in diagnostics.errors:
-						self.window.addstr(line, 21, '❌')
-						self.window.addstr(line, 25, str(value))
+						self.window.addstr(line, 20, '❌')
 					else:
 						self.window.addstr(line, 20, '️✅')
-						self.window.addstr(line, 24, str(value))
+					self.window.addstr(line, 24, str(value))
 
 					line += 1
 					if line > window_height:
