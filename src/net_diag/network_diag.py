@@ -312,7 +312,11 @@ class Application:
 				options[counter] = iface
 
 			print('')
-			choice = int(input('Enter the number of the interface you want to diagnose: '))
+			try:
+				choice = int(input('Enter the number of the interface you want to diagnose: '))
+			except KeyboardInterrupt:
+				print("\nExiting...")
+				sys.exit(0)
 			if choice in options:
 				self.iface = options[choice]
 			else:
@@ -426,7 +430,7 @@ class Application:
 		curses.echo()
 		self.window.keypad(False)
 		curses.endwin()
-		exit(exit_code)
+		sys.exit(exit_code)
 
 
 def run():
