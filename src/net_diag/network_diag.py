@@ -98,7 +98,8 @@ class _Diagnostics:
 				exe(self.data, self.stop_event)
 
 	def stop(self):
-		self.stop_event.set()
+		if self.stop_event is not None:
+			self.stop_event.set()
 		# Wait for all checks to finish
 		for checks in self.checks:
 			checks.join()
@@ -133,7 +134,7 @@ class _Diagnostics:
 		:return:
 		"""
 		while True:
-			if stop_event.is_set():
+			if stop_event is not None and stop_event.is_set():
 				return
 
 			# Use PSUtil to get most of the network stats
@@ -274,7 +275,7 @@ class _Diagnostics:
 			return
 
 		while True:
-			if stop_event.is_set():
+			if stop_event is not None and stop_event.is_set():
 				return
 
 			try:
@@ -349,7 +350,7 @@ class _Diagnostics:
 	def _run_wan(self, data, stop_event):
 		# WAN IP Address
 		while True:
-			if stop_event.is_set():
+			if stop_event is not None and stop_event.is_set():
 				return
 
 			try:
@@ -372,7 +373,7 @@ class _Diagnostics:
 	def _run_connectivity(self, data, stop_event):
 		# Check if the internet is _actually_ reachable or if it's being intercepted by a captive portal
 		while True:
-			if stop_event.is_set():
+			if stop_event is not None and stop_event.is_set():
 				return
 
 			try:
@@ -398,7 +399,7 @@ class _Diagnostics:
 	def _run_latency(self, data, stop_event):
 		# Check latency to a known good host
 		while True:
-			if stop_event.is_set():
+			if stop_event is not None and stop_event.is_set():
 				return
 
 			try:
@@ -423,7 +424,7 @@ class _Diagnostics:
 	def _run_dns(self, data, stop_event):
 		# Perform a DNS lookup to check if DNS is working
 		while True:
-			if stop_event.is_set():
+			if stop_event is not None and stop_event.is_set():
 				return
 
 			try:
@@ -462,14 +463,16 @@ class Application:
 		self.iface = iface
 		self.window = None
 		self.curses_started = False
-		self.is_windows = os.name == 'nt'
 
-		if self.is_windows:
+		if os.name == 'nt':
 			self.icon_good = 'OK'
 			self.icon_bad = 'X '
+			# Windows doesn't play nicely with threading
+			self.threaded = False
 		else:
 			self.icon_good = '✅'
 			self.icon_bad = '❌'
+			self.threaded = True
 
 		if self.iface is None:
 			# No interface set, prompt the user for which one they'd like.
@@ -518,9 +521,7 @@ class Application:
 	def run(self):
 		counter = -1
 		diagnostics = _Diagnostics(self.iface)
-		if self.is_windows:
-			# Windows doesn't play nicely with threading
-			diagnostics.threaded = False
+		diagnostics.threaded = self.threaded
 		self.window = curses.initscr()
 
 		curses.noecho()
@@ -650,9 +651,13 @@ def run():
 	parser = argparse.ArgumentParser(description="Network Diagnostics Tool")
 	parser.add_argument('-i', '--iface', type=str, help='Network interface to diagnose')
 	parser.add_argument('--json', action='store_true', help='Output in JSON format')
+	parser.add_argument('--no-threads', action='store_true', help='Disable threads')
 	args = parser.parse_args()
 
 	app = Application(args.iface)
+	if args.no_threads:
+		# User requested to disable threading
+		app.threaded = False
 	if args.json:
 		app.json()
 	else:
