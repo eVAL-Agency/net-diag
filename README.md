@@ -240,6 +240,19 @@ python3 -m pip install --upgrade pip
 pip3 install -e .[dev]
 ```
 
+Get the code running on Windows
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+git clone git@github.com:cdp1337/net-diag.git
+cd net-diag
+python -m venv venv
+& venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip3 install -e .[dev]
+python -m pip install windows-curses
+```
+
 Run the application from source
 
 ```bash

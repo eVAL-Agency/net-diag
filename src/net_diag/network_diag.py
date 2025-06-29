@@ -230,6 +230,11 @@ class _Diagnostics:
 		data['mtu'] = (if_stats.mtu, False)
 
 	def _run_lldp(self, data, stop_event):
+		if os.name == 'nt':
+			# LLDP is not supported on Windows
+			data['lldp'] = ('LLDP is not supported on Windows', True)
+			return
+
 		is_root = os.geteuid() == 0
 		has_lldp = os.path.exists('/sbin/lldptool')
 		lldp_enabled = False
@@ -423,9 +428,6 @@ class Application:
 	def __init__(self, iface: str = None):
 		self.iface = iface
 		self.window = None
-		self.is_root = os.geteuid() == 0
-		self.has_lldp = os.path.exists('/sbin/lldptool')
-		self.lldp_enabled = False
 		self.curses_started = False
 
 		if self.iface is None:
