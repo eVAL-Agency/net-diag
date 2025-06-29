@@ -462,6 +462,13 @@ class Application:
 		self.curses_started = False
 		self.is_windows = os.name == 'nt'
 
+		if self.is_windows:
+			self.icon_good = 'OK'
+			self.icon_bad = 'X '
+		else:
+			self.icon_good = '✅'
+			self.icon_bad = '❌'
+
 		if self.iface is None:
 			# No interface set, prompt the user for which one they'd like.
 			ifaces = psutil.net_if_stats()
@@ -569,9 +576,9 @@ class Application:
 						self.window.addstr(line, 0, key.capitalize())
 
 					if value[1]:
-						self.window.addstr(line, 20, '❌')
+						self.window.addstr(line, 20, self.icon_bad)
 					else:
-						self.window.addstr(line, 20, '️✅')
+						self.window.addstr(line, 20, self.icon_good)
 					self.window.addstr(line, 24, str(value[0]))
 
 					line += 1
