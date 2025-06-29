@@ -1,7 +1,13 @@
 import curses
 import sys
 import json
+import time
+from multiprocessing import Process
+from multiprocessing import Manager
+from multiprocessing import Event
+
 import requests
+from requests.exceptions import RequestException
 from net_diag.libs.nativeping import ping
 import ipcalc
 from dns import resolver
@@ -17,274 +23,400 @@ _VERSION = '0.9.0'
 
 
 class _Diagnostics:
+	"""
+	Handler for all NIC diagnostics.
+	"""
+
 	def __init__(self, iface: str = None):
 		self.iface = iface
-		self.is_root = os.geteuid() == 0
-		self.has_lldp = os.path.exists('/sbin/lldptool')
-		self.lldp_enabled = False
-
-		# Try to enable LLDP if available.
-		if self.is_root and self.has_lldp:
-			self.lldp_enabled = net_utils.enable_lldp(self.iface)
-
-		self.if_stats = None
-		self.if_addresses = None
-		self.if_type = None
-		self.wifi = None
-		self.data = {}
-		self.errors = []
-
-	def run(self):
-		# Use PSUtil to get most of the network stats
-		self.if_stats = psutil.net_if_stats()[self.iface]
-		self.if_addresses = psutil.net_if_addrs()[self.iface]
 		self.if_type = net_utils.get_interface_type(self.iface)
 		self.data = {}
-		self.errors = []
+		self.checks = []
+		self.manager = Manager()
+		self.stop_event = Event()
+
+	def start(self):
+		"""
+		Start the background processes to monitor diagnostics.
+
+		:return:
+		"""
+
+		# Pre-populate the data dictionary so the order of the keys is consistent.
+		self.data = self.manager.dict()
+
+		self.data['interface'] = ('Not ran', True)
+		self.data['type'] = ('Not ran', True)
+		self.data['status'] = ('Not ran', True)
 
 		if self.if_type == 'wlan':
-			# also include wireless information
-			self.wifi = net_utils.get_wireless_info(self.iface)
+			self.data['ssid'] = ('Not ran', True)
+			self.data['frequency'] = ('Not ran', True)
+			self.data['signal'] = ('Not ran', True)
+			self.data['quality'] = ('Not ran', True)
+		else:
+			self.data['duplex'] = ('Not ran', True)
 
-		# Run all the diagnostics steps
-		self._run_type()
-		self._run_status()
-		if self.if_type == 'wlan':
-			self._run_wifi()
-		self._run_speed()
-		if self.if_type != 'wlan':
-			self._run_duplex()
-		self._run_mtu()
-		self._run_lldp()
-		self._run_address()
-		self._run_routes()
-		self._run_nameservers()
-		self._run_domain()
-		self._run_neighbors()
-		self._run_wan()
-		self._run_connectivity()
-		self._run_latency()
-		self._run_dns()
+		self.data['speed'] = ('Not ran', True)
+		self.data['mtu'] = ('Not ran', True)
+		self.data['lldp'] = ('Not ran', True)
+		self.data['address'] = ('Not ran', True)
+		self.data['routes'] = ('Not ran', True)
+		self.data['nameservers'] = ('Not ran', True)
+		self.data['domain'] = ('Not ran', True)
+		self.data['neighbors'] = ('Not ran', True)
+		self.data['wan'] = ('Not ran', True)
+		self.data['internet'] = ('Not ran', True)
+		self.data['latency'] = ('Not ran', True)
+		self.data['dns'] = ('Not ran', True)
 
-	def _run_type(self):
+		self.checks = [
+			Process(target=self._run_type, args=(self.data,)),
+			Process(target=self._run_interface_details, args=(self.data, self.stop_event)),
+			Process(target=self._run_lldp, args=(self.data, self.stop_event)),
+			Process(target=self._run_connectivity, args=(self.data, self.stop_event)),
+			Process(target=self._run_wan, args=(self.data, self.stop_event)),
+			Process(target=self._run_latency, args=(self.data, self.stop_event)),
+			Process(target=self._run_dns, args=(self.data, self.stop_event)),
+		]
+
+		for check in self.checks:
+			check.start()
+
+	def stop(self):
+		self.stop_event.set()
+		# Wait for all checks to finish
+		for checks in self.checks:
+			checks.join()
+
+	def run(self):
+		"""
+		Run diagnostics once and stop
+		:return:
+		"""
+		self.start()
+		time.sleep(1)
+		self.stop()
+
+	def _run_type(self, data):
+		"""
+		Set the interface name and type in the data dictionary.
+
+		:param data:
+		:return:
+		"""
 		# Interface name and type
-		self.data['interface'] = self.iface
-		self.data['type'] = self.if_type
+		data['interface'] = (self.iface, False)
+		data['type'] = (self.if_type, False)
 
-	def _run_status(self):
+	def _run_interface_details(self, data, stop_event):
+		"""
+		Perform basic local-data checks which can be performed relatively quickly.
+
+		:param data:
+		:param stop_event:
+		:return:
+		"""
+		while True:
+			if stop_event.is_set():
+				return
+
+			# Use PSUtil to get most of the network stats
+			if_stats = psutil.net_if_stats()[self.iface]
+			wifi = None
+			if self.if_type == 'wlan':
+				wifi = net_utils.get_wireless_info(self.iface)
+
+			try:
+				self._parse_status(data, if_stats)
+				self._parse_mtu(data, if_stats)
+				self._run_address(data)
+				self._run_routes(data)
+				self._run_nameservers(data)
+				self._run_domain(data)
+				self._run_neighbors(data)
+
+				if wifi:
+					self._parse_wifi(data, wifi)
+					self._parse_speed_wifi(data, wifi)
+				else:
+					self._parse_speed_lan(data, if_stats)
+					self._parse_duplex(data, if_stats)
+			except BrokenPipeError:
+				# Process stopped, just exit
+				break
+
+			time.sleep(1)
+
+	def _parse_status(self, data, if_stats):
 		# Status
-		if self.if_stats.isup:
-			self.data['status'] = 'UP'
+		if if_stats.isup:
+			data['status'] = ('UP', False)
 		else:
-			self.data['status'] = 'DOWN'
-			self.errors.append('status')
+			data['status'] = ('DOWN', True)
 
-	def _run_wifi(self):
+	def _parse_wifi(self, data, wifi):
 		# Wireless connection data
-		if self.wifi['ssid'] is not None:
-			self.data['ssid'] = self.wifi['ssid']
+		if wifi['ssid'] is not None:
+			data['ssid'] = (wifi['ssid'], False)
 		else:
-			self.data['ssid'] = 'Not Connected'
-			self.errors.append('ssid')
+			data['ssid'] = ('Not Connected', True)
 
-		if self.wifi['frequency'] is not None:
-			self.data['frequency'] = self.wifi['frequency']
+		if wifi['frequency'] is not None:
+			data['frequency'] = (wifi['frequency'], False)
 		else:
-			self.data['frequency'] = 'Unknown'
-			self.errors.append('frequency')
+			data['frequency'] = ('Unknown', True)
 
 		# ▁▂▃▄▅▆▇█
-		if self.wifi['signal_level'] is not None:
-			level = int(self.wifi['signal_level'])
+		if wifi['signal_level'] is not None:
+			level = int(wifi['signal_level'])
 			if level <= -90:
-				self.data['signal'] = "▁       "
+				signal = "▁       "
 			elif level <= -80:
-				self.data['signal'] = "▁▂      "
+				signal = "▁▂      "
 			elif level <= -70:
-				self.data['signal'] = "▁▂▃     "
+				signal = "▁▂▃     "
 			elif level <= -67:
-				self.data['signal'] = "▁▂▃▄    "
+				signal = "▁▂▃▄    "
 			elif level <= -60:
-				self.data['signal'] = "▁▂▃▄▅   "
+				signal = "▁▂▃▄▅   "
 			elif level <= -50:
-				self.data['signal'] = "▁▂▃▄▅▆  "
+				signal = "▁▂▃▄▅▆  "
 			elif level <= -30:
-				self.data['signal'] = "▁▂▃▄▅▆▇ "
+				signal = "▁▂▃▄▅▆▇ "
 			else:
-				self.data['signal'] = "▁▂▃▄▅▆▇█"
+				signal = "▁▂▃▄▅▆▇█"
 
-			self.data['signal'] = self.data['signal'] + f" ({self.wifi['signal_level']} dBm)"
+			signal = signal + f" ({wifi['signal_level']} dBm)"
 
-			if level < -67:
-				self.errors.append('signal')
+			data['signal'] = (signal, level < -67)
 		else:
-			self.data['signal'] = 'Unknown'
-			self.errors.append('signal')
+			data['signal'] = ('Unknown', True)
 
-		if self.wifi['quality'] is not None:
-			self.data['quality'] = self.wifi['quality']
+		if wifi['quality'] is not None:
+			data['quality'] = (wifi['quality'], False)
 		else:
-			self.data['quality'] = 'Unknown'
-			self.errors.append('quality')
+			data['quality'] = ('Unknown', True)
 
-	def _run_speed(self):
+	def _parse_speed_wifi(self, data, wifi):
 		# Link speed
-		if self.if_type == 'wlan':
-			self.data['speed'] = self.wifi['bitrate']
-			if self.data['speed'] is None:
-				self.errors.append('speed')
+		if wifi['bitrate'] is None:
+			data['speed'] = ('Unknown', True)
 		else:
-			speed = self.if_stats.speed
-			if speed >= 1000:
-				self.data['speed'] = f"{speed / 1000:.1f} Gbps"
-			elif speed > 0:
-				self.data['speed'] = f"{speed} Mbps"
-			else:
-				self.data['speed'] = "Unknown"
-				self.errors.append('speed')
+			data['speed'] = (wifi['bitrate'], False)
 
-	def _run_duplex(self):
+	def _parse_speed_lan(self, data, if_stats):
+		# Link speed
+		speed = if_stats.speed
+		if speed >= 1000:
+			data['speed'] = (f"{speed / 1000:.1f} Gbps", False)
+		elif speed > 0:
+			data['speed'] = (f"{speed} Mbps", False)
+		else:
+			data['speed'] = ("Unknown", True)
+
+	def _parse_duplex(self, data, if_stats):
 		# Duplex mode
-		duplex = self.if_stats.duplex
+		duplex = if_stats.duplex
 		if duplex == 0:
-			self.data['duplex'] = "Unknown"
-			self.errors.append('duplex')
+			data['duplex'] = ("Unknown", True)
 		elif duplex == 1:
-			self.data['duplex'] = "Half Duplex"
+			data['duplex'] = ("Half Duplex", False)
 		elif duplex == 2:
-			self.data['duplex'] = "Full Duplex"
+			data['duplex'] = ("Full Duplex", False)
 
-	def _run_mtu(self):
+	def _parse_mtu(self, data, if_stats):
 		# MTU
-		self.data['mtu'] = self.if_stats.mtu
+		data['mtu'] = (if_stats.mtu, False)
 
-	def _run_lldp(self):
-		# LLDP Neighbor
-		if not self.is_root:
-			self.data['lldp'] = 'LLDP requires root privileges'
-			self.errors.append('lldp')
-		else:
-			if not self.has_lldp:
-				self.data['lldp'] = 'Install lldpad to use LLDP'
-				self.errors.append('lldp')
-			else:
-				if not self.lldp_enabled:
-					self.data['lldp'] = 'LLDP could not be enabled!'
-					self.errors.append('lldp')
-				else:
-					peer = net_utils.get_lldp_peer(self.iface)
-					self.data['lldp'] = f"{peer['system_name']} - {peer['port_name']} [{peer['chassis_id']}] ({peer['system_description']})"
+	def _run_lldp(self, data, stop_event):
+		is_root = os.geteuid() == 0
+		has_lldp = os.path.exists('/sbin/lldptool')
+		lldp_enabled = False
 
-	def _run_address(self):
-		# IP Address
-		self.data['address'] = None
-		for ip in self.if_addresses:
-			if ip.family == socket.AF_INET:
-				self.data['address'] = f'{ip.address}/{ipcalc.IP(ip.address, mask=ip.netmask).subnet()}'
+		# Try to enable LLDP if available.
+		if is_root and has_lldp:
+			lldp_enabled = net_utils.enable_lldp(self.iface)
+
+		if not is_root:
+			data['lldp'] = ('LLDP requires root privileges', True)
+			return
+
+		if not has_lldp:
+			data['lldp'] = ('Install lldpad to use LLDP', True)
+			return
+
+		if not lldp_enabled:
+			data['lldp'] = ('LLDP could not be enabled!', True)
+			return
+
+		while True:
+			if stop_event.is_set():
+				return
+
+			try:
+				peer = net_utils.get_lldp_peer(self.iface)
+				data['lldp'] = (
+					f"{peer['system_name']} - {peer['port_name']} [{peer['chassis_id']}] ({peer['system_description']})",
+					False
+				)
+			except BrokenPipeError:
+				# Process stopped, just exit
 				break
-		if self.data['address'] is None:
-			self.data['address'] = 'No IPv4 Address'
-			self.errors.append('address')
 
-	def _run_routes(self):
+			time.sleep(1)
+
+	def _run_address(self, data):
+		# IP Address
+		if_addresses = psutil.net_if_addrs()[self.iface]
+
+		address = None
+		for ip in if_addresses:
+			if ip.family == socket.AF_INET:
+				address = f'{ip.address}/{ipcalc.IP(ip.address, mask=ip.netmask).subnet()}'
+				break
+		if address is None:
+			data['address'] = ('No IPv4 Address', True)
+		else:
+			data['address'] = (address, False)
+
+	def _run_routes(self, data):
 		# Routes
 		routes = net_utils.get_routes(self.iface)
 		if len(routes) == 0:
-			self.errors.append('routes')
-			self.data['routes'] = 'No routes found'
+			data['routes'] = ('No routes found', True)
 		else:
 			r = []
 			for route in routes:
 				if route['destination'] == '0.0.0.0':
-					r.append('Default gateway ' + route['gateway'])
+					r.append('Default: ' + route['gateway'])
 				elif route['gateway'] == '0.0.0.0':
-					r.append(f"Direct access to {route['destination']}/{ipcalc.IP(route['destination'], mask=route['mask']).subnet()}")
+					r.append(f"Direct: {route['destination']}/{ipcalc.IP(route['destination'], mask=route['mask']).subnet()}")
 				else:
 					r.append(f"{route['destination']}/{ipcalc.IP(route['destination'], mask=route['mask']).subnet()} via {route['gateway']}")
-			self.data['routes'] = ', '.join(r)
+			data['routes'] = (', '.join(r), False)
 
-	def _run_nameservers(self):
+	def _run_nameservers(self, data):
 		# Nameservers
 		ns = net_utils.get_nameservers()
 		if len(ns) == 0:
-			self.errors.append('nameservers')
-			self.data['nameservers'] = 'No nameservers found'
+			data['nameservers'] = ('No nameservers found', True)
 		else:
-			self.data['nameservers'] = ', '.join(ns)
+			data['nameservers'] = (', '.join(ns), False)
 
-	def _run_domain(self):
+	def _run_domain(self, data):
 		# Domain name
-		self.data['domain'] = net_utils.get_domain() or 'Unknown'
+		d = net_utils.get_domain()
+		if d:
+			data['domain'] = (d, False)
+		else:
+			data['domain'] = ('Unknown', True)
 
-	def _run_neighbors(self):
+	def _run_neighbors(self, data):
 		# Number of visible neighbors (via ARP)
-		self.data['neighbors'] = len(net_utils.get_neighbors(self.iface))
-		if self.data['neighbors'] == 0:
-			self.errors.append('neighbors')
-			self.data['neighbors'] = 'No neighbors found'
+		neighbors = len(net_utils.get_neighbors(self.iface))
+		if neighbors == 0:
+			data['neighbors'] = ('No neighbors found', True)
 		else:
-			self.data['neighbors'] = f"{self.data['neighbors']} visible devices"
+			data['neighbors'] = (f"{neighbors} visible devices", False)
 
-	def _run_wan(self):
+	def _run_wan(self, data, stop_event):
 		# WAN IP Address
-		try:
-			self.data['wan'] = requests.get('https://wan.eval.bz', headers={'user-agent': f'network-diag/{_VERSION}'}).text
-		except Exception:
-			self.data['wan'] = 'Lookup Failed'
-			self.errors.append('wan')
+		while True:
+			if stop_event.is_set():
+				return
 
-	def _run_connectivity(self):
-		# Check if the internet is _actually_ reachable or if it's being intercepted by a captive portal
-		try:
-			if requests.get('https://up.eval.bz', headers={'user-agent': f'network-diag/{_VERSION}'}).text == 'up':
-				self.data['internet'] = 'Connected'
-			else:
-				self.data['internet'] = 'INTERCEPTED'
-				self.errors.append('internet')
-		except Exception:
-			self.data['internet'] = 'Lookup Failed'
-			self.errors.append('internet')
-
-	def _run_latency(self):
-		# Check latency to a known good host
-		res = ping('up.eval.bz', 1, timeout=2, return_latency=True)
-		if res is False:
-			self.data['latency'] = 'Ping Failed'
-			self.errors.append('latency')
-		elif res > 100:
-			# Successful, but high latency.
-			self.data['latency'] = f"{res:.2f} ms"
-			self.errors.append('latency')
-		else:
-			# Successful and low latency
-			self.data['latency'] = f"{res:.2f} ms"
-
-	def _run_dns(self):
-		# Perform a DNS lookup to check if DNS is working
-		q = []
-		try:
-			q = resolver.resolve('up.eval.bz', 'A', lifetime=0.5)
-		except DNSException as e:
-			self.data['dns'] = str(e)
-			self.errors.append('dns')
-		if len(q) >= 1:
-			# If we got a response, DNS is working
-			self.data['dns'] = 'up.eval.bz -> ' + str(q[0].address)
-
-			# Also check if an _INVALID_ DNS response is returned, (hint, it should NOT)
 			try:
-				q = resolver.resolve('invalid.eval.bz', 'A', lifetime=0.5)
-				if len(q) >= 1:
-					self.data['dns'] = 'Non-existent domain resolved to: ' + str(q[0].address)
-					self.errors.append('dns')
+				data['wan'] = (requests.get(
+					'https://wan.eval.bz',
+					headers={'user-agent': f'network-diag/{_VERSION}'},
+					timeout=3
+				).text, False)
+			except RequestException:
+				data['wan'] = ('Lookup Failed', True)
+			except BrokenPipeError:
+				# Process stopped, just exit
+				break
+
+			time.sleep(10)
+
+	def _run_connectivity(self, data, stop_event):
+		# Check if the internet is _actually_ reachable or if it's being intercepted by a captive portal
+		while True:
+			if stop_event.is_set():
+				return
+
+			try:
+				if requests.get(
+					'https://up.eval.bz',
+					headers={'user-agent': f'network-diag/{_VERSION}'},
+					timeout=3
+				).text == 'up':
+					data['internet'] = ('Connected', False)
 				else:
-					self.data['dns'] = 'Non-existent domain resolved to nothing'
-					self.errors.append('dns')
-			except resolver.NXDOMAIN:
-				pass
-		else:
-			self.data['dns'] = 'DNS Resolution Failed'
-			self.errors.append('dns')
+					data['internet'] = ('INTERCEPTED', True)
+			except RequestException:
+				data['internet'] = ('Lookup Failed', True)
+			except BrokenPipeError:
+				# Process stopped, just exit
+				break
+
+			time.sleep(10)
+
+	def _run_latency(self, data, stop_event):
+		# Check latency to a known good host
+		while True:
+			if stop_event.is_set():
+				return
+
+			try:
+				res = ping('up.eval.bz', 1, timeout=2, return_latency=True)
+				if res is False:
+					data['latency'] = ('Ping Failed', True)
+				elif res > 100:
+					# Successful, but high latency.
+					data['latency'] = (f"{res:.2f} ms", True)
+				else:
+					# Successful and low latency
+					data['latency'] = (f"{res:.2f} ms", False)
+			except BrokenPipeError:
+				# Process stopped, just exit
+				break
+
+			time.sleep(1)
+
+	def _run_dns(self, data, stop_event):
+		# Perform a DNS lookup to check if DNS is working
+		while True:
+			if stop_event.is_set():
+				return
+
+			try:
+				q = []
+				try:
+					q = resolver.resolve('up.eval.bz', 'A', lifetime=0.5)
+				except DNSException as e:
+					data['dns'] = (str(e), True)
+
+				if len(q) >= 1:
+					# If we got a response, DNS is working
+					res = 'up.eval.bz -> ' + str(q[0].address)
+
+					# Also check if an _INVALID_ DNS response is returned, (hint, it should NOT)
+					try:
+						q = resolver.resolve('invalid.eval.bz', 'A', lifetime=0.5)
+						if len(q) >= 1:
+							data['dns'] = ('Non-existent domain resolved to: ' + str(q[0].address), True)
+						else:
+							data['dns'] = ('Non-existent domain resolved to nothing', True)
+					except resolver.NXDOMAIN:
+						# This is the expected behaviour which indicates everything is working.
+						data['dns'] = (res, False)
+			except BrokenPipeError:
+				# Process stopped, just exit
+				break
+
+			time.sleep(5)
 
 
 class Application:
@@ -331,7 +463,10 @@ class Application:
 		"""
 		diagnostics = _Diagnostics(self.iface)
 		diagnostics.run()
-		print(json.dumps(diagnostics.data, indent=4, sort_keys=False))
+		data = {}
+		for key in diagnostics.data:
+			data[key] = diagnostics.data[key][0]
+		print(json.dumps(data, indent=4, sort_keys=False))
 
 	def run(self):
 		counter = -1
@@ -357,11 +492,13 @@ class Application:
 		counter_icons = ['|....', '.|...', '..|..', '...|.', '....|', '...|.', '..|..', '.|...']
 
 		try:
+			diagnostics.start()
+
 			while True:
-				diagnostics.run()
 				self.window.clear()
 
-				window_height = self.window.getmaxyx()[0] - 3
+				window_height, window_width = self.window.getmaxyx()
+				bottom_line = window_height - 1
 				unimportant_fields = [
 					'type', 'status', 'duplex', 'mtu', 'domain', 'neighbors'
 				]
@@ -372,11 +509,11 @@ class Application:
 				if counter > 7:
 					counter = 0
 				# Display a rotating icon to indicate the application is working in the bottom right
-				self.window.addstr(self.window.getmaxyx()[0] - 1, self.window.getmaxyx()[1] - 8, counter_icons[counter])
+				self.window.addstr(bottom_line, window_width - 8, counter_icons[counter])
 
 				line = 2
 				for key, value in diagnostics.data.items():
-					if window_height <= 17 and key in unimportant_fields:
+					if window_height <= 20 and key in unimportant_fields:
 						# For small windows, try to skip some unimportant fields
 						continue
 
@@ -385,20 +522,20 @@ class Application:
 					else:
 						self.window.addstr(line, 0, key.capitalize())
 
-					if key in diagnostics.errors:
+					if value[1]:
 						self.window.addstr(line, 20, '❌')
 					else:
 						self.window.addstr(line, 20, '️✅')
-					self.window.addstr(line, 24, str(value))
+					self.window.addstr(line, 24, str(value[0]))
 
 					line += 1
-					if line > window_height:
+					if line + 3 > window_height:
 						# Too many items to render; skip the rest!
 						break
 
 				# Display some controls for the user
-				self.window.timeout(2000)
-				self.window.addstr(self.window.getmaxyx()[0] - 1, 0, "P to pause, Q or CTRL+C to exit")
+				self.window.timeout(1000)
+				self.window.addstr(bottom_line, 0, "P to pause, Q or CTRL+C to exit")
 
 				key = self.window.getch()
 				if key == ord('q') or key == ord('Q') or key == 27:
@@ -409,10 +546,12 @@ class Application:
 				self.window.refresh()
 		except KeyboardInterrupt:
 			# Catch CTRL+C
+			diagnostics.stop()
 			pass
 		except Exception:
 			# Catch any other exceptions
 			# Before doing anything, shutdown curses so errors can be printed to the terminal
+			diagnostics.stop()
 			self.shutdown_curses()
 			traceback.print_exc(file=sys.stderr)
 		finally:
