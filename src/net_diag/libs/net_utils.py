@@ -3,6 +3,8 @@ import socket
 import struct
 import subprocess
 import re
+from typing import Union
+
 import psutil
 
 
@@ -189,7 +191,7 @@ def get_wireless_info(iface: str) -> dict:
 	return info
 
 
-def get_neighbors(iface: str) -> list[dict]:
+def get_neighbors(iface: Union[str, None] = None) -> list[dict]:
 	"""
 	Get the neighbors (ARP table) for a specific interface.
 
@@ -200,34 +202,54 @@ def get_neighbors(iface: str) -> list[dict]:
 	try:
 		if os.name == 'nt':
 			# Windows-specific command to get ARP table
-			if_addresses = psutil.net_if_addrs()[iface]
 			output = ''
-			for ip in if_addresses:
-				if ip.family == socket.AF_INET:
-					output = subprocess.check_output(['arp', '-a', '-N', ip.address], text=True)
-					break
+			if iface is None:
+				# Get all neighbors across all interfaces
+				output = subprocess.check_output(['arp', '-a'], text=True)
+			else:
+				if_addresses = psutil.net_if_addrs()[iface]
+				for ip in if_addresses:
+					if ip.family == socket.AF_INET:
+						output = subprocess.check_output(['arp', '-a', '-N', ip.address], text=True)
+						break
 			for line in output.strip().split('\n'):
 				fields = line.split()
-				if len(fields) >= 2:
+				if len(fields) >= 3:
+					if fields[0] == 'Interface:':
+						continue
+					if fields[0] == 'Internet':
+						continue
 					if fields[1] == 'ff-ff-ff-ff-ff-ff-ff':
 						# Skip broadcast addresses
 						continue
 					neighbors.append({
 						'ip': fields[0],
-						'mac': fields[1],
+						'mac': fields[1].replace('-', ':'),
 						'state': 'reachable'  # Windows does not provide state
 					})
 		else:
 			# Linux-specific command to get ARP table
-			output = subprocess.check_output(['ip', 'neighbor', 'show', 'dev', iface], text=True)
-			for line in output.strip().split('\n'):
-				fields = line.split()
-				if len(fields) >= 4:
-					neighbors.append({
-						'ip': fields[0],
-						'mac': fields[2],
-						'state': fields[1]
-					})
+			if iface is None:
+				# Get all neighbors across all interfaces
+				output = subprocess.check_output(['ip', 'neighbor', 'show'], text=True)
+				for line in output.strip().split('\n'):
+					fields = line.split()
+					if len(fields) >= 6:
+						neighbors.append({
+							'ip': fields[0],
+							'mac': fields[4],
+							'state': fields[5]
+						})
+			else:
+				output = subprocess.check_output(['ip', 'neighbor', 'show', 'dev', iface], text=True)
+				for line in output.strip().split('\n'):
+					fields = line.split()
+					if len(fields) >= 4:
+						neighbors.append({
+							'ip': fields[0],
+							'mac': fields[2],
+							'state': fields[3]
+						})
 	except subprocess.CalledProcessError:
 		pass
 	return neighbors

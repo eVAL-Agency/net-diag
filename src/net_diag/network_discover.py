@@ -17,6 +17,7 @@ import multiprocessing
 from queue import Queue
 from queue import Empty
 
+from net_diag.libs.net_utils import get_neighbors
 from net_diag.libs.snmputils import snmp_parse_descr, snmp_lookup_single, snmp_lookup_bulk
 from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
 from net_diag.libs.nativeping import ping
@@ -659,6 +660,11 @@ class Application:
 		:param hosts: Host[]
 		"""
 
+		self.host_map = {}
+		"""
+		Map of IP address to the Host index in the `hosts` list.
+		"""
+
 		self.config = {}
 		"""
 		Options for this scan as stored from the configuration file or command line.
@@ -714,23 +720,13 @@ class Application:
 			exit(1)
 
 		# Move all hosts discovered from the host queue into a standard list
-		host_map = {}
 		hosts = list(self.host_queue.queue)
 		for host in hosts:
 			if host.is_available() and host.ip not in self.config['exclude']:
-				host_map[host.ip] = len(self.hosts)
+				self.host_map[host.ip] = len(self.hosts)
 				self.hosts.append(host)
 
-		# Resolve any located MAC from the remote arp table
-		# This is important because hosts which do not have SNMP enabled should still have the MAC available.
-		for host in hosts:
-			if host.neighbors is not None:
-				for ip, mac in host.neighbors:
-					if ip in host_map:
-						# This IP is one of the devices we are scanning, update its MAC if required
-						i = host_map[ip]
-						if self.hosts[i].mac is None:
-							self.hosts[i].mac = mac
+		self.resolve_macs()
 
 		# Perform any operations / lookups that require a MAC address
 		for host in self.hosts:
@@ -899,6 +895,30 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				# Usually occurs because user hit CTRL+C
 				print('Thread closing', file=sys.stderr)
 				return
+
+	def resolve_macs(self):
+		# Grab the monitoring server's ARP cache to resolve any local devices.
+		# This only works for devices on the same layer 2 network, (ie: same subnet)
+		local_arp = get_neighbors()
+		for data in local_arp:
+			if data['ip'] in self.host_map:
+				# This is a device we are scanning, update its MAC if required
+				i = self.host_map[data['ip']]
+				if self.hosts[i].mac is None:
+					self.hosts[i].mac = data['mac']
+					self.hosts[i].log('Resolved MAC from local ARP cache')
+
+		# Resolve any located MAC from the remote arp table
+		# This is important because hosts which do not have SNMP enabled should still have the MAC available.
+		for host in self.hosts:
+			if host.neighbors is not None:
+				for ip, mac in host.neighbors:
+					if ip in self.host_map:
+						# This IP is one of the devices we are scanning, update its MAC if required
+						i = self.host_map[ip]
+						if self.hosts[i].mac is None:
+							self.hosts[i].mac = mac
+							self.hosts[i].log('Resolved MAC from ARP cache on %s' % host.ip)
 
 	def finalize_results(self):
 		if self.config['format'] == 'json':

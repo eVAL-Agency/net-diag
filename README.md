@@ -213,6 +213,13 @@ Wifi interfaces will show additional information, such as signal strength, noise
 
 Specify `--json` as an argument to perform a single iteration of diagnostics and output the results in JSON format.
 
+### Threads
+
+By default on Linux, the diagnostics will run as a background thread to provide real-time updates.
+
+This can be disabled by specifying `--no-threads`.
+
+**Windows**: Threading is not supported on Windows, so the diagnostics will always run in a single thread.
 
 ## Bundled dependencies
 
