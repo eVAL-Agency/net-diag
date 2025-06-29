@@ -3,6 +3,7 @@ import socket
 import struct
 import subprocess
 import re
+import psutil
 
 
 def get_interface_type(iface: str) -> str:
@@ -167,15 +168,36 @@ def get_neighbors(iface: str) -> list[dict]:
 	"""
 	neighbors = []
 	try:
-		output = subprocess.check_output(['ip', 'neighbor', 'show', 'dev', iface], text=True)
-		for line in output.strip().split('\n'):
-			fields = line.split()
-			if len(fields) >= 4:
-				neighbors.append({
-					'ip': fields[0],
-					'mac': fields[2],
-					'state': fields[1]
-				})
+		if os.name == 'nt':
+			# Windows-specific command to get ARP table
+			if_addresses = psutil.net_if_addrs()[iface]
+			output = ''
+			for ip in if_addresses:
+				if ip.family == socket.AF_INET:
+					output = subprocess.check_output(['arp', '-a', '-N', ip.address], text=True)
+					break
+			for line in output.strip().split('\n'):
+				fields = line.split()
+				if len(fields) >= 2:
+					if fields[1] == 'ff-ff-ff-ff-ff-ff-ff':
+						# Skip broadcast addresses
+						continue
+					neighbors.append({
+						'ip': fields[0],
+						'mac': fields[1],
+						'state': 'reachable'  # Windows does not provide state
+					})
+		else:
+			# Linux-specific command to get ARP table
+			output = subprocess.check_output(['ip', 'neighbor', 'show', 'dev', iface], text=True)
+			for line in output.strip().split('\n'):
+				fields = line.split()
+				if len(fields) >= 4:
+					neighbors.append({
+						'ip': fields[0],
+						'mac': fields[2],
+						'state': fields[1]
+					})
 	except subprocess.CalledProcessError:
 		pass
 	return neighbors
