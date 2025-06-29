@@ -395,8 +395,8 @@ class _Diagnostics:
 				q = []
 				try:
 					q = resolver.resolve('up.eval.bz', 'A', lifetime=0.5)
-				except DNSException as e:
-					data['dns'] = (str(e), True)
+				except DNSException:
+					data['dns'] = ('DNS Lookup Failed', True)
 
 				if len(q) >= 1:
 					# If we got a response, DNS is working
