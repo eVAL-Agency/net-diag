@@ -32,8 +32,8 @@ class _Diagnostics:
 		self.if_type = net_utils.get_interface_type(self.iface)
 		self.data = {}
 		self.checks = []
-		self.manager = Manager()
-		self.stop_event = Event()
+		self.manager = None
+		self.stop_event = None
 		self.threaded = True
 		self.started = False
 
@@ -46,6 +46,8 @@ class _Diagnostics:
 
 		# Pre-populate the data dictionary so the order of the keys is consistent.
 		if self.threaded:
+			self.manager = Manager()
+			self.stop_event = Event()
 			self.data = self.manager.dict()
 
 		self.data['interface'] = ('Not ran', True)
