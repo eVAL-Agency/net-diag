@@ -87,21 +87,49 @@ def get_routes(iface: str) -> list[dict]:
 	"""
 	routes = []
 	try:
-		with open('/proc/net/route', 'r') as f:
-			for line in f.readlines()[1:]:  # Skip header
-				# Fields are:
-				# Iface	Destination	Gateway 	Flags	RefCnt	Use	Metric	Mask		MTU	Window	IRTT
-				fields = line.strip().split()
-				if fields[0] == iface:
-					destination = socket.inet_ntoa(struct.pack("<L", int(fields[1], 16)))
-					gateway = socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
-					mask = socket.inet_ntoa(struct.pack("<L", int(fields[7], 16)))
+		if os.name == 'nt':
+			if_addresses = psutil.net_if_addrs()[iface]
+			address = None
+			for ip in if_addresses:
+				if ip.family == socket.AF_INET:
+					address = ip.address
+					break
+			if address is not None:
+				output = subprocess.check_output(['route', 'print'], text=True)
+				for line in output.splitlines():
+					if address not in line:
+						continue
+					fields = line.strip().split()
+					if fields[3] != iface:
+						continue
+					destination = fields[0]
+					mask = fields[1]
+					gateway = fields[2]
+
+					if gateway == 'On-link':
+						gateway = '0.0.0.0'
 
 					routes.append({
 						'destination': destination,
 						'gateway': gateway,
 						'mask': mask,
 					})
+		else:
+			with open('/proc/net/route', 'r') as f:
+				for line in f.readlines()[1:]:  # Skip header
+					# Fields are:
+					# Iface	Destination	Gateway 	Flags	RefCnt	Use	Metric	Mask		MTU	Window	IRTT
+					fields = line.strip().split()
+					if fields[0] == iface:
+						destination = socket.inet_ntoa(struct.pack("<L", int(fields[1], 16)))
+						gateway = socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
+						mask = socket.inet_ntoa(struct.pack("<L", int(fields[7], 16)))
+
+						routes.append({
+							'destination': destination,
+							'gateway': gateway,
+							'mask': mask,
+						})
 	except FileNotFoundError:
 		pass
 	return routes
