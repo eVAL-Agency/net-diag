@@ -100,7 +100,9 @@ def get_routes(iface: str) -> list[dict]:
 					if address not in line:
 						continue
 					fields = line.strip().split()
-					if fields[3] != iface:
+					if fields[3] != address:
+						continue
+					if fields[0] in (address, '255.255.255.255'):
 						continue
 					destination = fields[0]
 					mask = fields[1]
