@@ -34,6 +34,8 @@ class _Diagnostics:
 		self.checks = []
 		self.manager = Manager()
 		self.stop_event = Event()
+		self.threaded = True
+		self.started = False
 
 	def start(self):
 		"""
@@ -43,7 +45,8 @@ class _Diagnostics:
 		"""
 
 		# Pre-populate the data dictionary so the order of the keys is consistent.
-		self.data = self.manager.dict()
+		if self.threaded:
+			self.data = self.manager.dict()
 
 		self.data['interface'] = ('Not ran', True)
 		self.data['type'] = ('Not ran', True)
@@ -70,18 +73,27 @@ class _Diagnostics:
 		self.data['latency'] = ('Not ran', True)
 		self.data['dns'] = ('Not ran', True)
 
-		self.checks = [
-			Process(target=self._run_type, args=(self.data,)),
-			Process(target=self._run_interface_details, args=(self.data, self.stop_event)),
-			Process(target=self._run_lldp, args=(self.data, self.stop_event)),
-			Process(target=self._run_connectivity, args=(self.data, self.stop_event)),
-			Process(target=self._run_wan, args=(self.data, self.stop_event)),
-			Process(target=self._run_latency, args=(self.data, self.stop_event)),
-			Process(target=self._run_dns, args=(self.data, self.stop_event)),
+		execs = [
+			self._run_type,
+			self._run_interface_details,
+			self._run_lldp,
+			self._run_connectivity,
+			self._run_wan,
+			self._run_latency,
+			self._run_dns,
 		]
 
-		for check in self.checks:
-			check.start()
+		if self.threaded:
+			if not self.started:
+				for exe in execs:
+					self.checks.append(Process(target=exe, args=(self.data, self.stop_event)))
+
+				for check in self.checks:
+					check.start()
+		else:
+			# Run all checks in the main thread
+			for exe in execs:
+				exe(self.data, self.stop_event)
 
 	def stop(self):
 		self.stop_event.set()
@@ -95,10 +107,11 @@ class _Diagnostics:
 		:return:
 		"""
 		self.start()
-		time.sleep(1)
-		self.stop()
+		if self.threaded:
+			time.sleep(1)
+			self.stop()
 
-	def _run_type(self, data):
+	def _run_type(self, data, stop_event):
 		"""
 		Set the interface name and type in the data dictionary.
 
@@ -146,7 +159,10 @@ class _Diagnostics:
 				# Process stopped, just exit
 				break
 
-			time.sleep(1)
+			if self.threaded:
+				time.sleep(1)
+			else:
+				break
 
 	def _parse_status(self, data, if_stats):
 		# Status
@@ -269,7 +285,10 @@ class _Diagnostics:
 				# Process stopped, just exit
 				break
 
-			time.sleep(1)
+			if self.threaded:
+				time.sleep(1)
+			else:
+				break
 
 	def _run_address(self, data):
 		# IP Address
@@ -343,7 +362,10 @@ class _Diagnostics:
 				# Process stopped, just exit
 				break
 
-			time.sleep(10)
+			if self.threaded:
+				time.sleep(10)
+			else:
+				break
 
 	def _run_connectivity(self, data, stop_event):
 		# Check if the internet is _actually_ reachable or if it's being intercepted by a captive portal
@@ -366,7 +388,10 @@ class _Diagnostics:
 				# Process stopped, just exit
 				break
 
-			time.sleep(10)
+			if self.threaded:
+				time.sleep(10)
+			else:
+				break
 
 	def _run_latency(self, data, stop_event):
 		# Check latency to a known good host
@@ -388,7 +413,10 @@ class _Diagnostics:
 				# Process stopped, just exit
 				break
 
-			time.sleep(1)
+			if self.threaded:
+				time.sleep(1)
+			else:
+				break
 
 	def _run_dns(self, data, stop_event):
 		# Perform a DNS lookup to check if DNS is working
@@ -421,7 +449,10 @@ class _Diagnostics:
 				# Process stopped, just exit
 				break
 
-			time.sleep(5)
+			if self.threaded:
+				time.sleep(5)
+			else:
+				break
 
 
 class Application:
@@ -429,6 +460,7 @@ class Application:
 		self.iface = iface
 		self.window = None
 		self.curses_started = False
+		self.is_windows = os.name == 'nt'
 
 		if self.iface is None:
 			# No interface set, prompt the user for which one they'd like.
@@ -443,7 +475,10 @@ class Application:
 					continue
 
 				counter += 1
-				print(f"{counter}: {iface} ({ifaces[iface].flags})")
+				if ifaces[iface].flags:
+					print(f"{counter}: {iface} ({ifaces[iface].flags})")
+				else:
+					print(f"{counter}: {iface}")
 				options[counter] = iface
 
 			print('')
@@ -464,6 +499,7 @@ class Application:
 		:return:
 		"""
 		diagnostics = _Diagnostics(self.iface)
+		diagnostics.threaded = False
 		diagnostics.run()
 		data = {}
 		for key in diagnostics.data:
@@ -473,6 +509,9 @@ class Application:
 	def run(self):
 		counter = -1
 		diagnostics = _Diagnostics(self.iface)
+		if self.is_windows:
+			# Windows doesn't play nicely with threading
+			diagnostics.threaded = False
 		self.window = curses.initscr()
 
 		curses.noecho()
