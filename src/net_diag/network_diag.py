@@ -533,9 +533,14 @@ class Application:
 		counter_icons = ['|....', '.|...', '..|..', '...|.', '....|', '...|.', '..|..', '.|...']
 
 		try:
-			diagnostics.start()
+			if diagnostics.threaded:
+				# Start the diagnostics in a separate process
+				diagnostics.start()
 
 			while True:
+				if not diagnostics.threaded:
+					# If not threaded, run diagnostics in this main thread
+					diagnostics.start()
 				self.window.clear()
 
 				window_height, window_width = self.window.getmaxyx()
