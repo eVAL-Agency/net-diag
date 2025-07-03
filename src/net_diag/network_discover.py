@@ -18,9 +18,9 @@ from queue import Queue
 from queue import Empty
 
 from net_diag.libs.net_utils import get_neighbors
-from net_diag.libs.snmputils import snmp_parse_descr, snmp_lookup_single, snmp_lookup_bulk
 from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
-from net_diag.libs.nativeping import ping
+from net_diag.libs.scanners.icmp import ICMPScanner
+from net_diag.libs.scanners.snmp import SNMPScanner
 
 
 def is_local_ip(ip: str) -> bool:
@@ -87,6 +87,7 @@ class Host:
 		self.ports = None
 		self.config = config
 		self.sync = sync
+		self.neighbors = []
 
 		# Set override defaults
 		if 'address' in config:
@@ -108,15 +109,6 @@ class Host:
 		self.log_lines += '[%s] %s\n' % (datetime.now().isoformat(), msg)
 		logging.debug(msg)
 
-	def ping(self):
-		"""
-		Ping the host to see if it is reachable
-		:return:
-		"""
-		self.log('Pinging %s' % (self.ip,))
-		self.reachable = ping(self.ip)
-		self.log('Reachable' if self.reachable else 'Not reachable')
-
 	def is_available(self) -> bool:
 		"""
 		Check if this device is available on the network
@@ -126,187 +118,6 @@ class Host:
 		"""
 		return self.reachable or self.descr is not None
 
-	def _snmp_single_lookup(self, name: str, oid: str) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get some value
-		:param name: string Name of this scan for the logs
-		:param oid: string SNMP OID to scan
-		:return:
-		"""
-		self.log('Scanning for %s - OID:%s' % (name, oid))
-		val = snmp_lookup_single(self.ip, str(self.config['community']), oid)
-		if val is None:
-			self.log('OID does not exist or value was NULL')
-		else:
-			self.log('Raw response: [%s]' % val)
-		return val
-
-	def _snmp_single_bulk(self, name: str, oid: str) -> dict:
-		"""
-		Perform a basic SNMP scan to get some value
-		:param name: string Name of this scan for the logs
-		:param oid: string SNMP OID to scan
-		:return:
-		"""
-		self.log('Scanning for %s - OID:%s' % (name, oid))
-		val = snmp_lookup_bulk(self.ip, str(self.config['community']), oid)
-		if len(val) == 0:
-			self.log('OID does not exist or value was NULL')
-		else:
-			self.log('Found %s items' % len(val))
-		return val
-
-	def get_snmp_descr(self) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get the description of the device.
-		:return:
-		"""
-		return self._snmp_single_lookup('DESCR', '1.3.6.1.2.1.1.1.0')
-
-	def get_snmp_mac(self) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get the MAC Address of the device.
-		:return:
-		"""
-		addresses = self._snmp_single_bulk('MAC', '1.3.6.1.2.1.2.2.1.6')
-		for key, val in addresses.items():
-			val = self._format_snmp_mac(val)
-			if val is None:
-				# Skip invalid MAC addresses
-				continue
-
-			self.log('Found MAC address of %s' % val)
-			return val
-
-		return None
-
-	def get_snmp_hostname(self) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get the hostname of the device.
-		:return:
-		"""
-		return self._snmp_single_lookup('hostname', '1.3.6.1.2.1.1.5.0')
-
-	def get_snmp_contact(self) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get the MAC Address of the device.
-		:return:
-		"""
-		return self._snmp_single_lookup('contact', '1.3.6.1.2.1.1.4.0')
-
-	def get_snmp_location(self) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get the MAC Address of the device.
-		:return:
-		"""
-		return self._snmp_single_lookup('location', '1.3.6.1.2.1.1.6.0')
-
-	def get_snmp_firmware(self) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get the firmware version of the device.
-		:return:
-		"""
-		return self._snmp_single_lookup('firmware version', '1.3.6.1.2.1.16.19.2.0')
-
-	def get_snmp_model(self) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get the model version of the device.
-		:return:
-		"""
-		return self._snmp_single_lookup('model', '1.3.6.1.2.1.16.19.3.0')
-
-	def get_snmp_ports(self) -> Union[dict, None]:
-		"""
-		Get port details for this device, (usually just switches)
-		:return:
-		"""
-
-		ret = {}
-		name_lookup = '1.3.6.1.2.1.2.2.1.2'
-		names = self._snmp_single_bulk('Port Names', name_lookup)
-		if len(names) == 0:
-			self.log('Device does not contain any port information, skipping')
-			return None
-
-		for key, val in names.items():
-			port_id = key[len(name_lookup) + 1:]
-			ret[port_id] = {
-				'name': val,
-				'vlan_allow': [],
-			}
-
-		label_lookup = '1.3.6.1.2.1.31.1.1.1.18'
-		labels = self._snmp_single_bulk('Port Labels', label_lookup)
-		for key, val in labels.items():
-			port_id = key[len(label_lookup) + 1:]
-			ret[port_id]['label'] = val
-
-		mtu_lookup = '1.3.6.1.2.1.2.2.1.4'
-		mtus = self._snmp_single_bulk('Port MTUs', mtu_lookup)
-		for key, val in mtus.items():
-			port_id = key[len(mtu_lookup) + 1:]
-			ret[port_id]['mtu'] = int(val)
-
-		speed_lookup = '1.3.6.1.2.1.2.2.1.5'
-		speeds = self._snmp_single_bulk('Port Speeds', speed_lookup)
-		for key, val in speeds.items():
-			port_id = key[len(speed_lookup) + 1:]
-			ret[port_id]['speed'] = self._format_snmp_speed(val)
-
-		mac_lookup = '1.3.6.1.2.1.2.2.1.6'
-		macs = self._snmp_single_bulk('Port MACs', mac_lookup)
-		for key, val in macs.items():
-			port_id = key[len(mac_lookup) + 1:]
-			ret[port_id]['mac'] = self._format_snmp_mac(val)
-
-		admin_lookup = '1.3.6.1.2.1.2.2.1.7'
-		admin_statuses = self._snmp_single_bulk('Admin Status', admin_lookup)
-		for key, val in admin_statuses.items():
-			port_id = key[len(admin_lookup) + 1:]
-			ret[port_id]['admin_status'] = 'UP' if val == '1' else 'DOWN'
-
-		status_lookup = '1.3.6.1.2.1.2.2.1.8'
-		user_statuses = self._snmp_single_bulk('User Status', status_lookup)
-		for key, val in user_statuses.items():
-			port_id = key[len(status_lookup) + 1:]
-			ret[port_id]['user_status'] = 'UP' if val == '1' else 'DOWN'
-
-		vlan_pid_lookup = '1.3.6.1.2.1.17.7.1.4.5.1.1'
-		vlan_pids = self._snmp_single_bulk('Native VLAN', vlan_pid_lookup)
-		for key, val in vlan_pids.items():
-			port_id = key[len(vlan_pid_lookup) + 1:]
-			ret[port_id]['native_vlan'] = val
-
-		vlan_egress_lookup = '1.3.6.1.2.1.17.7.1.4.2.1.4'
-		if 'Linux UBNT' in self.descr:
-			# Ubiquiti devices have their port definitions reversed, (lowest port number at bit 0)
-			reversed = True
-		else:
-			# Specification calls for lowest port number at bit 63
-			reversed = False
-
-		vlan_egresses = self._snmp_single_bulk('VLAN Egress', vlan_egress_lookup)
-		for key, val in vlan_egresses.items():
-			vlan_id = key[len(vlan_egress_lookup) + 3:]
-			# Convert 0xf400040000000000 to an integer so we can check each bit
-			# This translates to 0b11110100000000000000010000000000
-			# where each port (left to right) is 1 or 0 if that VLAN is enabled on that port.
-			vlan_set = int(val[2:], 16)
-
-			for port, port_data in ret.items():
-				if int(port) >= 64:
-					# Only check the first 64 ports
-					break
-				if not reversed and vlan_set >> 64 - int(port) & 1 == 1:
-					# This port is enabled for this VLAN
-					port_data['vlan_allow'].append(vlan_id)
-					self.log('Port %s allows VLAN %s' % (port, vlan_id))
-				elif reversed and vlan_set >> int(port) & 1 == 1:
-					port_data['vlan_allow'].append(vlan_id)
-					self.log('Port %s allows VLAN %s' % (port, vlan_id))
-
-		return ret
-
 	def scan(self):
 		"""
 		Perform a full scan of the device to store all details.
@@ -314,10 +125,10 @@ class Host:
 		"""
 
 		if 'icmp' in self.config['scanners']:
-			self.ping()
+			(ICMPScanner(self)).scan()
 
 		if 'snmp' in self.config['scanners']:
-			self.scan_snmp()
+			(SNMPScanner(self)).scan()
 
 		if self.hostname is None or self.hostname == '':
 			try:
@@ -327,6 +138,16 @@ class Host:
 			except socket.herror:
 				self.log('socket lookup failed')
 				pass
+
+	def scan_neighbors(self):
+		"""
+		Scan this device for any neighbors it may have.
+
+		This is separate from the initial scan to give hosts an opportunity to populate their ARP cache
+		:return:
+		"""
+		if 'snmp' in self.config['scanners']:
+			(SNMPScanner(self)).scan_neighbors()
 
 	def resolve_manufacturer(self):
 		"""
@@ -341,36 +162,6 @@ class Host:
 			except Exception:
 				self.log('MAC address lookup failed')
 				pass
-
-	def get_snmp_neighbors(self):
-		"""
-		Perform a scan of the ARP table of the device to find neighbors.
-		:param community:
-		:return:
-		"""
-
-		if self.neighbors is not None:
-			return self.neighbors
-
-		if self.descr is None:
-			# If no snmp scan performed for the base device already, (or it failed),
-			# do not attempt to perform a neighbor scan.
-			self.neighbors = []
-			return []
-
-		ret = []
-		lookup = '1.3.6.1.2.1.3.1.1.2'
-		neighbors = self._snmp_single_bulk('ARP Table', lookup)
-		for key, val in neighbors.items():
-			ip = '.'.join(key[len(lookup) + 1:].split('.')[2:])
-			val = self._format_snmp_mac(val)
-
-			self.log('%s is at %s' % (ip, val))
-			ret.append((ip, val))
-
-		self.log('Found %s devices' % len(ret))
-		self.neighbors = ret
-		return ret
 
 	def sync_to_suitecrm(self):
 		"""
@@ -440,51 +231,6 @@ class Host:
 		if self.hostname is None or self.hostname == '':
 			self.hostname = self.ip
 
-	def _format_snmp_mac(self, val: str) -> Union[str, None]:
-		"""
-		Format a MAC address from SNMP data to a more human-readable format
-
-		:param val:
-		:return:
-		"""
-		if val == '0x000000000000':
-			# Some devices will return a MAC of all 0's for an interface that is not in use.
-			return None
-
-		if val == '':
-			# Some devices will return just a blank string for their interfaces
-			return None
-
-		if val[0:2] == '0x':
-			# SNMP-provided MAC addresses will have a 0x prefix
-			# Drop that and add ':' every 2 characters to be more MAC-like
-			return ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
-
-		# No modifications required
-		return val
-
-	def _format_snmp_speed(self, val: str) -> Union[str, None]:
-		"""
-		Format a speed value from SNMP data to a more human-readable format
-
-		:param val:
-		:return:
-		"""
-		if val == '25000000000':
-			return '25gbps'
-		elif val == '10000000000':
-			return '10gbps'
-		elif val == '2500000000':
-			return '2.5gbps'
-		elif val == '1000000000':
-			return '1gbps'
-		elif val == '100000000':
-			return '100mbps'
-		elif val == '10000000':
-			return '10mbps'
-		else:
-			return val
-
 	def _generate_suitecrm_payload_if_different(self, server_data: Union[dict, None], data: dict, key: str, value: str):
 		if value and (server_data is None or server_data[key] != value):
 			data[key] = value
@@ -539,49 +285,7 @@ class Host:
 
 		return data
 
-	def scan_snmp(self):
-		"""
-		Scan this device for all SNMP values
-		:param community:
-		:return:
-		"""
-		if 'community' not in self.config:
-			# SNMP scans require a community string
-			return
-
-		val = self.get_snmp_descr()
-		if val is None:
-			# Initial lookup of DESCR failed; do not try to continue.
-			return
-		self._store_descr(val)
-
-		mac = self.get_snmp_mac()
-		if mac is not None:
-			self.mac = mac
-
-		hostname = self.get_snmp_hostname()
-		if hostname is not None:
-			self.hostname = hostname
-
-		contact = self.get_snmp_contact()
-		if contact is not None:
-			self.contact = contact
-
-		firmware = self.get_snmp_firmware()
-		if firmware is not None:
-			self.os_version = firmware
-
-		model = self.get_snmp_model()
-		if model is not None:
-			self.model = model
-
-		location = self.get_snmp_location()
-		if location is not None:
-			self._store_location(location)
-
-		self.ports = self.get_snmp_ports()
-
-	def _store_location(self, val: str):
+	def set_location(self, val: str):
 		"""
 		Check if there is a floor indication ("FL...") in the location and separate that as the floor attribute
 		:param val:
@@ -596,22 +300,6 @@ class Host:
 			self.location = val[len(self.floor) + 2:].strip()
 		else:
 			self.location = val
-
-	def _store_descr(self, val: str):
-		"""
-		Parse and store the description of the device.
-		:param val:
-		:return:
-		"""
-
-		if val is None:
-			return
-
-		self.descr = val
-		data = snmp_parse_descr(val)
-		for key, value in data.items():
-			self.log('Parsed %s as [%s]' % (key, value))
-			setattr(self, key, value)
 
 	def __repr__(self) -> str:
 		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} descr:{self.descr}>'
@@ -663,6 +351,12 @@ class Application:
 		self.host_map = {}
 		"""
 		Map of IP address to the Host index in the `hosts` list.
+		"""
+
+		self.host_config = {}
+		"""
+		Configuration for individual hosts set from the config file.
+		Useful to define credentials or scanners on a per-device basis.
 		"""
 
 		self.config = {}
@@ -782,16 +476,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 			sys.exit(1)
 
 		if cli_args.config:
-			# Allow user to specify a config file to load, this provides the ability to scan multiple networks at once.
-			if not os.path.exists(cli_args.config):
-				print('Config file %s does not exist' % cli_args.config, file=sys.stderr)
-				sys.exit(1)
-			with open(cli_args.config, 'r') as f:
-				data = yaml.safe_load(f)
-				if 'default' in data:
-					self.defaults |= data['default']
-				if 'targets' in data:
-					self.targets = data['targets']
+			self._setup_load_config(cli_args)
 
 		# Parameters that can be set from the command line get defined on the global list to take priority
 		if cli_args.net:
@@ -838,6 +523,25 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		# Store all options
 		self.config = self.defaults | self.globals
 
+	def _setup_load_config(self, cli_args):
+		# Allow user to specify a config file to load, this provides the ability to scan multiple networks at once.
+		if not os.path.exists(cli_args.config):
+			print('Config file %s does not exist' % cli_args.config, file=sys.stderr)
+			sys.exit(1)
+		with open(cli_args.config, 'r') as f:
+			data = yaml.safe_load(f)
+			if 'default' in data:
+				self.defaults |= data['default']
+			if 'targets' in data:
+				self.targets = data['targets']
+			if 'hosts' in data:
+				# Load host-specific configuration, (eg: credentials)
+				for host in data['hosts']:
+					if 'ip' not in host:
+						print('Host configuration missing IP address, skipping', file=sys.stderr)
+						continue
+					self.host_config[host['ip']] = host
+
 	def _setup_load_targets(self):
 		# Build the queue of devices to scan
 		for target in self.targets:
@@ -862,7 +566,13 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 			# Add all hosts from this requested network
 			for ip in ipaddress.ip_network(target['net']).hosts():
-				h = Host(str(ip), config, sync)
+				host_ip = str(ip)
+				if host_ip in self.host_config:
+					# Use a host-specific config, as defined in the config file
+					h = Host(host_ip, self.defaults | target | self.host_config[host_ip] | self.globals, sync)
+				else:
+					# Use target-shared configuration
+					h = Host(host_ip, config, sync)
 				self.queue.put(('scan', h))
 
 	def worker(self):
@@ -883,7 +593,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 					# Secondary scan, (now that the arp cache of the remote devices should be populated)
 					if host.descr:
 						print('Scanning host for neighbors %s' % (host.ip,), file=sys.stderr)
-						host.get_snmp_neighbors()
+						host.scan_neighbors()
 					self.host_queue.put(host)
 				else:
 					logging.error('Unsupported action %s' % action)

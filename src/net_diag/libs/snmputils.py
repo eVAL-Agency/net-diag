@@ -1,10 +1,18 @@
-from pysnmp import hlapi
+from pysnmp.hlapi.v3arch.asyncio import ObjectType
+from pysnmp.hlapi.v3arch.asyncio import ObjectIdentity
+from pysnmp.hlapi.v3arch.asyncio import SnmpEngine
+from pysnmp.hlapi.v3arch.asyncio import bulk_cmd
+from pysnmp.hlapi.v3arch.asyncio import get_cmd
+from pysnmp.hlapi.v3arch.asyncio import CommunityData
+from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget
+from pysnmp.hlapi.v3arch.asyncio import ContextData
+from pysnmp.proto import rfc1905
 from typing import Union
 import re
 import logging
 
 
-def snmp_lookup_single(hostname: str, community: str, oid: str) -> Union[str, None]:
+async def snmp_lookup_single(hostname: str, community: str, oid: str) -> Union[str, None]:
 	"""
 	Lookup an OID value on a given host.
 
@@ -14,49 +22,50 @@ def snmp_lookup_single(hostname: str, community: str, oid: str) -> Union[str, No
 	:return:
 	"""
 
-	error_responses = (
-		'No Such Object currently exists at this OID',
+	lookups = ObjectType(ObjectIdentity(oid))
+	snmpEngine = SnmpEngine()
+	auth = CommunityData(community, mpModel=1)
+	channel = await UdpTransportTarget.create((hostname, 161), timeout=2, retries=0)
+	error_indication, error_status, error_index, var_binds = await get_cmd(
+		snmpEngine,
+		auth,
+		channel,
+		ContextData(),
+		lookups
 	)
 
-	# snmpEngine, authData, transportTarget, contextData, nonRepeaters, maxRepetitions, *varBinds
-	iterator = hlapi.getCmd(
-		hlapi.SnmpEngine(),
-		hlapi.CommunityData(community, mpModel=1),
-		hlapi.UdpTransportTarget((hostname, 161), timeout=2, retries=0),
-		hlapi.ContextData(),
-		hlapi.ObjectType(hlapi.ObjectIdentity(oid))
-	)
-
-	error_indication, error_status, error_index, var_binds = next(iterator)
 	if error_indication:
 		# Usually indicates no SNMP on target device or credentials were incorrect.
-		logging.debug('[snmp_lookup_single] %s' % error_indication.__str__())
+		logging.debug('[snmp_lookup] %s' % error_indication.__str__())
+		return None
+	elif error_status:  # SNMP agent errors
+		logging.debug(
+			'[snmp_lookup] %s at %s' % (
+				error_status.prettyPrint(),
+				var_binds[int(error_index) - 1][0] if error_index else '?'
+			)
+		)
 		return None
 	else:
-		if error_status:  # SNMP agent errors
-			logging.debug(
-				'[snmp_lookup_single] %s at %s' % (
-					error_status.prettyPrint(),
-					var_binds[int(error_index) - 1] if error_index else '?'
-				)
-			)
-			return None
-		else:
-			for var_bind in var_binds:  # SNMP response contents
-				key = var_bind[0].getOid().__str__()
-				val = var_bind[1].prettyPrint()
+		for var_bind in var_binds:  # SNMP response contents
+			if var_bind[1].tagSet in (
+				rfc1905.NoSuchObject.tagSet,
+				rfc1905.NoSuchInstance.tagSet,
+			):
+				# Key doesn't exist
+				return None
+			key = var_bind[0].getOid().__str__()
+			val = var_bind[1].prettyPrint()
 
-				logging.debug('[snmp_lookup_single] %s = %s' % (key, val))
-				if val in error_responses:
-					return None
-				return val
+			logging.debug('[snmp_lookup] %s = %s' % (key, val))
+			return val
 
 	return None
 
 
-def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
+async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 	"""
-	Lookup a set of OID values on a given host.
+	Lookup an OID value on a given host.
 
 	:param hostname:
 	:param community:
@@ -65,45 +74,55 @@ def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 	"""
 	ret = {}
 
-	iterator = hlapi.bulkCmd(
-		hlapi.SnmpEngine(),
-		hlapi.CommunityData(community, mpModel=1),
-		hlapi.UdpTransportTarget((hostname, 161), timeout=10, retries=0),
-		hlapi.ContextData(),
-		False,
-		5,
-		hlapi.ObjectType(hlapi.ObjectIdentity(oid))
-	)
+	lookups = [ObjectType(ObjectIdentity(oid))]
+	snmpEngine = SnmpEngine()
+	run = True
+	while run:
+		error_indication, error_status, error_index, var_binds = await bulk_cmd(
+			snmpEngine,
+			CommunityData(community, mpModel=1),
+			await UdpTransportTarget.create((hostname, 161), timeout=3, retries=0),
+			ContextData(),
+			0,
+			20,
+			*lookups
+		)
 
-	try:
-		while True:
-			error_indication, error_status, error_index, var_binds = next(iterator)
-			if error_indication:
-				# Usually indicates no SNMP on target device or credentials were incorrect.
-				logging.debug('[snmp_lookup_bulk] %s' % error_indication.__str__())
-				return ret
-			else:
-				if error_status:  # SNMP agent errors
-					logging.debug(
-						'[snmp_lookup_bulk] %s at %s' % (
-							error_status.prettyPrint(),
-							var_binds[int(error_index) - 1] if error_index else '?'
-						)
-					)
-					return ret
-				else:
-					for var_bind in var_binds:  # SNMP response contents
-						key = var_bind[0].getOid().__str__()
-						val = var_bind[1].prettyPrint()
+		if error_indication:
+			# Usually indicates no SNMP on target device or credentials were incorrect.
+			logging.debug('[snmp_lookup] %s' % error_indication.__str__())
+			run = False
+		elif error_status:  # SNMP agent errors
+			logging.debug(
+				'[snmp_lookup] %s at %s' % (
+					error_status.prettyPrint(),
+					var_binds[int(error_index) - 1][0] if error_index else '?'
+				)
+			)
+			run = False
+		else:
+			for var_bind in var_binds:  # SNMP response contents
+				if var_bind[1].tagSet in (
+					rfc1905.NoSuchObject.tagSet,
+					rfc1905.NoSuchInstance.tagSet,
+				):
+					# Key doesn't exist
+					run = False
+					break
+				key = var_bind[0].getOid().__str__()
+				val = var_bind[1].prettyPrint()
 
-						if key[0:len(oid)] != oid:
-							raise StopIteration
+				if key[0:len(oid)] != oid:
+					# New OID entered, stop the lookup
+					run = False
+					break
 
-						logging.debug('[snmp_lookup_bulk] %s = %s' % (key, val))
+				logging.debug('[snmp_lookup] %s = %s' % (key, val))
 
-						ret[key] = val
-	except StopIteration:
-		pass
+				ret[key] = val
+
+		# Reset the lookup to the last OID returned, so we can continue
+		lookups = [var_binds[len(var_binds) - 1]]
 
 	return ret
 
@@ -132,7 +151,7 @@ def snmp_parse_descr(descr: str) -> dict:
 		(
 			# 24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots
 			r'^24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots$',
-			{'type': 'Switch'}
+			{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': 'Switch'}
 		),
 		(
 			# H.264 Mega-Pixel Network Camera
@@ -147,7 +166,12 @@ def snmp_parse_descr(descr: str) -> dict:
 		(
 			# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
 			r'^JetStream 24-Port Gigabit Smart PoE\+ Switch with 4 SFP Slots$',
-			{'type': 'Switch'}
+			{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': 'Switch'}
+		),
+		(
+			# MikroTik RouterOS 6.49.8 (long-term) RB3011UiAS
+			r'^(?P<manufacturer>MikroTik) (?P<os>RouterOS) (?P<os_version>[0-9\.]+) (long-term) RB3011UiAS$',
+			{'type': 'Router', 'model': 'RB3011UiAS-RM'}
 		),
 		(
 			# UAP-AC-Lite 6.6.77.15402
