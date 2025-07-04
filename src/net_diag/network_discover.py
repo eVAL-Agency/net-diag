@@ -67,27 +67,131 @@ class Host:
 		:param config: Configuration parameters
 		:param sync: Sync object (or None) for syncing this device to a backend
 		"""
+
 		self.ip = ip
+		"""
+		IP address of the device
+		:type ip: str
+		"""
+
 		self.mac = None
+		"""
+		MAC address of the device
+		:type mac: str|None
+		"""
+
 		self.hostname = None
+		"""
+		Hostname of the device
+		:type hostname: str|None
+		"""
+
 		self.contact = None
+		"""
+		Contact information for the device, (usually a person or department responsible for it)
+		:type contact: str|None
+		"""
+
 		self.floor = None
+		"""
+		Floor where the device is located, (if applicable)
+		:type floor: str|None
+		"""
+
 		self.location = None
+		"""
+		Location where the device is located, (if applicable)
+		:type location: str|None
+		"""
+
 		self.type = None
+		"""
+		Device type, (eg: switch, router, server, etc)
+		:type type: str|None
+		"""
+
 		self.manufacturer = None
+		"""
+		Device manufacturer, (eg: Cisco, Dell, etc)
+		:type manufacturer: str|None
+		"""
+
 		self.model = None
+		"""
+		Device model, (eg: Cisco Catalyst 2960, Dell PowerEdge R740, etc)
+		:type model: str|None
+		"""
+
 		self.os_version = None
+		"""
+		Version of operating system
+		:type os_version: str|None
+		"""
+
 		self.descr = None
+		"""
+		SNMP description of the device, (if available)
+		:type descr: str|None
+		"""
+
+		self.object_id = None
+		"""
+		SNMP object ID of the device, (if available)
+		:type object_id: str|None
+		"""
+
 		self.address = None
+		"""
+		Physical address of the device, (if available)
+		:type address: str|None
+		"""
+
 		self.city = None
+		"""
+		City where the device is located, (if available)
+		:type city: str|None
+		"""
+
 		self.state = None
+		"""
+		State/Province where the device is located, (if available)
+		:type state: str|None
+		"""
+
 		self.log_lines = ''
+		"""
+		Raw log for the discovery of this device, (for debugging purposes)
+		"""
+
 		self.reachable = False
-		self.neighbors = None
+		"""
+		If this device is reachable on the network, (eg: pingable)
+		:type reachable: bool
+		"""
+
 		self.ports = None
+		"""
+		List of network/data ports on the device
+		:type ports: dict[str,dict]|None
+		"""
+
 		self.config = config
+		"""
+		Configuration to use for this device, (eg: SNMP community string, scanners to use, etc)
+		:type config: dict
+		"""
+
 		self.sync = sync
+		"""
+		Sync handler to use for publishing records, if applicable.
+		:type sync: SuiteCRMSync|None
+		"""
+
 		self.neighbors = []
+		"""
+		List of neighbors (IP, MAC) tuples for this device.
+		:type neighbors: list[tuple[str, str]]
+		"""
 
 		# Set override defaults
 		if 'address' in config:

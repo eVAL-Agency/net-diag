@@ -8,7 +8,6 @@ from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget
 from pysnmp.hlapi.v3arch.asyncio import ContextData
 from pysnmp.proto import rfc1905
 from typing import Union
-import re
 import logging
 
 
@@ -125,82 +124,3 @@ async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 		lookups = [var_binds[len(var_binds) - 1]]
 
 	return ret
-
-
-def snmp_parse_descr(descr: str) -> dict:
-	"""
-	Parse SNMP description string and return a dictionary with the parsed values
-
-	Possible keys:
-
-	* manufacturer
-	* type
-	* model
-	* serial
-	* os_version
-
-	:param descr:
-	:return:
-	"""
-	checks = (
-		(
-			#  ; AXIS 212 PTZ; Network Camera; 4.49; Jun 18 2009 13:28; 14D; 1;
-			r'^ ; AXIS (?P<model>[^;]*); Network Camera; (?P<os_version>[^;]*); [ADFJMNOS][aceopu][bcglnprtvy] [0-9]{1,2} [0-9]{4} [0-9]{1,2}:[0-9]{2};.*',  # noqa: E501
-			{'manufacturer': 'Axis Communications AB.', 'type': 'Camera'}
-		),
-		(
-			# 24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots
-			r'^24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots$',
-			{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': 'Switch'}
-		),
-		(
-			# H.264 Mega-Pixel Network Camera
-			r'^H.264 Mega-Pixel Network Camera$',
-			{'type': 'Camera'}
-		),
-		(
-			# HP ETHERNET MULTI-ENVIRONMENT,SN:VNB8JCKF0M,FN:1N807W6,SVCID:27057,PID:HP Color LaserJet MFP M477fnw
-			r'^HP ETHERNET MULTI-ENVIRONMENT,SN:(?P<serial>[^,]+),FN:[^,]+,SVCID:[^,]+,PID:(?P<model>.*)$',
-			{'manufacturer': 'Hewlett Packard', 'type': 'Printer'}
-		),
-		(
-			# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
-			r'^JetStream 24-Port Gigabit Smart PoE\+ Switch with 4 SFP Slots$',
-			{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': 'Switch'}
-		),
-		(
-			# MikroTik RouterOS 6.49.8 (long-term) RB3011UiAS
-			r'^(?P<manufacturer>MikroTik) (?P<os>RouterOS) (?P<os_version>[0-9\.]+) (long-term) RB3011UiAS$',
-			{'type': 'Router', 'model': 'RB3011UiAS-RM'}
-		),
-		(
-			# UAP-AC-Lite 6.6.77.15402
-			r'^(?P<model>UAP-AC-Lite) (?P<os_version>[^ ]+)$',
-			{'manufacturer': 'Ubiquiti Networks Inc.', 'type': 'WIFI'}
-		),
-		(
-			# UAP-AC-Pro-Gen2 6.6.77.15402
-			r'^(?P<model>UAP-AC-Pro-Gen2) (?P<os_version>[^ ]+)$',
-			{'manufacturer': 'Ubiquiti Networks Inc.', 'type': 'WIFI'}
-		),
-		(
-			# Ubiquiti UniFi UDM-Pro 4.1.13 Linux 4.19.152 al324
-			r'^Ubiquiti UniFi (?P<model>UDM-Pro) (?P<os_version>[^ ]+) Linux [^ ]+ [^ ]+$',
-			{'manufacturer': 'Ubiquiti Networks Inc.', 'type': 'Router'}
-		)
-	)
-
-	for check in checks:
-		match = re.match(check[0], descr)
-		if match:
-			ret = {}
-			for key, value in check[1].items():
-				# Set hardcoded overrides from the definition
-				ret[key] = value
-			for key, value in match.groupdict().items():
-				ret[key] = value
-
-			return ret
-
-	# No match found
-	return {}
