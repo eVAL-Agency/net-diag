@@ -128,6 +128,12 @@ class Host:
 		:type os_version: str|None
 		"""
 
+		self.serial = None
+		"""
+		Serial number of the device, (if available)
+		:type serial: str|None
+		"""
+
 		self.descr = None
 		"""
 		SNMP description of the device, (if available)
@@ -382,6 +388,7 @@ class Host:
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'loc_floor', self.floor)
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'manufacturer', self.manufacturer)
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'model', self.model)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'serial', self.serial)
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'os_version', self.os_version)
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'type', self.type)
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'description', self.descr)
@@ -419,6 +426,7 @@ class Host:
 			'type': self.type,
 			'manufacturer': self.manufacturer,
 			'model': self.model,
+			'serial': self.serial,
 			'ports': self.ports,
 			'os_version': self.os_version,
 			'descr': self.descr,
