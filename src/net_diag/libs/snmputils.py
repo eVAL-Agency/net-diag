@@ -99,10 +99,6 @@ async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 				)
 			)
 			run = False
-		elif len(var_binds) == 0:
-			# No results returned, stop the lookup
-			logging.debug('[snmp_lookup] No results returned')
-			break
 		else:
 			for var_bind in var_binds:  # SNMP response contents
 				if var_bind[1].tagSet in (
@@ -125,6 +121,9 @@ async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 				ret[key] = val
 
 		# Reset the lookup to the last OID returned, so we can continue
-		lookups = [var_binds[len(var_binds) - 1]]
+		if len(var_binds) > 0 and (len(var_binds) - 1) in var_binds:
+			lookups = [var_binds[len(var_binds) - 1]]
+		else:
+			run = False
 
 	return ret
