@@ -1,0 +1,2640 @@
+OID=.1.0.8802.1.1.2.1.3.3.0, Type=OctetString, Value=WortTechs
+OID=.1.0.8802.1.1.2.1.3.4.0, Type=OctetString, Value=MikroTik RouterOS 6.49.8 (long-term) RB3011UiAS
+OID=.1.0.8802.1.1.2.1.3.5.0, Type=OctetString, Value=(
+OID=.1.0.8802.1.1.2.1.3.6.0, Type=OctetString, Value=(
+OID=.1.0.8802.1.1.2.1.3.7.1.2.1, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.2, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.3, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.4, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.5, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.6, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.7, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.8, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.9, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.10, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.11, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.2.12, Type=Integer, Value=3
+OID=.1.0.8802.1.1.2.1.3.7.1.3.1, Type=OctetString, Value=70:3A:CB:26:41:02
+OID=.1.0.8802.1.1.2.1.3.7.1.3.2, Type=OctetString, Value=2C:C8:1B:71:84:3F
+OID=.1.0.8802.1.1.2.1.3.7.1.3.3, Type=OctetString, Value=2C:C8:1B:71:84:40
+OID=.1.0.8802.1.1.2.1.3.7.1.3.4, Type=OctetString, Value=2C:C8:1B:71:84:41
+OID=.1.0.8802.1.1.2.1.3.7.1.3.5, Type=OctetString, Value=2C:C8:1B:71:84:42
+OID=.1.0.8802.1.1.2.1.3.7.1.3.6, Type=OctetString, Value=2C:C8:1B:71:84:43
+OID=.1.0.8802.1.1.2.1.3.7.1.3.7, Type=OctetString, Value=2C:C8:1B:71:84:44
+OID=.1.0.8802.1.1.2.1.3.7.1.3.8, Type=OctetString, Value=2C:C8:1B:71:84:45
+OID=.1.0.8802.1.1.2.1.3.7.1.3.9, Type=OctetString, Value=2C:C8:1B:71:84:46
+OID=.1.0.8802.1.1.2.1.3.7.1.3.10, Type=OctetString, Value=2C:C8:1B:71:84:47
+OID=.1.0.8802.1.1.2.1.3.7.1.3.11, Type=OctetString, Value=2C:C8:1B:71:84:48
+OID=.1.0.8802.1.1.2.1.3.7.1.3.12, Type=OctetString, Value=2C:C8:1B:71:84:3E
+OID=.1.0.8802.1.1.2.1.3.7.1.4.1, Type=OctetString, Value=ether1
+OID=.1.0.8802.1.1.2.1.3.7.1.4.2, Type=OctetString, Value=ether2
+OID=.1.0.8802.1.1.2.1.3.7.1.4.3, Type=OctetString, Value=ether3
+OID=.1.0.8802.1.1.2.1.3.7.1.4.4, Type=OctetString, Value=ether4
+OID=.1.0.8802.1.1.2.1.3.7.1.4.5, Type=OctetString, Value=ether5
+OID=.1.0.8802.1.1.2.1.3.7.1.4.6, Type=OctetString, Value=sfp1
+OID=.1.0.8802.1.1.2.1.3.7.1.4.7, Type=OctetString, Value=ether6
+OID=.1.0.8802.1.1.2.1.3.7.1.4.8, Type=OctetString, Value=ether7
+OID=.1.0.8802.1.1.2.1.3.7.1.4.9, Type=OctetString, Value=ether8
+OID=.1.0.8802.1.1.2.1.3.7.1.4.10, Type=OctetString, Value=ether9
+OID=.1.0.8802.1.1.2.1.3.7.1.4.11, Type=OctetString, Value=ether10
+OID=.1.0.8802.1.1.2.1.3.7.1.4.12, Type=OctetString, Value=bridgeLocal
+OID=.1.0.8802.1.1.2.1.4.1.1.4.0.0.1, Type=Integer, Value=4
+OID=.1.0.8802.1.1.2.1.4.1.1.5.0.0.1, Type=OctetString, Value=2C:C8:1B:A6:1D:39
+OID=.1.0.8802.1.1.2.1.4.1.1.6.0.0.1, Type=Integer, Value=5
+OID=.1.0.8802.1.1.2.1.4.1.1.7.0.0.1, Type=OctetString, Value=
+OID=.1.0.8802.1.1.2.1.4.1.1.9.0.0.1, Type=OctetString, Value=switch1
+OID=.1.0.8802.1.1.2.1.4.1.1.10.0.0.1, Type=OctetString, Value=
+OID=.1.0.8802.1.1.2.1.4.1.1.11.0.0.1, Type=OctetString, Value=  00
+OID=.1.0.8802.1.1.2.1.4.1.1.12.0.0.1, Type=OctetString, Value=  00
+OID=.1.0.8802.1.1.2.1.4.2.1.1.0.0.1, Type=Integer, Value=1
+OID=.1.0.8802.1.1.2.1.4.2.1.2.0.0.1, Type=OctetString, Value=10.10.1.2
+OID=.1.3.6.1.2.1.1.1.0, Type=OctetString, Value=RouterOS RB3011UiAS
+OID=.1.3.6.1.2.1.1.2.0, Type=OID, Value=1.3.6.1.4.1.14988.1
+OID=.1.3.6.1.2.1.1.3.0, Type=TimeTicks, Value=142 days, 22:08:39.00
+OID=.1.3.6.1.2.1.1.4.0, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.1.5.0, Type=OctetString, Value=WortTechs
+OID=.1.3.6.1.2.1.1.6.0, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.1.7.0, Type=Integer, Value=78
+OID=.1.3.6.1.2.1.2.1.0, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.2.2.1.1.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.2.2.1.1.2, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.1.3, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.2.2.1.1.4, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.2.2.1.1.5, Type=Integer, Value=5
+OID=.1.3.6.1.2.1.2.2.1.1.6, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.1.7, Type=Integer, Value=7
+OID=.1.3.6.1.2.1.2.2.1.1.8, Type=Integer, Value=8
+OID=.1.3.6.1.2.1.2.2.1.1.9, Type=Integer, Value=9
+OID=.1.3.6.1.2.1.2.2.1.1.10, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.2.2.1.1.11, Type=Integer, Value=11
+OID=.1.3.6.1.2.1.2.2.1.1.12, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.2.2.1.2.1, Type=OctetString, Value=ether1
+OID=.1.3.6.1.2.1.2.2.1.2.2, Type=OctetString, Value=ether2
+OID=.1.3.6.1.2.1.2.2.1.2.3, Type=OctetString, Value=ether3
+OID=.1.3.6.1.2.1.2.2.1.2.4, Type=OctetString, Value=ether4
+OID=.1.3.6.1.2.1.2.2.1.2.5, Type=OctetString, Value=ether5
+OID=.1.3.6.1.2.1.2.2.1.2.6, Type=OctetString, Value=sfp1
+OID=.1.3.6.1.2.1.2.2.1.2.7, Type=OctetString, Value=ether6
+OID=.1.3.6.1.2.1.2.2.1.2.8, Type=OctetString, Value=ether7
+OID=.1.3.6.1.2.1.2.2.1.2.9, Type=OctetString, Value=ether8
+OID=.1.3.6.1.2.1.2.2.1.2.10, Type=OctetString, Value=ether9
+OID=.1.3.6.1.2.1.2.2.1.2.11, Type=OctetString, Value=ether10
+OID=.1.3.6.1.2.1.2.2.1.2.12, Type=OctetString, Value=bridgeLocal
+OID=.1.3.6.1.2.1.2.2.1.3.1, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.2, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.3, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.4, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.5, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.6, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.7, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.8, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.9, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.10, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.11, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.3.12, Type=Integer, Value=209
+OID=.1.3.6.1.2.1.2.2.1.4.1, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.2, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.3, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.4, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.5, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.6, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.7, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.8, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.9, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.10, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.11, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.4.12, Type=Integer, Value=1500
+OID=.1.3.6.1.2.1.2.2.1.5.1, Type=Gauge32, Value=1000000000
+OID=.1.3.6.1.2.1.2.2.1.5.2, Type=Gauge32, Value=1000000000
+OID=.1.3.6.1.2.1.2.2.1.5.3, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.4, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.5, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.6, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.7, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.8, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.9, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.10, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.11, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.5.12, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.6.1, Type=OctetString, Value=  70 3A CB 26 41 02
+OID=.1.3.6.1.2.1.2.2.1.6.2, Type=OctetString, Value=  2C C8 1B 71 84 3F
+OID=.1.3.6.1.2.1.2.2.1.6.3, Type=OctetString, Value=  2C C8 1B 71 84 40
+OID=.1.3.6.1.2.1.2.2.1.6.4, Type=OctetString, Value=  2C C8 1B 71 84 41
+OID=.1.3.6.1.2.1.2.2.1.6.5, Type=OctetString, Value=  2C C8 1B 71 84 42
+OID=.1.3.6.1.2.1.2.2.1.6.6, Type=OctetString, Value=  2C C8 1B 71 84 43
+OID=.1.3.6.1.2.1.2.2.1.6.7, Type=OctetString, Value=  2C C8 1B 71 84 44
+OID=.1.3.6.1.2.1.2.2.1.6.8, Type=OctetString, Value=  2C C8 1B 71 84 45
+OID=.1.3.6.1.2.1.2.2.1.6.9, Type=OctetString, Value=  2C C8 1B 71 84 46
+OID=.1.3.6.1.2.1.2.2.1.6.10, Type=OctetString, Value=  2C C8 1B 71 84 47
+OID=.1.3.6.1.2.1.2.2.1.6.11, Type=OctetString, Value=  2C C8 1B 71 84 48
+OID=.1.3.6.1.2.1.2.2.1.6.12, Type=OctetString, Value=  2C C8 1B 71 84 3E
+OID=.1.3.6.1.2.1.2.2.1.7.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.2.2.1.7.2, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.2.2.1.7.3, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.7.4, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.7.5, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.7.6, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.2.2.1.7.7, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.7.8, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.7.9, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.7.10, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.7.11, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.7.12, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.2.2.1.8.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.2.2.1.8.2, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.2.2.1.8.3, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.8.4, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.8.5, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.8.6, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.2.2.1.8.7, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.8.8, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.8.9, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.8.10, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.8.11, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.2.2.1.8.12, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.2.2.1.9.1, Type=TimeTicks, Value=0:00:20.86
+OID=.1.3.6.1.2.1.2.2.1.9.2, Type=TimeTicks, Value=0:00:20.86
+OID=.1.3.6.1.2.1.2.2.1.9.3, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.4, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.5, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.6, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.7, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.8, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.9, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.10, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.11, Type=TimeTicks, Value=0:00:00.00
+OID=.1.3.6.1.2.1.2.2.1.9.12, Type=TimeTicks, Value=0:00:16.68
+OID=.1.3.6.1.2.1.2.2.1.10.1, Type=Counter32, Value=1515434591
+OID=.1.3.6.1.2.1.2.2.1.10.2, Type=Counter32, Value=4151185748
+OID=.1.3.6.1.2.1.2.2.1.10.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.10.12, Type=Counter32, Value=2383470891
+OID=.1.3.6.1.2.1.2.2.1.11.1, Type=Counter32, Value=437825003
+OID=.1.3.6.1.2.1.2.2.1.11.2, Type=Counter32, Value=2259604427
+OID=.1.3.6.1.2.1.2.2.1.11.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.11.12, Type=Counter32, Value=2195169811
+OID=.1.3.6.1.2.1.2.2.1.12.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.12.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.13.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.14.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.15.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.1, Type=Counter32, Value=201386518
+OID=.1.3.6.1.2.1.2.2.1.16.2, Type=Counter32, Value=3232943426
+OID=.1.3.6.1.2.1.2.2.1.16.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.16.12, Type=Counter32, Value=3654686929
+OID=.1.3.6.1.2.1.2.2.1.17.1, Type=Counter32, Value=1458069416
+OID=.1.3.6.1.2.1.2.2.1.17.2, Type=Counter32, Value=1020484695
+OID=.1.3.6.1.2.1.2.2.1.17.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.17.12, Type=Counter32, Value=1006721979
+OID=.1.3.6.1.2.1.2.2.1.18.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.18.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.19.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.20.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.1, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.2, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.3, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.4, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.5, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.6, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.7, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.8, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.9, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.10, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.11, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.21.12, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.2.2.1.22.1, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.2, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.3, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.4, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.5, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.6, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.7, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.8, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.9, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.10, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.11, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.2.2.1.22.12, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.4.1.0, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.2.0, Type=Integer, Value=255
+OID=.1.3.6.1.2.1.4.20.1.1.10.10.1.1, Type=IpAddress, Value=10.10.1.1
+OID=.1.3.6.1.2.1.4.20.1.1.172.172.156.202, Type=IpAddress, Value=172.172.156.202
+OID=.1.3.6.1.2.1.4.20.1.2.10.10.1.1, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.20.1.2.172.172.156.202, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.20.1.3.10.10.1.1, Type=IpAddress, Value=255.255.255.0
+OID=.1.3.6.1.2.1.4.20.1.3.172.172.156.202, Type=IpAddress, Value=255.255.255.0
+OID=.1.3.6.1.2.1.4.20.1.4.10.10.1.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.20.1.4.172.172.156.202, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.20.1.5.10.10.1.1, Type=Integer, Value=65535
+OID=.1.3.6.1.2.1.4.20.1.5.172.172.156.202, Type=Integer, Value=65535
+OID=.1.3.6.1.2.1.4.21.1.1.0.0.0.0, Type=IpAddress, Value=0.0.0.0
+OID=.1.3.6.1.2.1.4.21.1.1.10.10.1.0, Type=IpAddress, Value=10.10.1.0
+OID=.1.3.6.1.2.1.4.21.1.1.172.172.156.0, Type=IpAddress, Value=172.172.156.0
+OID=.1.3.6.1.2.1.4.21.1.2.0.0.0.0, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.21.1.2.10.10.1.0, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.21.1.2.172.172.156.0, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.21.1.3.0.0.0.0, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.21.1.3.10.10.1.0, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.21.1.3.172.172.156.0, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.21.1.4.0.0.0.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.4.10.10.1.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.4.172.172.156.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.5.0.0.0.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.5.10.10.1.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.5.172.172.156.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.6.0.0.0.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.6.10.10.1.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.6.172.172.156.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.7.0.0.0.0, Type=IpAddress, Value=172.172.156.1
+OID=.1.3.6.1.2.1.4.21.1.7.10.10.1.0, Type=IpAddress, Value=10.10.1.1
+OID=.1.3.6.1.2.1.4.21.1.7.172.172.156.0, Type=IpAddress, Value=172.172.156.202
+OID=.1.3.6.1.2.1.4.21.1.8.0.0.0.0, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.4.21.1.8.10.10.1.0, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.21.1.8.172.172.156.0, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.21.1.9.0.0.0.0, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.4.21.1.9.10.10.1.0, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.21.1.9.172.172.156.0, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.21.1.10.0.0.0.0, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.21.1.10.10.10.1.0, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.21.1.10.172.172.156.0, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.21.1.11.0.0.0.0, Type=IpAddress, Value=0.0.0.0
+OID=.1.3.6.1.2.1.4.21.1.11.10.10.1.0, Type=IpAddress, Value=255.255.255.0
+OID=.1.3.6.1.2.1.4.21.1.11.172.172.156.0, Type=IpAddress, Value=255.255.255.0
+OID=.1.3.6.1.2.1.4.21.1.12.0.0.0.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.12.10.10.1.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.12.172.172.156.0, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.21.1.13.0.0.0.0, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.4.21.1.13.10.10.1.0, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.4.21.1.13.172.172.156.0, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.4.22.1.1.1.172.172.156.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.22.1.1.1.172.172.156.61, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.3, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.5, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.6, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.9, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.10, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.11, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.12, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.13, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.15, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.17, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.18, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.20, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.22, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.24, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.25, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.26, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.28, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.29, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.31, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.32, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.33, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.34, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.35, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.38, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.40, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.41, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.42, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.43, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.46, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.48, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.63, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.69, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.72, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.78, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.87, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.93, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.104, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.108, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.111, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.112, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.114, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.117, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.123, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.125, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.126, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.127, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.128, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.142, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.147, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.148, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.156, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.172, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.180, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.183, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.187, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.189, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.204, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.212, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.228, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.1.12.10.10.1.245, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.22.1.2.1.172.172.156.1, Type=OctetString, Value=  4C 5E 0C 13 D5 52
+OID=.1.3.6.1.2.1.4.22.1.2.1.172.172.156.61, Type=OctetString, Value=  4C 5E 0C 13 D5 52
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.3, Type=OctetString, Value=  00 11 32 D6 40 19
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.5, Type=OctetString, Value=  BC 24 11 D0 CE 84
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.6, Type=OctetString, Value=  BC 24 11 63 67 19
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.9, Type=OctetString, Value=  BC 24 11 D2 18 92
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.10, Type=OctetString, Value=  F0 18 98 E9 48 20
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.11, Type=OctetString, Value=  BC 24 11 55 75 13
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.12, Type=OctetString, Value=  BC 24 11 94 13 07
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.13, Type=OctetString, Value=  2C F0 5D 8C 8B 0B
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.15, Type=OctetString, Value=  5C CF 7F 43 4E 07
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.17, Type=OctetString, Value=  10 2C B1 0B F2 2F
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.18, Type=OctetString, Value=  60 01 94 DB 83 09
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.20, Type=OctetString, Value=  D8 47 32 E1 2E FC
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.22, Type=OctetString, Value=  A0 92 08 D3 A3 BA
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.24, Type=OctetString, Value=  BC 10 2F 55 60 94
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.25, Type=OctetString, Value=  5C 41 5A 3E 93 0F
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.26, Type=OctetString, Value=  9C 1C 37 06 50 BB
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.28, Type=OctetString, Value=  90 F8 2E 9B 89 9B
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.29, Type=OctetString, Value=  94 3A 91 7F B3 80
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.31, Type=OctetString, Value=  7C D5 66 F0 4C 99
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.32, Type=OctetString, Value=  D8 3B DA AC 1F 34
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.33, Type=OctetString, Value=  50 FD D5 76 46 C3
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.34, Type=OctetString, Value=  00 F3 61 14 49 FA
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.35, Type=OctetString, Value=  00 17 88 A2 04 F5
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.38, Type=OctetString, Value=  98 F4 AB D2 76 D1
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.40, Type=OctetString, Value=  74 C1 7E CC C8 EA
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.41, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.42, Type=OctetString, Value=  5C 41 5A 76 7D EA
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.43, Type=OctetString, Value=  38 F7 3D 04 0A 5C
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.46, Type=OctetString, Value=  7C 63 05 58 BF BF
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.48, Type=OctetString, Value=  EA 6C 1B 5E 5F 5B
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.63, Type=OctetString, Value=  64 52 99 EA 59 24
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.69, Type=OctetString, Value=  4A 52 4C 1B 51 3F
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.72, Type=OctetString, Value=  24 62 AB 3B 25 1B
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.78, Type=OctetString, Value=  F0 18 98 B2 5E 47
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.87, Type=OctetString, Value=  38 56 3D 1A 65 91
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.93, Type=OctetString, Value=  28 F5 2B E9 E7 40
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.104, Type=OctetString, Value=  48 5F 2D A4 21 84
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.108, Type=OctetString, Value=  EC FA BC B8 4A 20
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.111, Type=OctetString, Value=  10 59 32 E8 00 4E
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.112, Type=OctetString, Value=  C0 8D 51 03 B6 16
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.114, Type=OctetString, Value=  80 5B 65 5E 9A 1A
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.117, Type=OctetString, Value=  68 B6 91 3E B6 6E
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.123, Type=OctetString, Value=  D8 5E D3 89 20 2F
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.125, Type=OctetString, Value=  50 DC E7 34 FF 52
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.126, Type=OctetString, Value=  04 D6 0E 56 D0 28
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.127, Type=OctetString, Value=  2E 13 45 0D 0A 25
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.128, Type=OctetString, Value=  8C 85 80 17 E1 F8
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.142, Type=OctetString, Value=  AE 13 99 1F 32 CC
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.147, Type=OctetString, Value=  C0 74 AD 40 77 4F
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.148, Type=OctetString, Value=  FC 3C D7 B5 4E A1
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.156, Type=OctetString, Value=  5C CF 7F 43 7B E6
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.172, Type=OctetString, Value=  80 96 98 58 DD 28
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.180, Type=OctetString, Value=  A8 51 AB 2B 67 A9
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.183, Type=OctetString, Value=  8E 6F 76 EF 2C C6
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.187, Type=OctetString, Value=  10 2C B1 2B E0 C0
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.189, Type=OctetString, Value=  D0 C9 07 E0 42 16
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.204, Type=OctetString, Value=  8A 76 28 BB B2 C9
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.212, Type=OctetString, Value=  2A B5 5D 5C AB 90
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.228, Type=OctetString, Value=  D8 43 AE 43 45 4B
+OID=.1.3.6.1.2.1.4.22.1.2.12.10.10.1.245, Type=OctetString, Value=  40 9F 38 00 FF D9
+OID=.1.3.6.1.2.1.4.22.1.3.1.172.172.156.1, Type=IpAddress, Value=172.172.156.1
+OID=.1.3.6.1.2.1.4.22.1.3.1.172.172.156.61, Type=IpAddress, Value=172.172.156.61
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.3, Type=IpAddress, Value=10.10.1.3
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.5, Type=IpAddress, Value=10.10.1.5
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.6, Type=IpAddress, Value=10.10.1.6
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.9, Type=IpAddress, Value=10.10.1.9
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.10, Type=IpAddress, Value=10.10.1.10
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.11, Type=IpAddress, Value=10.10.1.11
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.12, Type=IpAddress, Value=10.10.1.12
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.13, Type=IpAddress, Value=10.10.1.13
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.15, Type=IpAddress, Value=10.10.1.15
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.17, Type=IpAddress, Value=10.10.1.17
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.18, Type=IpAddress, Value=10.10.1.18
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.20, Type=IpAddress, Value=10.10.1.20
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.22, Type=IpAddress, Value=10.10.1.22
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.24, Type=IpAddress, Value=10.10.1.24
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.25, Type=IpAddress, Value=10.10.1.25
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.26, Type=IpAddress, Value=10.10.1.26
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.28, Type=IpAddress, Value=10.10.1.28
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.29, Type=IpAddress, Value=10.10.1.29
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.31, Type=IpAddress, Value=10.10.1.31
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.32, Type=IpAddress, Value=10.10.1.32
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.33, Type=IpAddress, Value=10.10.1.33
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.34, Type=IpAddress, Value=10.10.1.34
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.35, Type=IpAddress, Value=10.10.1.35
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.38, Type=IpAddress, Value=10.10.1.38
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.40, Type=IpAddress, Value=10.10.1.40
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.41, Type=IpAddress, Value=10.10.1.41
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.42, Type=IpAddress, Value=10.10.1.42
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.43, Type=IpAddress, Value=10.10.1.43
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.46, Type=IpAddress, Value=10.10.1.46
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.48, Type=IpAddress, Value=10.10.1.48
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.63, Type=IpAddress, Value=10.10.1.63
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.69, Type=IpAddress, Value=10.10.1.69
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.72, Type=IpAddress, Value=10.10.1.72
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.78, Type=IpAddress, Value=10.10.1.78
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.87, Type=IpAddress, Value=10.10.1.87
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.93, Type=IpAddress, Value=10.10.1.93
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.104, Type=IpAddress, Value=10.10.1.104
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.108, Type=IpAddress, Value=10.10.1.108
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.111, Type=IpAddress, Value=10.10.1.111
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.112, Type=IpAddress, Value=10.10.1.112
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.114, Type=IpAddress, Value=10.10.1.114
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.117, Type=IpAddress, Value=10.10.1.117
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.123, Type=IpAddress, Value=10.10.1.123
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.125, Type=IpAddress, Value=10.10.1.125
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.126, Type=IpAddress, Value=10.10.1.126
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.127, Type=IpAddress, Value=10.10.1.127
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.128, Type=IpAddress, Value=10.10.1.128
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.142, Type=IpAddress, Value=10.10.1.142
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.147, Type=IpAddress, Value=10.10.1.147
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.148, Type=IpAddress, Value=10.10.1.148
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.156, Type=IpAddress, Value=10.10.1.156
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.172, Type=IpAddress, Value=10.10.1.172
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.180, Type=IpAddress, Value=10.10.1.180
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.183, Type=IpAddress, Value=10.10.1.183
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.187, Type=IpAddress, Value=10.10.1.187
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.189, Type=IpAddress, Value=10.10.1.189
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.204, Type=IpAddress, Value=10.10.1.204
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.212, Type=IpAddress, Value=10.10.1.212
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.228, Type=IpAddress, Value=10.10.1.228
+OID=.1.3.6.1.2.1.4.22.1.3.12.10.10.1.245, Type=IpAddress, Value=10.10.1.245
+OID=.1.3.6.1.2.1.4.22.1.4.1.172.172.156.1, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.1.172.172.156.61, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.3, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.5, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.6, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.9, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.10, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.11, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.12, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.13, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.15, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.17, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.18, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.20, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.22, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.24, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.25, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.26, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.28, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.29, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.31, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.32, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.33, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.34, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.35, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.38, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.40, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.41, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.42, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.43, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.46, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.48, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.63, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.69, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.72, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.78, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.87, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.93, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.104, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.108, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.111, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.112, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.114, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.117, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.123, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.125, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.126, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.127, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.128, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.142, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.147, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.148, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.156, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.172, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.180, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.183, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.187, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.189, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.204, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.212, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.228, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.22.1.4.12.10.10.1.245, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.24.3.0, Type=Gauge32, Value=3
+OID=.1.3.6.1.2.1.4.24.4.1.1.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=IpAddress, Value=0.0.0.0
+OID=.1.3.6.1.2.1.4.24.4.1.1.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=IpAddress, Value=10.10.1.0
+OID=.1.3.6.1.2.1.4.24.4.1.1.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=IpAddress, Value=172.172.156.0
+OID=.1.3.6.1.2.1.4.24.4.1.2.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=IpAddress, Value=0.0.0.0
+OID=.1.3.6.1.2.1.4.24.4.1.2.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=IpAddress, Value=255.255.255.0
+OID=.1.3.6.1.2.1.4.24.4.1.2.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=IpAddress, Value=255.255.255.0
+OID=.1.3.6.1.2.1.4.24.4.1.3.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.3.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.3.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.4.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=IpAddress, Value=172.172.156.1
+OID=.1.3.6.1.2.1.4.24.4.1.4.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=IpAddress, Value=10.10.1.1
+OID=.1.3.6.1.2.1.4.24.4.1.4.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=IpAddress, Value=172.172.156.202
+OID=.1.3.6.1.2.1.4.24.4.1.5.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.24.4.1.5.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=12
+OID=.1.3.6.1.2.1.4.24.4.1.5.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.24.4.1.6.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.4.24.4.1.6.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.24.4.1.6.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.24.4.1.7.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.4.24.4.1.7.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.4.24.4.1.7.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.4.24.4.1.8.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.8.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.8.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.9.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.4.24.4.1.9.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.4.24.4.1.9.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.4.24.4.1.10.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.10.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.10.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.11.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.24.4.1.11.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.11.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.4.24.4.1.12.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.12.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.12.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.13.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.13.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.13.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.14.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.14.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.14.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.15.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.15.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.15.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.4.24.4.1.16.0.0.0.0.0.0.0.0.0.172.172.156.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.24.4.1.16.10.10.1.0.255.255.255.0.0.10.10.1.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.4.24.4.1.16.172.172.156.0.255.255.255.0.0.172.172.156.202, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.1.1.0, Type=OctetString, Value=  2C C8 1B 71 84 3E
+OID=.1.3.6.1.2.1.17.1.4.1.1.2, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.1.4.1.1.3, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.1.4.1.1.4, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.17.1.4.1.1.5, Type=Integer, Value=5
+OID=.1.3.6.1.2.1.17.1.4.1.1.6, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.17.1.4.1.1.7, Type=Integer, Value=7
+OID=.1.3.6.1.2.1.17.1.4.1.1.8, Type=Integer, Value=8
+OID=.1.3.6.1.2.1.17.1.4.1.1.9, Type=Integer, Value=9
+OID=.1.3.6.1.2.1.17.1.4.1.1.10, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.1.4.1.1.11, Type=Integer, Value=11
+OID=.1.3.6.1.2.1.17.1.4.1.2.2, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.1.4.1.2.3, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.1.4.1.2.4, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.17.1.4.1.2.5, Type=Integer, Value=5
+OID=.1.3.6.1.2.1.17.1.4.1.2.6, Type=Integer, Value=7
+OID=.1.3.6.1.2.1.17.1.4.1.2.7, Type=Integer, Value=8
+OID=.1.3.6.1.2.1.17.1.4.1.2.8, Type=Integer, Value=9
+OID=.1.3.6.1.2.1.17.1.4.1.2.9, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.1.4.1.2.10, Type=Integer, Value=11
+OID=.1.3.6.1.2.1.17.1.4.1.2.11, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.17.1.4.1.3.2, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.3, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.4, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.5, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.6, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.7, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.8, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.9, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.10, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.1.4.1.3.11, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.17.2.1.0, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.2.2.0, Type=Integer, Value=32768
+OID=.1.3.6.1.2.1.17.2.15.1.1.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.1.2, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.1.3, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.2.15.1.1.4, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.17.2.15.1.1.5, Type=Integer, Value=5
+OID=.1.3.6.1.2.1.17.2.15.1.1.6, Type=Integer, Value=6
+OID=.1.3.6.1.2.1.17.2.15.1.1.7, Type=Integer, Value=7
+OID=.1.3.6.1.2.1.17.2.15.1.1.8, Type=Integer, Value=8
+OID=.1.3.6.1.2.1.17.2.15.1.1.9, Type=Integer, Value=9
+OID=.1.3.6.1.2.1.17.2.15.1.1.10, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.1.11, Type=Integer, Value=11
+OID=.1.3.6.1.2.1.17.2.15.1.2.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.2.2, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.3, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.4, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.5, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.6, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.7, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.8, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.9, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.10, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.2.11, Type=Integer, Value=128
+OID=.1.3.6.1.2.1.17.2.15.1.3.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.3.2, Type=Integer, Value=5
+OID=.1.3.6.1.2.1.17.2.15.1.3.3, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.3.4, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.3.5, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.3.6, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.3.7, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.3.8, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.3.9, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.3.10, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.3.11, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.4.1, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.2.15.1.4.2, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.3, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.4, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.5, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.6, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.7, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.8, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.9, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.10, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.4.11, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.2.15.1.5.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.5.2, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.3, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.4, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.5, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.6, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.7, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.8, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.9, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.10, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.5.11, Type=Integer, Value=10
+OID=.1.3.6.1.2.1.17.2.15.1.6.1, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.2, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.3, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.4, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.5, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.6, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.7, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.8, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.9, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.10, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.6.11, Type=OctetString, Value=  00 00 00 00 00 00 00 00
+OID=.1.3.6.1.2.1.17.2.15.1.7.1, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.2, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.3, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.4, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.5, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.6, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.7, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.8, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.9, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.10, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.7.11, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.2.15.1.9.1, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.2, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.3, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.4, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.5, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.6, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.7, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.8, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.9, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.10, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.2.15.1.9.11, Type=OctetString, Value=  00 00
+OID=.1.3.6.1.2.1.17.4.3.1.1.0.17.50.214.64.25, Type=OctetString, Value=  00 11 32 D6 40 19
+OID=.1.3.6.1.2.1.17.4.3.1.1.0.23.136.162.4.245, Type=OctetString, Value=  00 17 88 A2 04 F5
+OID=.1.3.6.1.2.1.17.4.3.1.1.0.243.97.20.73.250, Type=OctetString, Value=  00 F3 61 14 49 FA
+OID=.1.3.6.1.2.1.17.4.3.1.1.4.214.14.86.208.40, Type=OctetString, Value=  04 D6 0E 56 D0 28
+OID=.1.3.6.1.2.1.17.4.3.1.1.16.44.177.11.242.47, Type=OctetString, Value=  10 2C B1 0B F2 2F
+OID=.1.3.6.1.2.1.17.4.3.1.1.16.44.177.43.224.192, Type=OctetString, Value=  10 2C B1 2B E0 C0
+OID=.1.3.6.1.2.1.17.4.3.1.1.16.89.50.232.0.78, Type=OctetString, Value=  10 59 32 E8 00 4E
+OID=.1.3.6.1.2.1.17.4.3.1.1.36.98.171.59.37.27, Type=OctetString, Value=  24 62 AB 3B 25 1B
+OID=.1.3.6.1.2.1.17.4.3.1.1.40.245.43.233.231.64, Type=OctetString, Value=  28 F5 2B E9 E7 40
+OID=.1.3.6.1.2.1.17.4.3.1.1.42.181.93.92.171.144, Type=OctetString, Value=  2A B5 5D 5C AB 90
+OID=.1.3.6.1.2.1.17.4.3.1.1.44.200.27.113.132.62, Type=OctetString, Value=  2C C8 1B 71 84 3E
+OID=.1.3.6.1.2.1.17.4.3.1.1.44.200.27.113.132.63, Type=OctetString, Value=  2C C8 1B 71 84 3F
+OID=.1.3.6.1.2.1.17.4.3.1.1.44.200.27.166.29.57, Type=OctetString, Value=  2C C8 1B A6 1D 39
+OID=.1.3.6.1.2.1.17.4.3.1.1.44.240.93.140.139.11, Type=OctetString, Value=  2C F0 5D 8C 8B 0B
+OID=.1.3.6.1.2.1.17.4.3.1.1.46.19.69.13.10.37, Type=OctetString, Value=  2E 13 45 0D 0A 25
+OID=.1.3.6.1.2.1.17.4.3.1.1.56.86.61.26.101.145, Type=OctetString, Value=  38 56 3D 1A 65 91
+OID=.1.3.6.1.2.1.17.4.3.1.1.56.247.61.4.10.92, Type=OctetString, Value=  38 F7 3D 04 0A 5C
+OID=.1.3.6.1.2.1.17.4.3.1.1.64.159.56.0.255.217, Type=OctetString, Value=  40 9F 38 00 FF D9
+OID=.1.3.6.1.2.1.17.4.3.1.1.72.95.45.164.33.132, Type=OctetString, Value=  48 5F 2D A4 21 84
+OID=.1.3.6.1.2.1.17.4.3.1.1.74.82.76.27.81.63, Type=OctetString, Value=  4A 52 4C 1B 51 3F
+OID=.1.3.6.1.2.1.17.4.3.1.1.80.220.231.52.255.82, Type=OctetString, Value=  50 DC E7 34 FF 52
+OID=.1.3.6.1.2.1.17.4.3.1.1.80.253.213.118.70.195, Type=OctetString, Value=  50 FD D5 76 46 C3
+OID=.1.3.6.1.2.1.17.4.3.1.1.92.65.90.62.147.15, Type=OctetString, Value=  5C 41 5A 3E 93 0F
+OID=.1.3.6.1.2.1.17.4.3.1.1.92.65.90.118.125.234, Type=OctetString, Value=  5C 41 5A 76 7D EA
+OID=.1.3.6.1.2.1.17.4.3.1.1.92.207.127.67.78.7, Type=OctetString, Value=  5C CF 7F 43 4E 07
+OID=.1.3.6.1.2.1.17.4.3.1.1.92.207.127.67.123.230, Type=OctetString, Value=  5C CF 7F 43 7B E6
+OID=.1.3.6.1.2.1.17.4.3.1.1.96.1.148.219.131.9, Type=OctetString, Value=  60 01 94 DB 83 09
+OID=.1.3.6.1.2.1.17.4.3.1.1.100.82.153.234.89.36, Type=OctetString, Value=  64 52 99 EA 59 24
+OID=.1.3.6.1.2.1.17.4.3.1.1.104.182.145.62.182.110, Type=OctetString, Value=  68 B6 91 3E B6 6E
+OID=.1.3.6.1.2.1.17.4.3.1.1.116.193.126.204.200.234, Type=OctetString, Value=  74 C1 7E CC C8 EA
+OID=.1.3.6.1.2.1.17.4.3.1.1.124.99.5.88.191.191, Type=OctetString, Value=  7C 63 05 58 BF BF
+OID=.1.3.6.1.2.1.17.4.3.1.1.124.213.102.240.76.153, Type=OctetString, Value=  7C D5 66 F0 4C 99
+OID=.1.3.6.1.2.1.17.4.3.1.1.128.91.101.94.154.26, Type=OctetString, Value=  80 5B 65 5E 9A 1A
+OID=.1.3.6.1.2.1.17.4.3.1.1.128.150.152.88.221.40, Type=OctetString, Value=  80 96 98 58 DD 28
+OID=.1.3.6.1.2.1.17.4.3.1.1.138.118.40.187.178.201, Type=OctetString, Value=  8A 76 28 BB B2 C9
+OID=.1.3.6.1.2.1.17.4.3.1.1.140.133.128.23.225.248, Type=OctetString, Value=  8C 85 80 17 E1 F8
+OID=.1.3.6.1.2.1.17.4.3.1.1.142.111.118.239.44.198, Type=OctetString, Value=  8E 6F 76 EF 2C C6
+OID=.1.3.6.1.2.1.17.4.3.1.1.144.248.46.155.137.155, Type=OctetString, Value=  90 F8 2E 9B 89 9B
+OID=.1.3.6.1.2.1.17.4.3.1.1.148.58.145.127.179.128, Type=OctetString, Value=  94 3A 91 7F B3 80
+OID=.1.3.6.1.2.1.17.4.3.1.1.152.244.171.210.118.209, Type=OctetString, Value=  98 F4 AB D2 76 D1
+OID=.1.3.6.1.2.1.17.4.3.1.1.156.28.55.6.80.187, Type=OctetString, Value=  9C 1C 37 06 50 BB
+OID=.1.3.6.1.2.1.17.4.3.1.1.160.146.8.211.163.186, Type=OctetString, Value=  A0 92 08 D3 A3 BA
+OID=.1.3.6.1.2.1.17.4.3.1.1.168.81.171.43.103.169, Type=OctetString, Value=  A8 51 AB 2B 67 A9
+OID=.1.3.6.1.2.1.17.4.3.1.1.174.19.153.31.50.204, Type=OctetString, Value=  AE 13 99 1F 32 CC
+OID=.1.3.6.1.2.1.17.4.3.1.1.188.16.47.85.96.148, Type=OctetString, Value=  BC 10 2F 55 60 94
+OID=.1.3.6.1.2.1.17.4.3.1.1.188.36.17.85.117.19, Type=OctetString, Value=  BC 24 11 55 75 13
+OID=.1.3.6.1.2.1.17.4.3.1.1.188.36.17.99.103.25, Type=OctetString, Value=  BC 24 11 63 67 19
+OID=.1.3.6.1.2.1.17.4.3.1.1.188.36.17.148.19.7, Type=OctetString, Value=  BC 24 11 94 13 07
+OID=.1.3.6.1.2.1.17.4.3.1.1.188.36.17.208.206.132, Type=OctetString, Value=  BC 24 11 D0 CE 84
+OID=.1.3.6.1.2.1.17.4.3.1.1.188.36.17.210.24.146, Type=OctetString, Value=  BC 24 11 D2 18 92
+OID=.1.3.6.1.2.1.17.4.3.1.1.192.116.173.64.119.79, Type=OctetString, Value=  C0 74 AD 40 77 4F
+OID=.1.3.6.1.2.1.17.4.3.1.1.192.141.81.3.182.22, Type=OctetString, Value=  C0 8D 51 03 B6 16
+OID=.1.3.6.1.2.1.17.4.3.1.1.208.201.7.224.66.22, Type=OctetString, Value=  D0 C9 07 E0 42 16
+OID=.1.3.6.1.2.1.17.4.3.1.1.216.59.218.172.31.52, Type=OctetString, Value=  D8 3B DA AC 1F 34
+OID=.1.3.6.1.2.1.17.4.3.1.1.216.67.174.67.69.75, Type=OctetString, Value=  D8 43 AE 43 45 4B
+OID=.1.3.6.1.2.1.17.4.3.1.1.216.71.50.225.46.248, Type=OctetString, Value=  D8 47 32 E1 2E F8
+OID=.1.3.6.1.2.1.17.4.3.1.1.216.71.50.225.46.252, Type=OctetString, Value=  D8 47 32 E1 2E FC
+OID=.1.3.6.1.2.1.17.4.3.1.1.216.94.211.137.32.47, Type=OctetString, Value=  D8 5E D3 89 20 2F
+OID=.1.3.6.1.2.1.17.4.3.1.1.228.195.42.116.12.172, Type=OctetString, Value=  E4 C3 2A 74 0C AC
+OID=.1.3.6.1.2.1.17.4.3.1.1.228.195.42.118.27.224, Type=OctetString, Value=  E4 C3 2A 76 1B E0
+OID=.1.3.6.1.2.1.17.4.3.1.1.234.108.27.94.95.91, Type=OctetString, Value=  EA 6C 1B 5E 5F 5B
+OID=.1.3.6.1.2.1.17.4.3.1.1.236.250.188.184.74.32, Type=OctetString, Value=  EC FA BC B8 4A 20
+OID=.1.3.6.1.2.1.17.4.3.1.1.240.24.152.178.94.71, Type=OctetString, Value=  F0 18 98 B2 5E 47
+OID=.1.3.6.1.2.1.17.4.3.1.1.240.24.152.233.72.32, Type=OctetString, Value=  F0 18 98 E9 48 20
+OID=.1.3.6.1.2.1.17.4.3.1.1.252.60.215.181.78.161, Type=OctetString, Value=  FC 3C D7 B5 4E A1
+OID=.1.3.6.1.2.1.17.4.3.1.2.0.17.50.214.64.25, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.0.23.136.162.4.245, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.0.243.97.20.73.250, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.4.214.14.86.208.40, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.16.44.177.11.242.47, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.16.44.177.43.224.192, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.16.89.50.232.0.78, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.36.98.171.59.37.27, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.40.245.43.233.231.64, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.42.181.93.92.171.144, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.44.200.27.113.132.62, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.4.3.1.2.44.200.27.113.132.63, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.44.200.27.166.29.57, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.44.240.93.140.139.11, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.46.19.69.13.10.37, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.56.86.61.26.101.145, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.56.247.61.4.10.92, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.64.159.56.0.255.217, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.72.95.45.164.33.132, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.74.82.76.27.81.63, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.80.220.231.52.255.82, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.80.253.213.118.70.195, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.92.65.90.62.147.15, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.92.65.90.118.125.234, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.92.207.127.67.78.7, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.92.207.127.67.123.230, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.96.1.148.219.131.9, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.100.82.153.234.89.36, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.104.182.145.62.182.110, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.116.193.126.204.200.234, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.124.99.5.88.191.191, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.124.213.102.240.76.153, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.128.91.101.94.154.26, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.128.150.152.88.221.40, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.138.118.40.187.178.201, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.140.133.128.23.225.248, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.142.111.118.239.44.198, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.144.248.46.155.137.155, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.148.58.145.127.179.128, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.152.244.171.210.118.209, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.156.28.55.6.80.187, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.160.146.8.211.163.186, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.168.81.171.43.103.169, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.174.19.153.31.50.204, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.188.16.47.85.96.148, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.188.36.17.85.117.19, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.188.36.17.99.103.25, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.188.36.17.148.19.7, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.188.36.17.208.206.132, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.188.36.17.210.24.146, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.192.116.173.64.119.79, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.192.141.81.3.182.22, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.208.201.7.224.66.22, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.216.59.218.172.31.52, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.216.67.174.67.69.75, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.216.71.50.225.46.248, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.216.71.50.225.46.252, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.216.94.211.137.32.47, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.228.195.42.116.12.172, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.228.195.42.118.27.224, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.234.108.27.94.95.91, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.236.250.188.184.74.32, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.240.24.152.178.94.71, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.240.24.152.233.72.32, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.2.252.60.215.181.78.161, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.4.3.1.3.0.17.50.214.64.25, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.0.23.136.162.4.245, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.0.243.97.20.73.250, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.4.214.14.86.208.40, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.16.44.177.11.242.47, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.16.44.177.43.224.192, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.16.89.50.232.0.78, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.36.98.171.59.37.27, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.40.245.43.233.231.64, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.42.181.93.92.171.144, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.44.200.27.113.132.62, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.17.4.3.1.3.44.200.27.113.132.63, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.17.4.3.1.3.44.200.27.166.29.57, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.44.240.93.140.139.11, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.46.19.69.13.10.37, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.56.86.61.26.101.145, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.56.247.61.4.10.92, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.64.159.56.0.255.217, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.72.95.45.164.33.132, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.74.82.76.27.81.63, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.80.220.231.52.255.82, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.80.253.213.118.70.195, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.92.65.90.62.147.15, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.92.65.90.118.125.234, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.92.207.127.67.78.7, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.92.207.127.67.123.230, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.96.1.148.219.131.9, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.100.82.153.234.89.36, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.104.182.145.62.182.110, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.116.193.126.204.200.234, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.124.99.5.88.191.191, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.124.213.102.240.76.153, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.128.91.101.94.154.26, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.128.150.152.88.221.40, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.138.118.40.187.178.201, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.140.133.128.23.225.248, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.142.111.118.239.44.198, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.144.248.46.155.137.155, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.148.58.145.127.179.128, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.152.244.171.210.118.209, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.156.28.55.6.80.187, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.160.146.8.211.163.186, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.168.81.171.43.103.169, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.174.19.153.31.50.204, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.188.16.47.85.96.148, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.188.36.17.85.117.19, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.188.36.17.99.103.25, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.188.36.17.148.19.7, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.188.36.17.208.206.132, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.188.36.17.210.24.146, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.192.116.173.64.119.79, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.192.141.81.3.182.22, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.208.201.7.224.66.22, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.216.59.218.172.31.52, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.216.67.174.67.69.75, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.216.71.50.225.46.248, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.216.71.50.225.46.252, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.216.94.211.137.32.47, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.228.195.42.116.12.172, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.228.195.42.118.27.224, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.234.108.27.94.95.91, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.236.250.188.184.74.32, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.240.24.152.178.94.71, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.240.24.152.233.72.32, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.4.3.1.3.252.60.215.181.78.161, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.0.17.50.214.64.25, Type=OctetString, Value=  00 11 32 D6 40 19
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.0.23.136.162.4.245, Type=OctetString, Value=  00 17 88 A2 04 F5
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.0.243.97.20.73.250, Type=OctetString, Value=  00 F3 61 14 49 FA
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.4.214.14.86.208.40, Type=OctetString, Value=  04 D6 0E 56 D0 28
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.16.44.177.11.242.47, Type=OctetString, Value=  10 2C B1 0B F2 2F
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.16.44.177.43.224.192, Type=OctetString, Value=  10 2C B1 2B E0 C0
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.16.89.50.232.0.78, Type=OctetString, Value=  10 59 32 E8 00 4E
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.36.98.171.59.37.27, Type=OctetString, Value=  24 62 AB 3B 25 1B
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.40.245.43.233.231.64, Type=OctetString, Value=  28 F5 2B E9 E7 40
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.42.181.93.92.171.144, Type=OctetString, Value=  2A B5 5D 5C AB 90
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.44.200.27.113.132.62, Type=OctetString, Value=  2C C8 1B 71 84 3E
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.44.200.27.113.132.63, Type=OctetString, Value=  2C C8 1B 71 84 3F
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.44.200.27.166.29.57, Type=OctetString, Value=  2C C8 1B A6 1D 39
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.44.240.93.140.139.11, Type=OctetString, Value=  2C F0 5D 8C 8B 0B
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.46.19.69.13.10.37, Type=OctetString, Value=  2E 13 45 0D 0A 25
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.56.86.61.26.101.145, Type=OctetString, Value=  38 56 3D 1A 65 91
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.56.247.61.4.10.92, Type=OctetString, Value=  38 F7 3D 04 0A 5C
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.64.159.56.0.255.217, Type=OctetString, Value=  40 9F 38 00 FF D9
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.72.95.45.164.33.132, Type=OctetString, Value=  48 5F 2D A4 21 84
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.74.82.76.27.81.63, Type=OctetString, Value=  4A 52 4C 1B 51 3F
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.80.220.231.52.255.82, Type=OctetString, Value=  50 DC E7 34 FF 52
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.80.253.213.118.70.195, Type=OctetString, Value=  50 FD D5 76 46 C3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.92.65.90.62.147.15, Type=OctetString, Value=  5C 41 5A 3E 93 0F
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.92.65.90.118.125.234, Type=OctetString, Value=  5C 41 5A 76 7D EA
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.92.207.127.67.78.7, Type=OctetString, Value=  5C CF 7F 43 4E 07
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.92.207.127.67.123.230, Type=OctetString, Value=  5C CF 7F 43 7B E6
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.96.1.148.219.131.9, Type=OctetString, Value=  60 01 94 DB 83 09
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.100.82.153.234.89.36, Type=OctetString, Value=  64 52 99 EA 59 24
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.104.182.145.62.182.110, Type=OctetString, Value=  68 B6 91 3E B6 6E
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.116.193.126.204.200.234, Type=OctetString, Value=  74 C1 7E CC C8 EA
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.124.99.5.88.191.191, Type=OctetString, Value=  7C 63 05 58 BF BF
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.124.213.102.240.76.153, Type=OctetString, Value=  7C D5 66 F0 4C 99
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.128.91.101.94.154.26, Type=OctetString, Value=  80 5B 65 5E 9A 1A
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.128.150.152.88.221.40, Type=OctetString, Value=  80 96 98 58 DD 28
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.138.118.40.187.178.201, Type=OctetString, Value=  8A 76 28 BB B2 C9
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.140.133.128.23.225.248, Type=OctetString, Value=  8C 85 80 17 E1 F8
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.142.111.118.239.44.198, Type=OctetString, Value=  8E 6F 76 EF 2C C6
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.144.248.46.155.137.155, Type=OctetString, Value=  90 F8 2E 9B 89 9B
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.148.58.145.127.179.128, Type=OctetString, Value=  94 3A 91 7F B3 80
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.152.244.171.210.118.209, Type=OctetString, Value=  98 F4 AB D2 76 D1
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.156.28.55.6.80.187, Type=OctetString, Value=  9C 1C 37 06 50 BB
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.160.146.8.211.163.186, Type=OctetString, Value=  A0 92 08 D3 A3 BA
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.168.81.171.43.103.169, Type=OctetString, Value=  A8 51 AB 2B 67 A9
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.174.19.153.31.50.204, Type=OctetString, Value=  AE 13 99 1F 32 CC
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.188.16.47.85.96.148, Type=OctetString, Value=  BC 10 2F 55 60 94
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.188.36.17.85.117.19, Type=OctetString, Value=  BC 24 11 55 75 13
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.188.36.17.99.103.25, Type=OctetString, Value=  BC 24 11 63 67 19
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.188.36.17.148.19.7, Type=OctetString, Value=  BC 24 11 94 13 07
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.188.36.17.208.206.132, Type=OctetString, Value=  BC 24 11 D0 CE 84
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.188.36.17.210.24.146, Type=OctetString, Value=  BC 24 11 D2 18 92
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.192.116.173.64.119.79, Type=OctetString, Value=  C0 74 AD 40 77 4F
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.192.141.81.3.182.22, Type=OctetString, Value=  C0 8D 51 03 B6 16
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.208.201.7.224.66.22, Type=OctetString, Value=  D0 C9 07 E0 42 16
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.216.59.218.172.31.52, Type=OctetString, Value=  D8 3B DA AC 1F 34
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.216.67.174.67.69.75, Type=OctetString, Value=  D8 43 AE 43 45 4B
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.216.71.50.225.46.248, Type=OctetString, Value=  D8 47 32 E1 2E F8
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.216.71.50.225.46.252, Type=OctetString, Value=  D8 47 32 E1 2E FC
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.216.94.211.137.32.47, Type=OctetString, Value=  D8 5E D3 89 20 2F
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.228.195.42.116.12.172, Type=OctetString, Value=  E4 C3 2A 74 0C AC
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.228.195.42.118.27.224, Type=OctetString, Value=  E4 C3 2A 76 1B E0
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.234.108.27.94.95.91, Type=OctetString, Value=  EA 6C 1B 5E 5F 5B
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.236.250.188.184.74.32, Type=OctetString, Value=  EC FA BC B8 4A 20
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.240.24.152.178.94.71, Type=OctetString, Value=  F0 18 98 B2 5E 47
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.240.24.152.233.72.32, Type=OctetString, Value=  F0 18 98 E9 48 20
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.1.0.252.60.215.181.78.161, Type=OctetString, Value=  FC 3C D7 B5 4E A1
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.0.17.50.214.64.25, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.0.23.136.162.4.245, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.0.243.97.20.73.250, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.4.214.14.86.208.40, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.16.44.177.11.242.47, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.16.44.177.43.224.192, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.16.89.50.232.0.78, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.36.98.171.59.37.27, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.40.245.43.233.231.64, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.42.181.93.92.171.144, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.44.200.27.113.132.62, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.44.200.27.113.132.63, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.44.200.27.166.29.57, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.44.240.93.140.139.11, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.46.19.69.13.10.37, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.56.86.61.26.101.145, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.56.247.61.4.10.92, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.64.159.56.0.255.217, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.72.95.45.164.33.132, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.74.82.76.27.81.63, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.80.220.231.52.255.82, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.80.253.213.118.70.195, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.92.65.90.62.147.15, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.92.65.90.118.125.234, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.92.207.127.67.78.7, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.92.207.127.67.123.230, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.96.1.148.219.131.9, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.100.82.153.234.89.36, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.104.182.145.62.182.110, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.116.193.126.204.200.234, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.124.99.5.88.191.191, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.124.213.102.240.76.153, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.128.91.101.94.154.26, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.128.150.152.88.221.40, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.138.118.40.187.178.201, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.140.133.128.23.225.248, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.142.111.118.239.44.198, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.144.248.46.155.137.155, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.148.58.145.127.179.128, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.152.244.171.210.118.209, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.156.28.55.6.80.187, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.160.146.8.211.163.186, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.168.81.171.43.103.169, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.174.19.153.31.50.204, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.188.16.47.85.96.148, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.188.36.17.85.117.19, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.188.36.17.99.103.25, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.188.36.17.148.19.7, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.188.36.17.208.206.132, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.188.36.17.210.24.146, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.192.116.173.64.119.79, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.192.141.81.3.182.22, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.208.201.7.224.66.22, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.216.59.218.172.31.52, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.216.67.174.67.69.75, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.216.71.50.225.46.248, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.216.71.50.225.46.252, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.216.94.211.137.32.47, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.228.195.42.116.12.172, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.228.195.42.118.27.224, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.234.108.27.94.95.91, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.236.250.188.184.74.32, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.240.24.152.178.94.71, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.240.24.152.233.72.32, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.2.0.252.60.215.181.78.161, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.0.17.50.214.64.25, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.0.23.136.162.4.245, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.0.243.97.20.73.250, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.4.214.14.86.208.40, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.16.44.177.11.242.47, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.16.44.177.43.224.192, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.16.89.50.232.0.78, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.36.98.171.59.37.27, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.40.245.43.233.231.64, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.42.181.93.92.171.144, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.44.200.27.113.132.62, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.44.200.27.113.132.63, Type=Integer, Value=4
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.44.200.27.166.29.57, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.44.240.93.140.139.11, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.46.19.69.13.10.37, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.56.86.61.26.101.145, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.56.247.61.4.10.92, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.64.159.56.0.255.217, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.72.95.45.164.33.132, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.74.82.76.27.81.63, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.80.220.231.52.255.82, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.80.253.213.118.70.195, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.92.65.90.62.147.15, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.92.65.90.118.125.234, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.92.207.127.67.78.7, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.92.207.127.67.123.230, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.96.1.148.219.131.9, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.100.82.153.234.89.36, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.104.182.145.62.182.110, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.116.193.126.204.200.234, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.124.99.5.88.191.191, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.124.213.102.240.76.153, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.128.91.101.94.154.26, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.128.150.152.88.221.40, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.138.118.40.187.178.201, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.140.133.128.23.225.248, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.142.111.118.239.44.198, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.144.248.46.155.137.155, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.148.58.145.127.179.128, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.152.244.171.210.118.209, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.156.28.55.6.80.187, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.160.146.8.211.163.186, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.168.81.171.43.103.169, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.174.19.153.31.50.204, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.188.16.47.85.96.148, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.188.36.17.85.117.19, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.188.36.17.99.103.25, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.188.36.17.148.19.7, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.188.36.17.208.206.132, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.188.36.17.210.24.146, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.192.116.173.64.119.79, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.192.141.81.3.182.22, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.208.201.7.224.66.22, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.216.59.218.172.31.52, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.216.67.174.67.69.75, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.216.71.50.225.46.248, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.216.71.50.225.46.252, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.216.94.211.137.32.47, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.228.195.42.116.12.172, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.228.195.42.118.27.224, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.234.108.27.94.95.91, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.236.250.188.184.74.32, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.240.24.152.178.94.71, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.240.24.152.233.72.32, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.2.2.1.3.0.252.60.215.181.78.161, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.2, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.3, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.4, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.5, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.6, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.7, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.8, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.9, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.10, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.1.11, Type=Gauge32, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.2, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.3, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.4, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.5, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.6, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.7, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.8, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.9, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.10, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.2.11, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.2, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.3, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.4, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.5, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.6, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.7, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.8, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.9, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.10, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.17.7.1.4.5.1.3.11, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.25.1.1.0, Type=TimeTicks, Value=142 days, 22:08:40.00
+OID=.1.3.6.1.2.1.25.1.2.0, Type=OctetString, Value=  07 E9 06 1D 0D 0A 31 00 2D 04 00
+OID=.1.3.6.1.2.1.25.2.2.0, Type=Integer, Value=1048576
+OID=.1.3.6.1.2.1.25.2.3.1.1.65536, Type=Integer, Value=65536
+OID=.1.3.6.1.2.1.25.2.3.1.1.131072, Type=Integer, Value=131072
+OID=.1.3.6.1.2.1.25.2.3.1.2.65536, Type=OID, Value=1.3.6.1.2.1.25.2.1.2
+OID=.1.3.6.1.2.1.25.2.3.1.2.131072, Type=OID, Value=1.3.6.1.2.1.25.2.1.4
+OID=.1.3.6.1.2.1.25.2.3.1.3.65536, Type=OctetString, Value=main memory
+OID=.1.3.6.1.2.1.25.2.3.1.3.131072, Type=OctetString, Value=system disk
+OID=.1.3.6.1.2.1.25.2.3.1.4.65536, Type=Integer, Value=1024
+OID=.1.3.6.1.2.1.25.2.3.1.4.131072, Type=Integer, Value=1024
+OID=.1.3.6.1.2.1.25.2.3.1.5.65536, Type=Integer, Value=1048576
+OID=.1.3.6.1.2.1.25.2.3.1.5.131072, Type=Integer, Value=131328
+OID=.1.3.6.1.2.1.25.2.3.1.6.65536, Type=Integer, Value=47824
+OID=.1.3.6.1.2.1.25.2.3.1.6.131072, Type=Integer, Value=39360
+OID=.1.3.6.1.2.1.25.2.3.1.7.65536, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.25.2.3.1.7.131072, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.25.3.2.1.1.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.25.3.2.1.1.2, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.25.3.2.1.2.1, Type=OID, Value=1.3.6.1.2.1.25.3.1.3
+OID=.1.3.6.1.2.1.25.3.2.1.2.2, Type=OID, Value=1.3.6.1.2.1.25.3.1.3
+OID=.1.3.6.1.2.1.25.3.2.1.3.1, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.25.3.2.1.3.2, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.25.3.2.1.4.1, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.25.3.2.1.4.2, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.25.3.2.1.5.1, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.25.3.2.1.5.2, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.25.3.2.1.6.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.25.3.2.1.6.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.25.3.3.1.1.1, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.25.3.3.1.1.2, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.25.3.3.1.2.1, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.25.3.3.1.2.2, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.1.1, Type=OctetString, Value=ether1
+OID=.1.3.6.1.2.1.31.1.1.1.1.2, Type=OctetString, Value=ether2
+OID=.1.3.6.1.2.1.31.1.1.1.1.3, Type=OctetString, Value=ether3
+OID=.1.3.6.1.2.1.31.1.1.1.1.4, Type=OctetString, Value=ether4
+OID=.1.3.6.1.2.1.31.1.1.1.1.5, Type=OctetString, Value=ether5
+OID=.1.3.6.1.2.1.31.1.1.1.1.6, Type=OctetString, Value=sfp1
+OID=.1.3.6.1.2.1.31.1.1.1.1.7, Type=OctetString, Value=ether6
+OID=.1.3.6.1.2.1.31.1.1.1.1.8, Type=OctetString, Value=ether7
+OID=.1.3.6.1.2.1.31.1.1.1.1.9, Type=OctetString, Value=ether8
+OID=.1.3.6.1.2.1.31.1.1.1.1.10, Type=OctetString, Value=ether9
+OID=.1.3.6.1.2.1.31.1.1.1.1.11, Type=OctetString, Value=ether10
+OID=.1.3.6.1.2.1.31.1.1.1.1.12, Type=OctetString, Value=bridgeLocal
+OID=.1.3.6.1.2.1.31.1.1.1.2.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.2.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.3.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.4.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.1, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.2, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.3, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.4, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.5, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.6, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.7, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.8, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.9, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.10, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.11, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.5.12, Type=Counter32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.1, Type=Counter64, Value=0x12EA5A5C8109
+OID=.1.3.6.1.2.1.31.1.1.1.6.2, Type=Counter64, Value=0x61AF77869E6
+OID=.1.3.6.1.2.1.31.1.1.1.6.3, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.4, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.5, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.6, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.7, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.8, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.9, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.10, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.11, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.6.12, Type=Counter64, Value=0x60E8E1E571A
+OID=.1.3.6.1.2.1.31.1.1.1.7.1, Type=Counter64, Value=0x41A18B0E1
+OID=.1.3.6.1.2.1.31.1.1.1.7.2, Type=Counter64, Value=0x286AED6F0
+OID=.1.3.6.1.2.1.31.1.1.1.7.3, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.4, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.5, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.6, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.7, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.8, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.9, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.10, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.11, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.7.12, Type=Counter64, Value=0x282D7A581
+OID=.1.3.6.1.2.1.31.1.1.1.8.1, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.2, Type=Counter64, Value=129936173
+OID=.1.3.6.1.2.1.31.1.1.1.8.3, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.4, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.5, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.6, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.7, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.8, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.9, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.10, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.11, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.8.12, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.1, Type=Counter64, Value=8283
+OID=.1.3.6.1.2.1.31.1.1.1.9.2, Type=Counter64, Value=37446456
+OID=.1.3.6.1.2.1.31.1.1.1.9.3, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.4, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.5, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.6, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.7, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.8, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.9, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.10, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.11, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.9.12, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.1, Type=Counter64, Value=0x5890C0B2F2F
+OID=.1.3.6.1.2.1.31.1.1.1.10.2, Type=Counter64, Value=0x136FC0BBE19A
+OID=.1.3.6.1.2.1.31.1.1.1.10.3, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.4, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.5, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.6, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.7, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.8, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.9, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.10, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.11, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.10.12, Type=Counter64, Value=0x135ED9D9D933
+OID=.1.3.6.1.2.1.31.1.1.1.11.1, Type=Counter64, Value=0x256E8629E
+OID=.1.3.6.1.2.1.31.1.1.1.11.2, Type=Counter64, Value=0x43CD35F78
+OID=.1.3.6.1.2.1.31.1.1.1.11.3, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.4, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.5, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.6, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.7, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.8, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.9, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.10, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.11, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.11.12, Type=Counter64, Value=0x43C015DFF
+OID=.1.3.6.1.2.1.31.1.1.1.12.1, Type=Counter64, Value=411604
+OID=.1.3.6.1.2.1.31.1.1.1.12.2, Type=Counter64, Value=6579376
+OID=.1.3.6.1.2.1.31.1.1.1.12.3, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.4, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.5, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.6, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.7, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.8, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.9, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.10, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.11, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.12.12, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.1, Type=Counter64, Value=206623
+OID=.1.3.6.1.2.1.31.1.1.1.13.2, Type=Counter64, Value=17537067
+OID=.1.3.6.1.2.1.31.1.1.1.13.3, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.4, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.5, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.6, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.7, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.8, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.9, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.10, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.11, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.13.12, Type=Counter64, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.1, Type=Gauge32, Value=1000
+OID=.1.3.6.1.2.1.31.1.1.1.15.2, Type=Gauge32, Value=1000
+OID=.1.3.6.1.2.1.31.1.1.1.15.3, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.4, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.5, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.6, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.7, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.8, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.9, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.10, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.11, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.15.12, Type=Gauge32, Value=0
+OID=.1.3.6.1.2.1.31.1.1.1.18.1, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.2, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.3, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.4, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.5, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.6, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.7, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.8, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.9, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.10, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.11, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.31.1.1.1.18.12, Type=OctetString, Value=defconf
+OID=.1.3.6.1.2.1.47.1.1.1.1.1.65536, Type=Integer, Value=65536
+OID=.1.3.6.1.2.1.47.1.1.1.1.1.262145, Type=Integer, Value=262145
+OID=.1.3.6.1.2.1.47.1.1.1.1.1.262146, Type=Integer, Value=262146
+OID=.1.3.6.1.2.1.47.1.1.1.1.1.262147, Type=Integer, Value=262147
+OID=.1.3.6.1.2.1.47.1.1.1.1.1.262148, Type=Integer, Value=262148
+OID=.1.3.6.1.2.1.47.1.1.1.1.2.65536, Type=OctetString, Value=RouterOS 6.49.8 (long-term) on RB3011UiAS
+OID=.1.3.6.1.2.1.47.1.1.1.1.2.262145, Type=OctetString, Value=Linux 3.3.5 xhci-hcd xHCI Host Controller
+OID=.1.3.6.1.2.1.47.1.1.1.1.2.262146, Type=OctetString, Value=Linux 3.3.5 xhci-hcd xHCI Host Controller
+OID=.1.3.6.1.2.1.47.1.1.1.1.2.262147, Type=OctetString, Value=Linux 3.3.5 xhci-hcd xHCI Host Controller
+OID=.1.3.6.1.2.1.47.1.1.1.1.2.262148, Type=OctetString, Value=Linux 3.3.5 xhci-hcd xHCI Host Controller
+OID=.1.3.6.1.2.1.47.1.1.1.1.3.65536, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.47.1.1.1.1.3.262145, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.47.1.1.1.1.3.262146, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.47.1.1.1.1.3.262147, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.47.1.1.1.1.3.262148, Type=OID, Value=0.0
+OID=.1.3.6.1.2.1.47.1.1.1.1.4.65536, Type=Integer, Value=0
+OID=.1.3.6.1.2.1.47.1.1.1.1.4.262145, Type=Integer, Value=65536
+OID=.1.3.6.1.2.1.47.1.1.1.1.4.262146, Type=Integer, Value=65536
+OID=.1.3.6.1.2.1.47.1.1.1.1.4.262147, Type=Integer, Value=65536
+OID=.1.3.6.1.2.1.47.1.1.1.1.4.262148, Type=Integer, Value=65536
+OID=.1.3.6.1.2.1.47.1.1.1.1.5.65536, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.47.1.1.1.1.5.262145, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.47.1.1.1.1.5.262146, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.47.1.1.1.1.5.262147, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.47.1.1.1.1.5.262148, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.47.1.1.1.1.6.65536, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.47.1.1.1.1.6.262145, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.47.1.1.1.1.6.262146, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.47.1.1.1.1.6.262147, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.47.1.1.1.1.6.262148, Type=Integer, Value=-1
+OID=.1.3.6.1.2.1.47.1.1.1.1.7.65536, Type=OctetString, Value=ARMv7
+OID=.1.3.6.1.2.1.47.1.1.1.1.7.262145, Type=OctetString, Value=1-0
+OID=.1.3.6.1.2.1.47.1.1.1.1.7.262146, Type=OctetString, Value=2-0
+OID=.1.3.6.1.2.1.47.1.1.1.1.7.262147, Type=OctetString, Value=3-0
+OID=.1.3.6.1.2.1.47.1.1.1.1.7.262148, Type=OctetString, Value=4-0
+OID=.1.3.6.1.2.1.47.1.1.1.1.8.65536, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.8.262145, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.8.262146, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.8.262147, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.8.262148, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.9.65536, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.9.262145, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.9.262146, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.9.262147, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.9.262148, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.10.65536, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.10.262145, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.10.262146, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.10.262147, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.10.262148, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.11.65536, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.11.262145, Type=OctetString, Value=xhci-hcd.0
+OID=.1.3.6.1.2.1.47.1.1.1.1.11.262146, Type=OctetString, Value=xhci-hcd.0
+OID=.1.3.6.1.2.1.47.1.1.1.1.11.262147, Type=OctetString, Value=xhci-hcd.1
+OID=.1.3.6.1.2.1.47.1.1.1.1.11.262148, Type=OctetString, Value=xhci-hcd.1
+OID=.1.3.6.1.2.1.47.1.1.1.1.12.65536, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.12.262145, Type=OctetString, Value=0x1d6b
+OID=.1.3.6.1.2.1.47.1.1.1.1.12.262146, Type=OctetString, Value=0x1d6b
+OID=.1.3.6.1.2.1.47.1.1.1.1.12.262147, Type=OctetString, Value=0x1d6b
+OID=.1.3.6.1.2.1.47.1.1.1.1.12.262148, Type=OctetString, Value=0x1d6b
+OID=.1.3.6.1.2.1.47.1.1.1.1.13.65536, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.13.262145, Type=OctetString, Value=0x0002
+OID=.1.3.6.1.2.1.47.1.1.1.1.13.262146, Type=OctetString, Value=0x0003
+OID=.1.3.6.1.2.1.47.1.1.1.1.13.262147, Type=OctetString, Value=0x0002
+OID=.1.3.6.1.2.1.47.1.1.1.1.13.262148, Type=OctetString, Value=0x0003
+OID=.1.3.6.1.2.1.47.1.1.1.1.14.65536, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.14.262145, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.14.262146, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.14.262147, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.14.262148, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.15.65536, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.15.262145, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.15.262146, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.15.262147, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.15.262148, Type=OctetString, Value=
+OID=.1.3.6.1.2.1.47.1.1.1.1.16.65536, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.47.1.1.1.1.16.262145, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.47.1.1.1.1.16.262146, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.47.1.1.1.1.16.262147, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.47.1.1.1.1.16.262148, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.1.1.0, Type=OctetString, Value=MikroTik DHCP server
+OID=.1.3.6.1.2.1.9999.1.1.1.2.0, Type=OID, Value=1.3.6.1.4.1.14988.1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.2, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.3, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.5, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.6, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.7, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.9, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.10, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.11, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.12, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.13, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.15, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.16, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.17, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.18, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.20, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.22, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.24, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.25, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.26, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.28, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.29, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.31, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.32, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.33, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.34, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.35, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.38, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.40, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.42, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.43, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.46, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.48, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.63, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.69, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.72, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.76, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.78, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.87, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.93, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.104, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.108, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.111, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.112, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.113, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.114, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.117, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.123, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.125, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.126, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.127, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.128, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.142, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.147, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.148, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.156, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.170, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.172, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.180, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.183, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.187, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.189, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.204, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.212, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.228, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.4.10.10.1.245, Type=Integer, Value=2
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.2, Type=Gauge32, Value=570
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.3, Type=Gauge32, Value=4294967295
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.5, Type=Gauge32, Value=4294967295
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.6, Type=Gauge32, Value=498
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.7, Type=Gauge32, Value=4294967295
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.9, Type=Gauge32, Value=4294967295
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.10, Type=Gauge32, Value=4294967295
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.11, Type=Gauge32, Value=4294967295
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.12, Type=Gauge32, Value=359
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.13, Type=Gauge32, Value=4294967295
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.15, Type=Gauge32, Value=506
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.16, Type=Gauge32, Value=483
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.17, Type=Gauge32, Value=539
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.18, Type=Gauge32, Value=428
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.20, Type=Gauge32, Value=430
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.22, Type=Gauge32, Value=573
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.24, Type=Gauge32, Value=555
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.25, Type=Gauge32, Value=522
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.26, Type=Gauge32, Value=538
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.28, Type=Gauge32, Value=369
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.29, Type=Gauge32, Value=345
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.31, Type=Gauge32, Value=304
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.32, Type=Gauge32, Value=577
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.33, Type=Gauge32, Value=319
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.34, Type=Gauge32, Value=332
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.35, Type=Gauge32, Value=414
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.38, Type=Gauge32, Value=300
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.40, Type=Gauge32, Value=304
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.42, Type=Gauge32, Value=337
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.43, Type=Gauge32, Value=357
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.46, Type=Gauge32, Value=394
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.48, Type=Gauge32, Value=457
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.63, Type=Gauge32, Value=477
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.69, Type=Gauge32, Value=371
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.72, Type=Gauge32, Value=549
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.76, Type=Gauge32, Value=4294967295
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.78, Type=Gauge32, Value=421
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.87, Type=Gauge32, Value=553
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.93, Type=Gauge32, Value=488
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.104, Type=Gauge32, Value=538
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.108, Type=Gauge32, Value=600
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.111, Type=Gauge32, Value=367
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.112, Type=Gauge32, Value=543
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.113, Type=Gauge32, Value=476
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.114, Type=Gauge32, Value=321
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.117, Type=Gauge32, Value=352
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.123, Type=Gauge32, Value=301
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.125, Type=Gauge32, Value=352
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.126, Type=Gauge32, Value=409
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.127, Type=Gauge32, Value=476
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.128, Type=Gauge32, Value=494
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.142, Type=Gauge32, Value=373
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.147, Type=Gauge32, Value=584
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.148, Type=Gauge32, Value=428
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.156, Type=Gauge32, Value=332
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.170, Type=Gauge32, Value=446
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.172, Type=Gauge32, Value=313
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.180, Type=Gauge32, Value=521
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.183, Type=Gauge32, Value=501
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.187, Type=Gauge32, Value=372
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.189, Type=Gauge32, Value=507
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.204, Type=Gauge32, Value=308
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.212, Type=Gauge32, Value=570
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.228, Type=Gauge32, Value=333
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.5.10.10.1.245, Type=Gauge32, Value=345
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.2, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.3, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.5, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.6, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.7, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.9, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.10, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.11, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.12, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.13, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.15, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.16, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.17, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.18, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.20, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.22, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.24, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.25, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.26, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.28, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.29, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.31, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.32, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.33, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.34, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.35, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.38, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.40, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.42, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.43, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.46, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.48, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.63, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.69, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.72, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.76, Type=Integer, Value=1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.78, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.87, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.93, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.104, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.108, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.111, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.112, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.113, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.114, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.117, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.123, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.125, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.126, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.127, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.128, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.142, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.147, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.148, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.156, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.170, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.172, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.180, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.183, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.187, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.189, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.204, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.212, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.228, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.7.10.10.1.245, Type=Integer, Value=3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.2, Type=OctetString, Value=  01 06 2C C8 1B A6 1D 39
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.3, Type=OctetString, Value=  01 06 00 11 32 D6 40 19
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.5, Type=OctetString, Value=  01 06 BC 24 11 D0 CE 84
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.6, Type=OctetString, Value=  01 06 BC 24 11 63 67 19
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.7, Type=OctetString, Value=  01 06 A0 23 9F FB E2 20
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.9, Type=OctetString, Value=  01 06 BC 24 11 D2 18 92
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.10, Type=OctetString, Value=  01 06 F0 18 98 E9 48 20
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.11, Type=OctetString, Value=  01 06 BC 24 11 55 75 13
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.12, Type=OctetString, Value=  01 06 BC 24 11 94 13 07
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.13, Type=OctetString, Value=  01 06 2C F0 5D 8C 8B 0B
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.15, Type=OctetString, Value=  01 06 5C CF 7F 43 4E 07
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.16, Type=OctetString, Value=  01 06 E4 C3 2A 76 1B E0
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.17, Type=OctetString, Value=  01 06 10 2C B1 0B F2 2F
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.18, Type=OctetString, Value=  01 06 60 01 94 DB 83 09
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.20, Type=OctetString, Value=  01 06 D8 47 32 E1 2E FC
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.22, Type=OctetString, Value=  01 06 A0 92 08 D3 A3 BA
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.24, Type=OctetString, Value=  01 06 BC 10 2F 55 60 94
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.25, Type=OctetString, Value=  01 06 5C 41 5A 3E 93 0F
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.26, Type=OctetString, Value=  01 06 9C 1C 37 06 50 BB
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.28, Type=OctetString, Value=  01 06 90 F8 2E 9B 89 9B
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.29, Type=OctetString, Value=  01 06 94 3A 91 7F B3 80
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.31, Type=OctetString, Value=  01 06 7C D5 66 F0 4C 99
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.32, Type=OctetString, Value=  01 06 D8 3B DA AC 1F 34
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.33, Type=OctetString, Value=  01 06 50 FD D5 76 46 C3
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.34, Type=OctetString, Value=  01 06 00 F3 61 14 49 FA
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.35, Type=OctetString, Value=  01 06 00 17 88 A2 04 F5
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.38, Type=OctetString, Value=  01 06 98 F4 AB D2 76 D1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.40, Type=OctetString, Value=  01 06 74 C1 7E CC C8 EA
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.42, Type=OctetString, Value=  01 06 5C 41 5A 76 7D EA
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.43, Type=OctetString, Value=  01 06 38 F7 3D 04 0A 5C
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.46, Type=OctetString, Value=  01 06 7C 63 05 58 BF BF
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.48, Type=OctetString, Value=  01 06 EA 6C 1B 5E 5F 5B
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.63, Type=OctetString, Value=  01 06 64 52 99 EA 59 24
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.69, Type=OctetString, Value=  01 06 4A 52 4C 1B 51 3F
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.72, Type=OctetString, Value=  01 06 24 62 AB 3B 25 1B
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.76, Type=OctetString, Value=  01 06 BC 24 11 15 2F 04
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.78, Type=OctetString, Value=  01 06 F0 18 98 B2 5E 47
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.87, Type=OctetString, Value=  01 06 38 56 3D 1A 65 91
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.93, Type=OctetString, Value=  01 06 28 F5 2B E9 E7 40
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.104, Type=OctetString, Value=  01 06 48 5F 2D A4 21 84
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.108, Type=OctetString, Value=  01 06 EC FA BC B8 4A 20
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.111, Type=OctetString, Value=  01 06 10 59 32 E8 00 4E
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.112, Type=OctetString, Value=  01 06 C0 8D 51 03 B6 16
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.113, Type=OctetString, Value=  01 06 E4 C3 2A 74 0C AC
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.114, Type=OctetString, Value=  01 06 80 5B 65 5E 9A 1A
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.117, Type=OctetString, Value=  01 06 68 B6 91 3E B6 6E
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.123, Type=OctetString, Value=  01 06 D8 5E D3 89 20 2F
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.125, Type=OctetString, Value=  01 06 50 DC E7 34 FF 52
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.126, Type=OctetString, Value=  01 06 04 D6 0E 56 D0 28
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.127, Type=OctetString, Value=  01 06 2E 13 45 0D 0A 25
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.128, Type=OctetString, Value=  01 06 8C 85 80 17 E1 F8
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.142, Type=OctetString, Value=  01 06 AE 13 99 1F 32 CC
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.147, Type=OctetString, Value=  01 06 C0 74 AD 40 77 4F
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.148, Type=OctetString, Value=  01 06 FC 3C D7 B5 4E A1
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.156, Type=OctetString, Value=  01 06 5C CF 7F 43 7B E6
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.170, Type=OctetString, Value=  01 06 D8 47 32 E1 2E F8
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.172, Type=OctetString, Value=  01 06 80 96 98 58 DD 28
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.180, Type=OctetString, Value=  01 06 A8 51 AB 2B 67 A9
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.183, Type=OctetString, Value=  01 06 8E 6F 76 EF 2C C6
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.187, Type=OctetString, Value=  01 06 10 2C B1 2B E0 C0
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.189, Type=OctetString, Value=  01 06 D0 C9 07 E0 42 16
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.204, Type=OctetString, Value=  01 06 8A 76 28 BB B2 C9
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.212, Type=OctetString, Value=  01 06 2A B5 5D 5C AB 90
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.228, Type=OctetString, Value=  01 06 D8 43 AE 43 45 4B
+OID=.1.3.6.1.2.1.9999.1.1.6.4.1.8.10.10.1.245, Type=OctetString, Value=  01 06 40 9F 38 00 FF D9
+OID=.1.3.6.1.4.1.9.9.150.1.1.1.0, Type=Gauge32, Value=0
+OID=.1.3.6.1.4.1.2021.11.10.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.3495.1.1.1.0, Type=Integer, Value=62464
+OID=.1.3.6.1.4.1.3495.1.1.2.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.3495.1.1.3.0, Type=Integer, Value=12348520
+OID=.1.3.6.1.4.1.3495.1.3.2.2.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.3495.1.3.2.5.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.3495.1.3.2.10.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.3495.1.3.2.12.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.3495.1.3.2.13.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.1.4.0, Type=Gauge32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.1.6.0, Type=Gauge32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.1.10.0, Type=Gauge32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.3.8.0, Type=Integer, Value=241
+OID=.1.3.6.1.4.1.14988.1.1.3.9.0, Type=OctetString, Value=n/a
+OID=.1.3.6.1.4.1.14988.1.1.3.10.0, Type=Integer, Value=340
+OID=.1.3.6.1.4.1.14988.1.1.3.14.0, Type=Integer, Value=1400
+OID=.1.3.6.1.4.1.14988.1.1.3.100.1.2.13, Type=OctetString, Value=voltage
+OID=.1.3.6.1.4.1.14988.1.1.3.100.1.2.14, Type=OctetString, Value=temperature
+OID=.1.3.6.1.4.1.14988.1.1.3.100.1.3.13, Type=Gauge32, Value=241
+OID=.1.3.6.1.4.1.14988.1.1.3.100.1.3.14, Type=Gauge32, Value=34
+OID=.1.3.6.1.4.1.14988.1.1.3.100.1.4.13, Type=Integer, Value=3
+OID=.1.3.6.1.4.1.14988.1.1.3.100.1.4.14, Type=Integer, Value=1
+OID=.1.3.6.1.4.1.14988.1.1.4.1.0, Type=OctetString, Value=ALCU-JI8Q
+OID=.1.3.6.1.4.1.14988.1.1.4.2.0, Type=OctetString, Value=  07 B2 01 01 00 01 07 00
+OID=.1.3.6.1.4.1.14988.1.1.4.3.0, Type=Integer, Value=5
+OID=.1.3.6.1.4.1.14988.1.1.4.4.0, Type=OctetString, Value=6.49.8
+OID=.1.3.6.1.4.1.14988.1.1.4.5.0, Type=Integer, Value=7
+OID=.1.3.6.1.4.1.14988.1.1.6.1.0, Type=Gauge32, Value=65
+OID=.1.3.6.1.4.1.14988.1.1.7.1.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.7.2.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.7.3.0, Type=OctetString, Value=E7EA0E923087
+OID=.1.3.6.1.4.1.14988.1.1.7.4.0, Type=OctetString, Value=6.48.3
+OID=.1.3.6.1.4.1.14988.1.1.7.5.0, Type=OctetString, Value=
+OID=.1.3.6.1.4.1.14988.1.1.7.6.0, Type=OctetString, Value=Jul/19/2023 10:40:42
+OID=.1.3.6.1.4.1.14988.1.1.7.7.0, Type=OctetString, Value=6.49.8
+OID=.1.3.6.1.4.1.14988.1.1.11.1.1.2.1, Type=IpAddress, Value=10.10.1.2
+OID=.1.3.6.1.4.1.14988.1.1.11.1.1.3.1, Type=OctetString, Value=  2C C8 1B A6 1D 39
+OID=.1.3.6.1.4.1.14988.1.1.11.1.1.4.1, Type=OctetString, Value=2.17
+OID=.1.3.6.1.4.1.14988.1.1.11.1.1.5.1, Type=OctetString, Value=MikroTik
+OID=.1.3.6.1.4.1.14988.1.1.11.1.1.6.1, Type=OctetString, Value=switch1
+OID=.1.3.6.1.4.1.14988.1.1.11.1.1.7.1, Type=OctetString, Value=
+OID=.1.3.6.1.4.1.14988.1.1.11.1.1.8.1, Type=Integer, Value=2
+OID=.1.3.6.1.4.1.14988.1.1.13.1.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.13.2.0, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.1, Type=Integer, Value=1
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.2, Type=Integer, Value=2
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.3, Type=Integer, Value=3
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.4, Type=Integer, Value=4
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.5, Type=Integer, Value=5
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.6, Type=Integer, Value=6
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.7, Type=Integer, Value=7
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.8, Type=Integer, Value=8
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.9, Type=Integer, Value=9
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.10, Type=Integer, Value=10
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.11, Type=Integer, Value=11
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.1.12, Type=Integer, Value=12
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.1, Type=OctetString, Value=ether1
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.2, Type=OctetString, Value=ether2
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.3, Type=OctetString, Value=ether3
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.4, Type=OctetString, Value=ether4
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.5, Type=OctetString, Value=ether5
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.6, Type=OctetString, Value=sfp1
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.7, Type=OctetString, Value=ether6
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.8, Type=OctetString, Value=ether7
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.9, Type=OctetString, Value=ether8
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.10, Type=OctetString, Value=ether9
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.11, Type=OctetString, Value=ether10
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.2.12, Type=OctetString, Value=bridgeLocal
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.1, Type=Counter64, Value=0x12D914221DAB
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.2, Type=Counter64, Value=0x60F1A7A8497
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.11.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.1, Type=Counter64, Value=0x519E72F43
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.2, Type=Counter64, Value=0x382D9CA33
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.12.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.1, Type=Counter64, Value=0x57FC5E46F8F
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.2, Type=Counter64, Value=0x135FA0F09C1A
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.13.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.1, Type=Counter64, Value=0x257078490
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.2, Type=Counter64, Value=0x43D12415D
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.14.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.15.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.16.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.17.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.18.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.19.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.20.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.21.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.1, Type=Counter64, Value=0x12EA5A65E585
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.2, Type=Counter64, Value=0x61AF7891113
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.31.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.32.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.33.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.1, Type=Counter64, Value=275412992
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.2, Type=Counter64, Value=1446035835
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.34.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.1, Type=Counter64, Value=1918184419
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.2, Type=Counter64, Value=3921482510
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.35.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.1, Type=Counter64, Value=542774535
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.2, Type=Counter64, Value=804091656
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.36.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.1, Type=Counter64, Value=663594037
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.2, Type=Counter64, Value=318593497
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.37.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.1, Type=Counter64, Value=323698060
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.2, Type=Counter64, Value=169546126
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.38.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.1, Type=Counter64, Value=0x33C2619A1
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.2, Type=Counter64, Value=4189791054
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.39.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.2, Type=Counter64, Value=221
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.40.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.41.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.1, Type=Counter64, Value=8283
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.2, Type=Counter64, Value=37446457
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.42.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.2, Type=Counter64, Value=332540
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.43.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.2, Type=Counter64, Value=129936174
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.44.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.45.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.46.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.47.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.48.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.49.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.50.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.51.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.52.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.53.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.54.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.55.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.1, Type=Counter64, Value=0x5890C1BBBA3
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.2, Type=Counter64, Value=0x136FC0C5B9D1
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.61.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.62.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.63.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.1, Type=Counter64, Value=1389199312
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.2, Type=Counter64, Value=314941255
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.64.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.1, Type=Counter64, Value=3791878556
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.2, Type=Counter64, Value=1932808622
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.65.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.1, Type=Counter64, Value=638192597
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.2, Type=Counter64, Value=665235665
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.66.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.1, Type=Counter64, Value=276192837
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.2, Type=Counter64, Value=686982945
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.67.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.1, Type=Counter64, Value=152164418
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.2, Type=Counter64, Value=328242141
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.68.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.1, Type=Counter64, Value=3800378053
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.2, Type=Counter64, Value=0x352AFA663
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.69.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.70.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.71.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.1, Type=Counter64, Value=206623
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.2, Type=Counter64, Value=17537068
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.72.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.73.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.1, Type=Counter64, Value=411604
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.2, Type=Counter64, Value=6579376
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.74.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.75.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.76.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.77.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.78.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.79.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.80.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.81.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.82.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.83.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.84.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.85.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.86.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.87.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.88.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.1, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.2, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.3, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.4, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.5, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.6, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.7, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.8, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.9, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.10, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.11, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.89.12, Type=Counter64, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.1, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.2, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.3, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.4, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.5, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.6, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.7, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.8, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.9, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.10, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.11, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.14.1.1.90.12, Type=Counter32, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.15.1.1.1.11, Type=Integer, Value=11
+OID=.1.3.6.1.4.1.14988.1.1.15.1.1.2.11, Type=OctetString, Value=ether10
+OID=.1.3.6.1.4.1.14988.1.1.15.1.1.3.11, Type=Integer, Value=2
+OID=.1.3.6.1.4.1.14988.1.1.15.1.1.4.11, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.15.1.1.5.11, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.15.1.1.6.11, Type=Integer, Value=0
+OID=.1.3.6.1.4.1.14988.1.1.17.1.1.2.1, Type=OctetString, Value=part0
+OID=.1.3.6.1.4.1.14988.1.1.17.1.1.3.1, Type=Integer, Value=128
+OID=.1.3.6.1.4.1.14988.1.1.17.1.1.4.1, Type=OctetString, Value=RouterOS v6.49.8 Jul/19/2023 10:40:42
+OID=.1.3.6.1.4.1.14988.1.1.17.1.1.5.1, Type=Integer, Value=1
+OID=.1.3.6.1.4.1.14988.1.1.17.1.1.6.1, Type=Integer, Value=1
+OID=.1.3.6.1.4.1.14988.1.1.20.1.1.0, Type=Gauge32, Value=0
+OID=.1.3.6.1.6.3.10.2.1.1.0, Type=OctetString, Value=  80 00 3A 8C 04

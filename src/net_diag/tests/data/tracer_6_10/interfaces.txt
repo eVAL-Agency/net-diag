@@ -1,0 +1,217 @@
+<list is="obix:BatchOut" xmlns:trane="trane:evox">
+    <obj href="/evox/ipNetworkConfig/" is="trane:SC/ipNetworkConfig/networkLobby_v1">
+        <str href="hostname/" name="hostname" val="HOSTNAME"/>
+        <bool href="ipv6Configured/" name="ipv6Configured" val="false"/>
+        <str name="primaryInterface" val="eth0"/>
+        <str name="primaryIpv6Interface" val=""/>
+        <bool name="useStaticDns" val="true"/>
+        <list href="interfaces/" name="interfaces" of="trane:SC/ipNetworkConfig/interfaceChoice_v1">
+            <list is="trane:SC/ipNetworkConfig/interfaceChoice_v1 trane:choice_v1" min="1" max="1">
+                <obj is="trane:SC/ipNetworkConfig/enetInterface_v1">
+                    <str name="name" val="eth0"/>
+                    <str name="macaddr" val="00:11:22:33:44:55"/>
+                    <bool name="enabled" val="true"/>
+                    <bool name="dhcp" val="false"/>
+                    <str name="ipaddr" val="172.0.0.1"/>
+                    <str name="subnet" val="255.255.255.0"/>
+                    <str name="gateway" val="172.0.0.254"/>
+                    <enum name="ipv6mode" val="disabled" range="trane:ipv6Mode_v1/"/>
+                    <str name="ipv6addr" val=""/>
+                    <str name="ipv6gateway" val=""/>
+                    <int name="ipv6prefixLength" val="0"/>
+                    <str name="domain" val="local.priv"/>
+                    <enum name="dnsProvider" val="none" range="trane:SC/ipNetworkConfig/providerRange_v1"/>
+                    <enum name="ntpProvider" val="none" range="trane:SC/ipNetworkConfig/providerRange_v1"/>
+                    <obj href="interfaces/dhcpServer/" name="dhcpServer" is="trane:SC/ipNetworkConfig/dhcpServer/dhcpServer_v1">
+                        <ref href="/evox/ipNetworkConfig/interfaces/eth0/dhcpServer/dhcpStatus/" name="dhcpStatus" is="obix:list"/>
+                        <obj href="interfaces/dhcpServer/dhcpConfig/" name="dhcpConfig" is="trane:dhcpConfig_v2/ trane:dhcpConfig_v1/">
+                            <bool name="enabled" val="false"/>
+                            <str name="start" val=""/>
+                            <str name="end" val=""/>
+                            <str name="subnet" val=""/>
+                            <int name="leaseHours" val="24"/>
+                            <list href="interfaces/dhcpServer/dhcpConfig/static_leases/" name="static_leases" of="trane:SC/config/dhcpStaticLeaseEntry_v1/"></list>
+                        </obj>
+                    </obj>
+                    <obj href="interfaces/auth8021x/" name="auth8021x" is="trane:SC/ipNetworkConfig/auth8021x/auth8021x_v1">
+                        <bool href="interfaces/auth8021x/enabled/" name="enabled" val="false"/>
+                        <ref href="/evox/ipNetworkConfig/interfaces/eth0/auth8021x/status/" name="status" is="trane:SC/ipNetworkConfig/auth8021x/status_v1/"/>
+                        <list href="interfaces/auth8021x/config/" name="config" is="trane:SC/ipNetworkConfig/auth8021x/config_v1/" min="1" max="1">
+                            <obj href="interfaces/auth8021x/config/eaptlsconfig/" name="eaptlsconfig" is="trane:SC/ipNetworkConfig/auth8021x/eapTlsConfig_v1/">
+                                <enum name="minTlsVersion" val="TLSv1_2" range="trane:SC/config/tlsProtocol_v1/"/>
+                                <enum name="maxTlsVersion" val="TLSv1_3" range="trane:SC/config/tlsProtocol_v1/"/>
+                                <bool name="csrPending" val="false"/>
+                                <ref href="clientCert/" name="clientCert" is="obix:list"/>
+                                <ref href="caCert/" name="caCert" is="obix:list"/>
+                                <op href="interfaces/auth8021x/config/eaptlsconfig/importCaCert/" name="importCaCert" in="obix:str" out="obix:Nil"/>
+                                <op href="interfaces/auth8021x/config/eaptlsconfig/importClientCert/" name="importClientCert" in="obix:str" out="obix:Nil"/>
+                                <op href="interfaces/auth8021x/config/eaptlsconfig/generateCsr/" name="generateCsr" in="trane:SC/ipNetworkConfig/auth8021x/generateCsrInputs_v1/" out="obix:str"/>
+                                <op href="interfaces/auth8021x/config/eaptlsconfig/deleteCerts/" name="deleteCerts" in="obix:nil" out="obix:nil"/>
+                            </obj>
+                        </list>
+                    </obj>
+                </obj>
+            </list>
+            <list is="trane:SC/ipNetworkConfig/interfaceChoice_v1 trane:choice_v1" min="1" max="1">
+                <obj is="trane:SC/ipNetworkConfig/enetInterface_v1">
+                    <str name="name" val="eth1"/>
+                    <str name="macaddr" val="11:11:22:33:44:55"/>
+                    <bool name="enabled" val="false"/>
+                    <bool name="dhcp" val="false"/>
+                    <str name="ipaddr" val="192.168.1.10"/>
+                    <str name="subnet" val="255.255.255.0"/>
+                    <str name="gateway" val="192.168.1.1"/>
+                    <enum name="ipv6mode" val="disabled" range="trane:ipv6Mode_v1/"/>
+                    <str name="ipv6addr" val=""/>
+                    <str name="ipv6gateway" val=""/>
+                    <int name="ipv6prefixLength" val="0"/>
+                    <str name="domain" val="local.priv"/>
+                    <enum name="dnsProvider" val="none" range="trane:SC/ipNetworkConfig/providerRange_v1"/>
+                    <enum name="ntpProvider" val="none" range="trane:SC/ipNetworkConfig/providerRange_v1"/>
+                    <obj href="interfaces/dhcpServer/" name="dhcpServer" is="trane:SC/ipNetworkConfig/dhcpServer/dhcpServer_v1">
+                        <ref href="/evox/ipNetworkConfig/interfaces/eth1/dhcpServer/dhcpStatus/" name="dhcpStatus" is="obix:list"/>
+                        <obj href="interfaces/dhcpServer/dhcpConfig/" name="dhcpConfig" is="trane:dhcpConfig_v2/ trane:dhcpConfig_v1/">
+                            <bool name="enabled" val="false"/>
+                            <str name="start" val=""/>
+                            <str name="end" val=""/>
+                            <str name="subnet" val=""/>
+                            <int name="leaseHours" val="24"/>
+                            <list href="interfaces/dhcpServer/dhcpConfig/static_leases/" name="static_leases" of="trane:SC/config/dhcpStaticLeaseEntry_v1/"></list>
+                        </obj>
+                    </obj>
+                    <obj href="interfaces/auth8021x/" name="auth8021x" is="trane:SC/ipNetworkConfig/auth8021x/auth8021x_v1">
+                        <bool href="interfaces/auth8021x/enabled/" name="enabled" val="false"/>
+                        <ref href="/evox/ipNetworkConfig/interfaces/eth1/auth8021x/status/" name="status" is="trane:SC/ipNetworkConfig/auth8021x/status_v1/"/>
+                        <list href="interfaces/auth8021x/config/" name="config" is="trane:SC/ipNetworkConfig/auth8021x/config_v1/" min="1" max="1">
+                            <obj href="interfaces/auth8021x/config/eaptlsconfig/" name="eaptlsconfig" is="trane:SC/ipNetworkConfig/auth8021x/eapTlsConfig_v1/">
+                                <enum name="minTlsVersion" val="TLSv1_2" range="trane:SC/config/tlsProtocol_v1/"/>
+                                <enum name="maxTlsVersion" val="TLSv1_3" range="trane:SC/config/tlsProtocol_v1/"/>
+                                <bool name="csrPending" val="false"/>
+                                <ref href="clientCert/" name="clientCert" is="obix:list"/>
+                                <ref href="caCert/" name="caCert" is="obix:list"/>
+                                <op href="interfaces/auth8021x/config/eaptlsconfig/importCaCert/" name="importCaCert" in="obix:str" out="obix:Nil"/>
+                                <op href="interfaces/auth8021x/config/eaptlsconfig/importClientCert/" name="importClientCert" in="obix:str" out="obix:Nil"/>
+                                <op href="interfaces/auth8021x/config/eaptlsconfig/generateCsr/" name="generateCsr" in="trane:SC/ipNetworkConfig/auth8021x/generateCsrInputs_v1/" out="obix:str"/>
+                                <op href="interfaces/auth8021x/config/eaptlsconfig/deleteCerts/" name="deleteCerts" in="obix:nil" out="obix:nil"/>
+                            </obj>
+                        </list>
+                    </obj>
+                </obj>
+            </list>
+            <list is="trane:SC/ipNetworkConfig/interfaceChoice_v1 trane:choice_v1" min="1" max="1">
+                <obj is="trane:SC/ipNetworkConfig/wifiInterface_v1">
+                    <str name="name" val="wfi0"/>
+                    <bool name="enabled" val="false"/>
+                    <bool name="dhcp" val="false"/>
+                    <str name="macaddr" val=""/>
+                    <str name="ipaddr" val=""/>
+                    <str name="subnet" val=""/>
+                    <str name="gateway" val=""/>
+                    <enum name="ipv6mode" val="disabled" range="trane:ipv6Mode_v1/"/>
+                    <str name="ipv6addr" val=""/>
+                    <str name="ipv6gateway" val=""/>
+                    <int name="ipv6prefixLength" val="0"/>
+                    <str name="domain" val="local.priv"/>
+                    <enum name="dnsProvider" val="none" range="trane:SC/ipNetworkConfig/providerRange_v1"/>
+                    <enum name="ntpProvider" val="none" range="trane:SC/ipNetworkConfig/providerRange_v1"/>
+                    <obj href="interfaces/dhcpServer/" name="dhcpServer" is="trane:SC/ipNetworkConfig/dhcpServer/dhcpServer_v1">
+                        <ref href="/evox/ipNetworkConfig/interfaces/wfi0/dhcpServer/dhcpStatus/" name="dhcpStatus" is="obix:list"/>
+                        <obj href="interfaces/dhcpServer/dhcpConfig/" name="dhcpConfig" is="trane:dhcpConfig_v2/ trane:dhcpConfig_v1/">
+                            <bool name="enabled" val="true"/>
+                            <str name="start" val="198.80.18.90"/>
+                            <str name="end" val="198.80.18.126"/>
+                            <str name="subnet" val="255.255.255.192"/>
+                            <int name="leaseHours" val="24"/>
+                            <list href="interfaces/dhcpServer/dhcpConfig/static_leases/" name="static_leases" of="trane:SC/config/dhcpStaticLeaseEntry_v1/"></list>
+                        </obj>
+                    </obj>
+                    <obj href="interfaces/wifiSetup/" name="wifiSetup" is="trane:SC/ipNetworkConfig/wifiSetup/wifiSetup_v1">
+                        <ref href="/evox/ipNetworkConfig/interfaces/wfi0/wifiSetup/wifiStatus/" name="wifiStatus" is="trane:SC/config/wifi/wifiStatus_v1/"/>
+                        <list href="interfaces/wifiSetup/wifiConfig/" name="wifiConfig" is="trane:SC/config/wifi/wifiConfig_v2/" min="1" max="1">
+                            <obj is="trane:SC/config/wifi/wifiConfigHost_v1/">
+                                <str name="ssid" val="Tracer WiFi HOSTNAME"/>
+                                <str name="password" val=""/>
+                                <int name="frequency" val="2412"/>
+                            </obj>
+                        </list>
+                        <op href="interfaces/wifiSetup/scanNetworks/" name="scanNetworks" in="obix:str" out="trane:SC/config/wifi/scanResults_v1/"/>
+                        <op href="interfaces/wifiSetup/importConfig/" name="importConfig" in="trane:SC/config/wifi/importConfig_v1/" out="obix:str"/>
+                    </obj>
+                </obj>
+            </list>
+        </list>
+        <obj href="routes/" name="routes" is="trane:SC/ipNetworkConfig/routesLobby_v1">
+            <obj href="routes/ipv4/" name="ipv4" is="trane:SC/config/routes_v1/">
+                <op href="routes/ipv4/add/" name="add" in="trane:SC/config/routeEntry_v1/" out="obix:Nil"/>
+                <op href="routes/ipv4/delete/" name="delete" in="trane:SC/config/routeEntry_v1/" out="obix:Nil"/>
+                <list href="routes/ipv4/entries/" name="entries" of="trane:SC/config/routeEntry_v1/"></list>
+            </obj>
+            <obj href="routes/ipv6/" name="ipv6" is="trane:SC/config/routes_v1/">
+                <op href="routes/ipv6/add/" name="add" in="trane:SC/config/routeEntry_v1/" out="obix:Nil"/>
+                <op href="routes/ipv6/delete/" name="delete" in="trane:SC/config/routeEntry_v1/" out="obix:Nil"/>
+                <list href="routes/ipv6/entries/" name="entries" of="trane:SC/config/routeEntry_v1/"></list>
+            </obj>
+        </obj>
+        <obj href="dnsConfig/" name="dnsConfig" is="trane:SC/config/dnsConfig_v2/ trane:dnsConfig_v1/">
+            <str name="prefDnsServer" val="8.8.8.8"/>
+            <str name="altDnsServer" val="8.8.4.4"/>
+            <str name="secondAlternate" val=""/>
+            <ref href="/evox/ipNetworkConfig/dnsConfig/dnsSuffixList/" name="dnsSuffixList" is="trane:dnsSuffixList_v1/"/>
+        </obj>
+        <op href="ping/" name="ping" in="trane:pingSpec_v1" out="trane:pingResult_v1"/>
+    </obj>
+    <obj href="/evox/config/bacnet_mstp/link0/" is="trane:bacnetMstpConfig_v4/ trane:bacnetMstpConfig_v3/ trane:bacnetMstpConfig_v2/ trane:bacnetMstpConfig_v1/">
+        <bool href="enabled/" name="enabled" val="true"/>
+        <int href="address/" name="address" val="0"/>
+        <int href="networkNumber/" name="networkNumber" val="21"/>
+        <int href="baudRate/" name="baudRate" val="38400"/>
+        <int href="maxMasters/" name="maxMasters" val="127"/>
+        <int href="maxInfoFrames/" name="maxInfoFrames" val="10"/>
+        <int href="N_retryToken/" name="N_retryToken" val="1"/>
+        <int href="T_usageTimeout_Token/" name="T_usageTimeout_Token" val="80"/>
+        <int href="T_usageTimeout_PFM/" name="T_usageTimeout_PFM" val="30"/>
+        <int href="T_turnAround/" name="T_turnAround" val="40"/>
+        <int href="transmitQueueSize/" name="transmitQueueSize" val="100"/>
+        <obj href="bacnetFilter/" name="bacnetFilter" is="trane:bacnetFilter_v1">
+            <list name="unconfirmedServices" of="obix:int"></list>
+            <op href="bacnetFilter/reset/" name="reset" in="obix:Nil" out="obix:Nil"/>
+            <op href="bacnetFilter/resetStats/" name="resetStats" in="obix:Nil" out="obix:Nil"/>
+        </obj>
+    </obj>
+    <obj href="/evox/config/bacnet_mstp/link1/" is="trane:bacnetMstpConfig_v4/ trane:bacnetMstpConfig_v3/ trane:bacnetMstpConfig_v2/ trane:bacnetMstpConfig_v1/">
+        <bool href="enabled/" name="enabled" val="true"/>
+        <int href="address/" name="address" val="0"/>
+        <int href="networkNumber/" name="networkNumber" val="22"/>
+        <int href="baudRate/" name="baudRate" val="38400"/>
+        <int href="maxMasters/" name="maxMasters" val="127"/>
+        <int href="maxInfoFrames/" name="maxInfoFrames" val="10"/>
+        <int href="N_retryToken/" name="N_retryToken" val="1"/>
+        <int href="T_usageTimeout_Token/" name="T_usageTimeout_Token" val="80"/>
+        <int href="T_usageTimeout_PFM/" name="T_usageTimeout_PFM" val="30"/>
+        <int href="T_turnAround/" name="T_turnAround" val="40"/>
+        <int href="transmitQueueSize/" name="transmitQueueSize" val="100"/>
+        <obj href="bacnetFilter/" name="bacnetFilter" is="trane:bacnetFilter_v1">
+            <list name="unconfirmedServices" of="obix:int"></list>
+            <op href="bacnetFilter/reset/" name="reset" in="obix:Nil" out="obix:Nil"/>
+            <op href="bacnetFilter/resetStats/" name="resetStats" in="obix:Nil" out="obix:Nil"/>
+        </obj>
+    </obj>
+    <obj href="/evox/config/bacnet_mstp/link2/" is="trane:bacnetMstpConfig_v4/ trane:bacnetMstpConfig_v3/ trane:bacnetMstpConfig_v2/ trane:bacnetMstpConfig_v1/">
+        <bool href="enabled/" name="enabled" val="true"/>
+        <int href="address/" name="address" val="0"/>
+        <int href="networkNumber/" name="networkNumber" val="23"/>
+        <int href="baudRate/" name="baudRate" val="38400"/>
+        <int href="maxMasters/" name="maxMasters" val="127"/>
+        <int href="maxInfoFrames/" name="maxInfoFrames" val="10"/>
+        <int href="N_retryToken/" name="N_retryToken" val="1"/>
+        <int href="T_usageTimeout_Token/" name="T_usageTimeout_Token" val="80"/>
+        <int href="T_usageTimeout_PFM/" name="T_usageTimeout_PFM" val="30"/>
+        <int href="T_turnAround/" name="T_turnAround" val="40"/>
+        <int href="transmitQueueSize/" name="transmitQueueSize" val="100"/>
+        <obj href="bacnetFilter/" name="bacnetFilter" is="trane:bacnetFilter_v1">
+            <list name="unconfirmedServices" of="obix:int"></list>
+            <op href="bacnetFilter/reset/" name="reset" in="obix:Nil" out="obix:Nil"/>
+            <op href="bacnetFilter/resetStats/" name="resetStats" in="obix:Nil" out="obix:Nil"/>
+        </obj>
+    </obj>
+</list>

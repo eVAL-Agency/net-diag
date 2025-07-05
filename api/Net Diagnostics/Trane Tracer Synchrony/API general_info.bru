@@ -1,0 +1,15 @@
+meta {
+  name: API general_info
+  type: http
+  seq: 15
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn"><uri is="obix:Read" val="/evox/about" /><uri is="obix:Read" val="/evox/config/bacnet_global" /></list>
+}

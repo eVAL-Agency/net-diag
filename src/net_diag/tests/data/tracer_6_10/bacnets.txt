@@ -1,0 +1,7 @@
+<list is="obix:BatchOut" xmlns:trane="trane:evox">
+    <list href="/evox/config/bacnet_mstp" of="obix:ref">
+        <ref href="link0/" is="trane:bacnetMstpConfig_v1"/>
+        <ref href="link1/" is="trane:bacnetMstpConfig_v1"/>
+        <ref href="link2/" is="trane:bacnetMstpConfig_v1"/>
+    </list>
+</list>

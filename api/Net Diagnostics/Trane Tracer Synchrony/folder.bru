@@ -1,0 +1,18 @@
+meta {
+  name: Trane Tracer Synchrony
+  seq: 2
+}
+
+auth {
+  mode: digest
+}
+
+auth:digest {
+  username: {{dynamic.trane.username}}
+  password: {{dynamic.trane.password}}
+}
+
+script:pre-request {
+  bru.setEnvVar('dynamic.trane.username','$' + btoa(bru.getEnvVar('trane.username')))
+  bru.setEnvVar('dynamic.trane.password',btoa(bru.getEnvVar('trane.password')))
+}

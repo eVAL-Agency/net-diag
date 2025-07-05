@@ -1,7 +1,10 @@
 import re
 from typing import Union
-from net_diag.libs.snmputils import snmp_lookup_single, snmp_lookup_bulk
 import asyncio
+
+from net_diag.libs.net_utils import format_link_speed
+from net_diag.libs.snmputils import snmp_lookup_single, snmp_lookup_bulk
+from net_diag.libs.host import Host, HostInterface
 
 
 class SNMPScanner:
@@ -9,7 +12,7 @@ class SNMPScanner:
 	SNMP Scanner class for scanning devices using SNMP protocol.
 	"""
 
-	def __init__(self, host):
+	def __init__(self, host: Host):
 		self.host = host
 
 	def scan(self):
@@ -143,28 +146,6 @@ class SNMPScanner:
 		# No modifications required
 		return val
 
-	def _format_snmp_speed(self, val: str) -> Union[str, None]:
-		"""
-		Format a speed value from SNMP data to a more human-readable format
-
-		:param val:
-		:return:
-		"""
-		if val == '25000000000':
-			return '25gbps'
-		elif val == '10000000000':
-			return '10gbps'
-		elif val == '2500000000':
-			return '2.5gbps'
-		elif val == '1000000000':
-			return '1gbps'
-		elif val == '100000000':
-			return '100mbps'
-		elif val == '10000000':
-			return '10mbps'
-		else:
-			return val
-
 
 class DefaultScan(SNMPScanner):
 	"""
@@ -179,6 +160,7 @@ class DefaultScan(SNMPScanner):
 			'location': '1.3.6.1.2.1.1.6.0',
 			'os_version': '1.3.6.1.2.1.16.19.2',
 			'model': '1.3.6.1.2.1.16.19.3.0',
+			'gateway': '1.3.6.1.2.1.4.21.1.7.0.0.0.0',
 		}
 		self.descr_parses = (
 			(
@@ -235,7 +217,7 @@ class DefaultScan(SNMPScanner):
 		if mac is not None:
 			self.host.mac = mac
 
-		self.host.ports = self.get_ports()
+		self.host.interfaces = self.get_ports()
 
 	def scan_neighbors(self):
 		"""
@@ -306,52 +288,50 @@ class DefaultScan(SNMPScanner):
 
 		for key, val in names.items():
 			port_id = key[len(name_lookup) + 1:]
-			ret[port_id] = {
-				'name': val,
-				'vlan_allow': [],
-			}
+			ret[port_id] = HostInterface()
+			ret[port_id].name = val
 
 		label_lookup = '1.3.6.1.2.1.31.1.1.1.18'
 		labels = self._lookup_bulk('Port Labels', label_lookup)
 		for key, val in labels.items():
 			port_id = key[len(label_lookup) + 1:]
-			ret[port_id]['label'] = val
+			ret[port_id].label = val
 
 		mtu_lookup = '1.3.6.1.2.1.2.2.1.4'
 		mtus = self._lookup_bulk('Port MTUs', mtu_lookup)
 		for key, val in mtus.items():
 			port_id = key[len(mtu_lookup) + 1:]
-			ret[port_id]['mtu'] = int(val)
+			ret[port_id].mtu = int(val)
 
 		speed_lookup = '1.3.6.1.2.1.2.2.1.5'
 		speeds = self._lookup_bulk('Port Speeds', speed_lookup)
 		for key, val in speeds.items():
 			port_id = key[len(speed_lookup) + 1:]
-			ret[port_id]['speed'] = self._format_snmp_speed(val)
+			ret[port_id].speed = format_link_speed(val)
 
 		mac_lookup = '1.3.6.1.2.1.2.2.1.6.0'
 		macs = self._lookup_bulk('Port MACs', mac_lookup)
 		for key, val in macs.items():
 			port_id = key[len(mac_lookup) + 1:]
-			ret[port_id]['mac'] = self._format_snmp_mac(val)
+			ret[port_id].mac = self._format_snmp_mac(val)
 
 		admin_lookup = '1.3.6.1.2.1.2.2.1.7'
 		admin_statuses = self._lookup_bulk('Admin Status', admin_lookup)
 		for key, val in admin_statuses.items():
 			port_id = key[len(admin_lookup) + 1:]
-			ret[port_id]['admin_status'] = 'UP' if val == '1' else 'DOWN'
+			ret[port_id].admin_status = 'UP' if val == '1' else 'DOWN'
 
 		status_lookup = '1.3.6.1.2.1.2.2.1.8'
 		user_statuses = self._lookup_bulk('User Status', status_lookup)
 		for key, val in user_statuses.items():
 			port_id = key[len(status_lookup) + 1:]
-			ret[port_id]['user_status'] = 'UP' if val == '1' else 'DOWN'
+			ret[port_id].user_status = 'UP' if val == '1' else 'DOWN'
 
 		vlan_pid_lookup = '1.3.6.1.2.1.17.7.1.4.5.1.1'
 		vlan_pids = self._lookup_bulk('Native VLAN', vlan_pid_lookup)
 		for key, val in vlan_pids.items():
 			port_id = key[len(vlan_pid_lookup) + 1:]
-			ret[port_id]['native_vlan'] = val
+			ret[port_id].vlan = val
 
 		vlan_egress_lookup = '1.3.6.1.2.1.17.7.1.4.2.1.4'
 		if 'Linux UBNT' in self.host.descr:
@@ -375,10 +355,10 @@ class DefaultScan(SNMPScanner):
 					break
 				if not reversed and vlan_set >> 64 - int(port) & 1 == 1:
 					# This port is enabled for this VLAN
-					port_data['vlan_allow'].append(vlan_id)
+					port_data.vlan_allow.append(vlan_id)
 					self.host.log('Port %s allows VLAN %s' % (port, vlan_id))
 				elif reversed and vlan_set >> int(port) & 1 == 1:
-					port_data['vlan_allow'].append(vlan_id)
+					port_data.vlan_allow.append(vlan_id)
 					self.host.log('Port %s allows VLAN %s' % (port, vlan_id))
 
 		return ret
@@ -391,7 +371,7 @@ class MikrotikScan(DefaultScan):
 
 	def __init__(self, host):
 		super().__init__(host)
-		self.basic_lookups['serial'] = '1.3.6.1.4.1.14988.1.1.7.3'
+		self.basic_lookups['serial'] = '1.3.6.1.4.1.14988.1.1.7.3.0'
 		self.basic_lookups['os_version'] = None
 		self.descr_parses = (
 			(

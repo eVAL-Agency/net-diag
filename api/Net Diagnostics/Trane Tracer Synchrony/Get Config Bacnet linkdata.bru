@@ -1,0 +1,15 @@
+meta {
+  name: Get Config Bacnet linkdata
+  type: http
+  seq: 14
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn"><uri is="obix:Read" val="/evox/config/bacnet_mstp/link0/" /><uri is="obix:Read" val="/evox/config/bacnet_mstp/link1/" /></list>
+}

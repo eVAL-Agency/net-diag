@@ -24,6 +24,9 @@ dependencies = [
     'mac-vendor-lookup>=0.1.12',
     'pyyaml>=6.0.2',
     'psutil>=7.0.0',
+    'beautifulsoup4>=4.13.4',
+    'lxml>=6.0.0',
+    'requests>=2.32.4',
 ]
 
 [project.optional-dependencies]
@@ -31,6 +34,7 @@ dev = [
     'pyinstaller>=4.5.1',
     'flake8>=3.9.2',
     'pre-commit>=2.15.0',
+    'responses>=0.25.7',
 ]
 
 [project.scripts]

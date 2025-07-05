@@ -1,0 +1,11 @@
+meta {
+  name: Get Serial Number
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://{{trane.url}}/evox/eventLog/eventLog/1/serialNumber
+  body: none
+  auth: inherit
+}

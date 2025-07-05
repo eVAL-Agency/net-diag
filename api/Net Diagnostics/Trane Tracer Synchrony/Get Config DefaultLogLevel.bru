@@ -1,0 +1,15 @@
+meta {
+  name: Get Config DefaultLogLevel
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn"><uri is="obix:Read" val="/evox/config/defaultLogLevel" /></list>
+}

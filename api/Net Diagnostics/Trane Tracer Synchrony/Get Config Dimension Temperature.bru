@@ -1,0 +1,15 @@
+meta {
+  name: Get Config Dimension Temperature
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn"><uri is="obix:Read" val="/evox/config/dimensionality/temperature/" /></list>
+}

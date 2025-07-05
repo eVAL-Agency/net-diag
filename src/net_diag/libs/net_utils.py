@@ -329,3 +329,33 @@ def get_lldp_peer(iface: str) -> dict:
 	except subprocess.CalledProcessError:
 		pass
 	return data
+
+
+def format_link_speed(val: Union[str, int]) -> str:
+	"""
+	Format a raw speed value to a more human-readable format
+
+	eg: will take 10000000 and return "10mbps"
+
+	:param val:
+	:return:
+	"""
+	val = int(val)
+	suffix_map = (
+		(1000000000000, 'tbps'),
+		(1000000000, 'gbps'),
+		(1000000, 'mbps'),
+		(1000, 'kbps')
+	)
+
+	for threshold, suffix in suffix_map:
+		if val >= threshold:
+			val = val / threshold
+			if val.is_integer():
+				# Trim the decimal part if it's an integer
+				# eg: '10.0gbps' is _technically_ correct, but we want '10gbps'
+				val = int(val)
+			return str(val) + suffix
+
+	# Default
+	return str(val) + 'bps'

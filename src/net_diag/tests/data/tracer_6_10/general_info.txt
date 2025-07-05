@@ -1,0 +1,51 @@
+<list is="obix:BatchOut" xmlns:trane="trane:evox">
+    <obj href="/evox/about" is="trane:SCAbout_v3 trane:SCAbout_v2 trane:SCAbout_v1 trane:About_v2 trane:About_v1">
+        <str href="obixVersion/" name="obixVersion" val="1.0"/>
+        <str href="serverName/" name="serverName" val="123456"/>
+        <abstime href="serverTime/" name="serverTime" val="2025-07-04T14:52:27-04:00"/>
+        <abstime href="serverBootTime/" name="serverBootTime" val="2025-02-24T09:14:25-05:00"/>
+        <str href="vendorName/" name="vendorName" val="Trane"/>
+        <uri href="vendorUrl/" name="vendorUrl" val="http://www.trane.com"/>
+        <str href="productName/" name="productName" val="Tracer SC+"/>
+        <str href="productVersion/" name="productVersion" val="v6.10.2115 (release)"/>
+        <uri href="productUrl/" name="productUrl" val="http://www.trane.com"/>
+        <str href="kernelVersion/" name="kernelVersion" val="5.4.245_Zeus-DEV1.0.1"/>
+        <str href="evoxVersion/" name="evoxVersion" val="1.0"/>
+        <str href="fingerprint/" name="fingerprint" val="0"/>
+        <int href="backIndex/" name="backIndex" val="0"/>
+        <str href="hardwareType/" name="hardwareType" val="Tracer SC+"/>
+        <str href="hardwarePartNumber/" name="hardwarePartNumber" val="PARTNUMBER"/>
+        <str href="hardwareSerialNumber/" name="hardwareSerialNumber" val="SERIAL"/>
+        <str href="softwarePartNumber/" name="softwarePartNumber" null="true"/>
+        <list href="operatorDisplays/" name="operatorDisplays" of="trane:AboutOperatorDisplay_v2/" null="true"></list>
+        <list href="software/" name="software" of="trane:AboutSoftware_v1/"></list>
+        <int href="rotarySetting/" name="rotarySetting" val="2"/>
+        <reltime href="timeToDie/" name="timeToDie" null="true"/>
+        <str href="fileSystemVersion/" name="fileSystemVersion" val="v6.10.2115 (release)"/>
+        <date href="softwareVersionDate/" name="softwareVersionDate" val="2024-12-12"/>
+        <str href="publicKey/" name="publicKey" val="RSA,123456789012345678901234567890"/>
+        <str href="restartReason/" name="restartReason" val="Software reset to perform update"/>
+        <abstime href="restartEventTime/" name="restartEventTime" val="2025-02-24T09:05:23-05:00"/>
+        <op href="addClientAbout/" name="addClientAbout" in="trane:AboutOperatorDisplay_v2" out="obix:Nil"/>
+    </obj>
+    <obj href="/evox/config/bacnet_global" is="trane:bacnetGlobalConfig_v7/ trane:bacnetGlobalConfig_v6/ trane:bacnetGlobalConfig_v5/ trane:bacnetGlobalConfig_v4/ trane:bacnetGlobalConfig_v3/ trane:bacnetGlobalConfig_v2/ trane:bacnetGlobalConfig_v1/">
+        <int href="deviceId/" name="deviceId" val="20000"/>
+        <int href="segmentTimeout/" name="segmentTimeout" val="5000"/>
+        <int href="apduTimeout/" name="apduTimeout" val="10000"/>
+        <int href="apduRetries/" name="apduRetries" val="3"/>
+        <str href="name/" name="name" val="Test SC 10-13"/>
+        <str href="description/" name="description" val=""/>
+        <str href="location/" name="location" val="123 Here"/>
+        <int href="backupTimeout/" name="backupTimeout" val="900"/>
+        <abstime href="lastRestoreTime/" name="lastRestoreTime" val="2024-12-03T10:42:31-06:00"/>
+        <str href="commControlPasswd/" name="commControlPasswd" val=""/>
+        <str href="reinitPasswd/" name="reinitPasswd" val=""/>
+        <str href="backupPasswd/" name="backupPasswd" val=""/>
+        <str href="profileName/" name="profileName" val="2-E type=&#34;Tracer SC+&#34;"/>
+        <str href="language/" name="language" val="en_US"/>
+        <enum href="ipv6Multicast/" name="ipv6Multicast" val="link local" range="trane:bacnetIPv6Multicast_v1/"/>
+        <bool href="ignoreWhoHas/" name="ignoreWhoHas" val="false"/>
+        <str href="uuid/" name="uuid" val="123456-1234-123456-123456"/>
+        <bool href="acceptWriteBdt/" name="acceptWriteBdt" val="true"/>
+    </obj>
+</list>

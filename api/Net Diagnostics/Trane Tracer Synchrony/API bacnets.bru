@@ -1,0 +1,15 @@
+meta {
+  name: API bacnets
+  type: http
+  seq: 13
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn"><uri is="obix:Read" val="/evox/config/bacnet_mstp" /></list>
+}

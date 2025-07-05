@@ -1,0 +1,15 @@
+meta {
+  name: Get Bacnet Datalinks
+  type: http
+  seq: 9
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn"><uri is="obix:Read" val="/evox/bacnet/datalinks" /></list>
+}

@@ -1,0 +1,27 @@
+meta {
+  name: Get Equipment Details
+  type: http
+  seq: 11
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn">
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/112" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/112/attributes" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/EquipmentSerialNumber/value" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/FirmwareRevision/value" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/ModelName/value" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/ModelNumber/value" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/SoftwareApplicationVersion/value" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/TagNumber/value" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/UCMLocationLabel/value" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/VendorName/value" />
+    <uri is="obix:Read" val="/evox/equipment/generic/generic/100/name/value" />
+  </list>
+}

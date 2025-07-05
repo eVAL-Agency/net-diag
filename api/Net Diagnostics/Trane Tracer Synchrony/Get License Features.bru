@@ -1,0 +1,15 @@
+meta {
+  name: Get License Features
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn"><uri is="obix:Read" val="/evox/license/features" /></list>
+}

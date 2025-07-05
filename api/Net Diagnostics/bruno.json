@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Net Diagnostics",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

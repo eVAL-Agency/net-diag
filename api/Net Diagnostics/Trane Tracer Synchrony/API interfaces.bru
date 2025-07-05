@@ -1,0 +1,20 @@
+meta {
+  name: API interfaces
+  type: http
+  seq: 16
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn">
+    <uri is="obix:Read" val="/evox/ipNetworkConfig/" />
+    <uri is="obix:Read" val="/evox/config/bacnet_mstp/link0/" />
+    <uri is="obix:Read" val="/evox/config/bacnet_mstp/link1/" />
+    <uri is="obix:Read" val="/evox/config/bacnet_mstp/link2/" />
+  </list>
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get About
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn"><uri is="obix:Read" val="/evox/about" /></list>
+}
