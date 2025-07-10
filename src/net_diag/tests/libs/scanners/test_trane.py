@@ -92,7 +92,7 @@ class TestTraneTracerSCScanner(TestCase):
 
 		self.assertEqual('HP 10-124', host.neighbors['22.7C'].hostname)
 		self.assertEqual('22.7C', host.neighbors['22.7C'].ip)
-		self.assertEqual('76124', host.neighbors['22.7C'].mac)
+		self.assertEqual('22.7C|generic-160', host.neighbors['22.7C'].mac)
 		self.assertEqual('Teletrol Systems Inc', host.neighbors['22.7C'].manufacturer)
 		self.assertEqual('TRC-7600A-5', host.neighbors['22.7C'].model)
 		self.assertEqual('172.0.0.1', host.neighbors['22.7C'].uplink_device)
@@ -132,7 +132,7 @@ class TestTraneTracerSCScanner(TestCase):
 
 		self.assertEqual('HP 01-13', host.neighbors['32.0D'].hostname)
 		self.assertEqual('32.0D', host.neighbors['32.0D'].ip)
-		self.assertEqual('76013', host.neighbors['32.0D'].mac)
+		self.assertEqual('32.0D|generic-83', host.neighbors['32.0D'].mac)
 		self.assertEqual('Teletrol Systems Inc', host.neighbors['32.0D'].manufacturer)
 		self.assertEqual('TRC-7600A-5', host.neighbors['32.0D'].model)
 		self.assertEqual('192.168.0.153', host.neighbors['32.0D'].uplink_device)

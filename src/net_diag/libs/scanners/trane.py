@@ -152,8 +152,15 @@ class TraneTracerSCScanner(ScannerInterface):
 			display_name = self._get_tag_val(dev, 'str', 'displayName')
 			# <str name="addressOnLink" val="1.C0A8008FBAC2"/>
 			address_on_link = self._get_tag_val(dev, 'str', 'addressOnLink')
-			link = dev.find('list', {'name': 'linkSpecific'}).find('obj', recursive=False)
-			link_pretty = link.find('obj', {'name': 'pretty'}, recursive=False)
+			# <str name="netAddr" val="23.56|wshp-6"/>
+			net_addr = self._get_tag_val(dev, 'str', 'netAddr')
+			link = dev.find('list', {'name': 'linkSpecific'})
+			if link:
+				link = link.find('obj', recursive=False)
+			if link:
+				link_pretty = link.find('obj', {'name': 'pretty'}, recursive=False)
+			else:
+				link_pretty = None
 			if link_pretty:
 				# <int name="networkNumber" val="1"/>
 				network_number = self._get_tag_val(link_pretty, 'int', 'networkNumber')
@@ -181,7 +188,7 @@ class TraneTracerSCScanner(ScannerInterface):
 				mac = ':'.join(mac[i:i + 2] for i in range(0, len(mac), 2))
 			elif device_uri.startswith('//bacnet!'):
 				ip = address_on_link
-				mac = device_uri[9:-1]
+				mac = net_addr
 			elif device_uri.startswith('/lon/nid/'):
 				mac = device_uri[9:-1]
 
@@ -192,10 +199,11 @@ class TraneTracerSCScanner(ScannerInterface):
 				uplink_device = self.host.ip
 				uplink_port = data_link_name
 
-			lookups.append('/evox' + equipment_uri + '/VendorName/value')
-			lookups.append('/evox' + equipment_uri + '/ControllerType/value')
-			lookups.append('/evox' + equipment_uri + '/ModelName/value')
-			lookups.append('/evox' + equipment_uri + '/FirmwareRevision/value')
+			if equipment_uri:
+				lookups.append('/evox' + equipment_uri + '/VendorName/value')
+				lookups.append('/evox' + equipment_uri + '/ControllerType/value')
+				lookups.append('/evox' + equipment_uri + '/ModelName/value')
+				lookups.append('/evox' + equipment_uri + '/FirmwareRevision/value')
 
 			host = self.host.create_neighbor(ip)
 			counter += 1
