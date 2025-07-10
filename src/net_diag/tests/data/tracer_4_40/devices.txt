@@ -1,0 +1,122 @@
+<list is="obix:BatchOut" xmlns:trane="trane:evox">
+    <list href="/evox/equipment/installedSummary" of="trane:equipmentSummary_v4/">
+        <obj is="trane:equipmentSummary_v4/ trane:equipmentSummary_v3/ trane:equipmentSummary_v2/ trane:equipmentSummary_v1/">
+            <uri name="equipmentUri" val="/equipment/generic/generic/114"/>
+            <uri name="deviceUri" val="/modbus/link1/1"/>
+            <int name="communicationStatus" val="1"/>
+            <str name="displayName" val="Generator Points"/>
+            <int name="uiType" val="11"/>
+            <str name="equipmentFamily" val="Generic"/>
+            <str name="standardGraphic" val="Cummins%20Generator"/>
+            <str name="roleDocument" val="Modbus_link1_1"/>
+            <bool name="autoInstalled" val="false"/>
+            <bool name="supportsTemplating" val="true"/>
+            <str name="addressOnLink" val="1"/>
+            <uri name="link" val="/modbus/link1"/>
+            <list name="linkSpecific" is="trane:communicationConfig_v1/" min="1" max="1">
+                <obj is="trane:communicationBACnet_v1/">
+                    <obj name="pretty" is="trane:bacnetPrettyAddress_v2/ trane:bacnetPrettyAddress_v1/">
+                        <obj name="bcuLinkAddress" is="trane:bacnetBCULinkAddress_v1/"></obj>
+                    </obj>
+                </obj>
+            </list>
+            <bool name="isOffline" val="false"/>
+            <uri name="gatewayUri" val=""/>
+            <str name="netAddr" val="1|generic-114"/>
+            <enum name="roleAssignType" val="Modbus" range="trane:roleDocType_v1/"/>
+        </obj>
+        <obj is="trane:equipmentSummary_v4/ trane:equipmentSummary_v3/ trane:equipmentSummary_v2/ trane:equipmentSummary_v1/">
+            <uri name="equipmentUri" val="/equipment/generic/generic/133"/>
+            <uri name="deviceUri" val="//bacnet!2159938/"/>
+            <int name="communicationStatus" val="3"/>
+            <str name="displayName" val="PS3037 Building Electric Meter"/>
+            <str name="deviceName" val="PS3037-E  P371912028"/>
+            <int name="uiType" val="11"/>
+            <str name="equipmentFamily" val="Generic"/>
+            <str name="standardGraphic" val="Power%20Monitor"/>
+            <str name="roleDocument" val="Power_Monitor"/>
+            <bool name="autoInstalled" val="false"/>
+            <bool name="supportsTemplating" val="true"/>
+            <str name="addressOnLink" val="1.C0A833994455"/>
+            <uri name="link" val="/bacnet"/>
+            <list name="linkSpecific" is="trane:communicationConfig_v1/" min="1" max="1">
+                <obj is="trane:communicationBACnet_v1/">
+                    <int name="rotaryAddress" val="0"/>
+                    <obj name="pretty" is="trane:bacnetPrettyAddress_v2/ trane:bacnetPrettyAddress_v1/">
+                        <int name="networkNumber" val="1"/>
+                        <bool name="remoteNetwork" val="false"/>
+                        <str name="datalinkName" val="BVLL"/>
+                        <str name="macAddress" val="192.168.0.154:47810"/>
+                        <obj name="bcuLinkAddress" is="trane:bacnetBCULinkAddress_v1/" null="true"></obj>
+                    </obj>
+                </obj>
+            </list>
+            <bool name="isOffline" val="false"/>
+            <uri name="gatewayUri" val=""/>
+            <str name="netAddr" val="1.C0A833994455|generic-133"/>
+            <enum name="roleAssignType" val="BACnet" range="trane:roleDocType_v1/"/>
+        </obj>
+        <obj is="trane:equipmentSummary_v4/ trane:equipmentSummary_v3/ trane:equipmentSummary_v2/ trane:equipmentSummary_v1/">
+            <uri name="equipmentUri" val="/equipment/generic/generic/74"/>
+            <uri name="deviceUri" val="//bacnet!31110/"/>
+            <int name="communicationStatus" val="3"/>
+            <str name="displayName" val="Penthouse Plant Controls"/>
+            <str name="deviceName" val="Penthouse Plant Controls"/>
+            <int name="uiType" val="11"/>
+            <str name="equipmentFamily" val="Generic"/>
+            <str name="standardGraphic" val=""/>
+            <str name="roleDocument" val="Penthouse_Plant_Controls"/>
+            <bool name="autoInstalled" val="false"/>
+            <bool name="supportsTemplating" val="true"/>
+            <str name="addressOnLink" val="1.C0A8008FBAC2"/>
+            <uri name="link" val="/bacnet"/>
+            <list name="linkSpecific" is="trane:communicationConfig_v1/" min="1" max="1">
+                <obj is="trane:communicationBACnet_v1/">
+                    <int name="rotaryAddress" val="120"/>
+                    <obj name="pretty" is="trane:bacnetPrettyAddress_v2/ trane:bacnetPrettyAddress_v1/">
+                        <int name="networkNumber" val="1"/>
+                        <bool name="remoteNetwork" val="false"/>
+                        <str name="datalinkName" val="BVLL"/>
+                        <str name="macAddress" val="192.168.0.143:47810"/>
+                        <obj name="bcuLinkAddress" is="trane:bacnetBCULinkAddress_v1/" null="true"></obj>
+                    </obj>
+                </obj>
+            </list>
+            <bool name="isOffline" val="false"/>
+            <uri name="gatewayUri" val=""/>
+            <str name="netAddr" val="1.C0A8008FBAC2|generic-74"/>
+            <enum name="roleAssignType" val="BACnet" range="trane:roleDocType_v1/"/>
+        </obj>
+        <obj is="trane:equipmentSummary_v4/ trane:equipmentSummary_v3/ trane:equipmentSummary_v2/ trane:equipmentSummary_v1/">
+            <uri name="equipmentUri" val="/equipment/generic/generic/83"/>
+            <uri name="deviceUri" val="//bacnet!76013/"/>
+            <int name="communicationStatus" val="3"/>
+            <str name="displayName" val="HP 01-13"/>
+            <str name="deviceName" val="TRC-7600A-5-13"/>
+            <int name="uiType" val="11"/>
+            <str name="equipmentFamily" val="Generic"/>
+            <str name="standardGraphic" val="HP%20Tiano_rev1"/>
+            <str name="roleDocument" val="HP_5-106"/>
+            <bool name="autoInstalled" val="false"/>
+            <bool name="supportsTemplating" val="true"/>
+            <str name="addressOnLink" val="32.0D"/>
+            <uri name="link" val="/bacnet"/>
+            <list name="linkSpecific" is="trane:communicationConfig_v1/" min="1" max="1">
+                <obj is="trane:communicationBACnet_v1/">
+                    <int name="rotaryAddress" val="0"/>
+                    <obj name="pretty" is="trane:bacnetPrettyAddress_v2/ trane:bacnetPrettyAddress_v1/">
+                        <int name="networkNumber" val="32"/>
+                        <bool name="remoteNetwork" val="true"/>
+                        <str name="datalinkName" null="true"/>
+                        <str name="macAddress" val="13"/>
+                        <obj name="bcuLinkAddress" is="trane:bacnetBCULinkAddress_v1/" null="true"></obj>
+                    </obj>
+                </obj>
+            </list>
+            <bool name="isOffline" val="false"/>
+            <uri name="gatewayUri" val=""/>
+            <str name="netAddr" val="32.0D|generic-83"/>
+            <enum name="roleAssignType" val="BACnet" range="trane:roleDocType_v1/"/>
+        </obj>
+    </list>
+</list>

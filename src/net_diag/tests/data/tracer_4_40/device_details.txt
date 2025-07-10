@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<list is="obix:BatchOut" xmlns:trane="trane:evox">
+    <err href="/evox/equipment/generic/generic/114/VendorName/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <err href="/evox/equipment/generic/generic/114/ControllerType/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <err href="/evox/equipment/generic/generic/114/ModelName/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <err href="/evox/equipment/generic/generic/114/FirmwareRevision/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <str href="/evox/equipment/generic/generic/133/VendorName/value" val="DENT Instruments, Inc."/>
+    <err href="/evox/equipment/generic/generic/133/ControllerType/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <str href="/evox/equipment/generic/generic/133/ModelName/value" val="PS3037-E  P371912028"/>
+    <str href="/evox/equipment/generic/generic/133/FirmwareRevision/value" val="0.5.9"/>
+    <str href="/evox/equipment/generic/generic/74/VendorName/value" val="Trane"/>
+    <err href="/evox/equipment/generic/generic/74/ControllerType/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <str href="/evox/equipment/generic/generic/74/ModelName/value" val="UC600"/>
+    <str href="/evox/equipment/generic/generic/74/FirmwareRevision/value" val="1.00.000"/>
+    <str href="/evox/equipment/generic/generic/83/VendorName/value" val="Teletrol Systems Inc"/>
+    <err href="/evox/equipment/generic/generic/83/ControllerType/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <str href="/evox/equipment/generic/generic/83/ModelName/value" val="TRC-7600A-5"/>
+    <str href="/evox/equipment/generic/generic/83/FirmwareRevision/value" val="3.5.05"/>
+</list>

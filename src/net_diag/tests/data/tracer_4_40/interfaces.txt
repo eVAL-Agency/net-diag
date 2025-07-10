@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<list is="obix:BatchOut" xmlns:trane="trane:evox">
+    <err href="/evox/ipNetworkConfig/" is="obix:UnsupportedErr" display="Unsupported request - Error code: 01001"/>
+    <obj href="/evox/config/bacnet_mstp/link0/" is="trane:bacnetMstpConfig_v2/ trane:bacnetMstpConfig_v1/" xmlns:trane="trane:evox">
+        <bool href="enabled/" name="enabled" val="false"/>
+        <int href="address/" name="address" val="0"/>
+        <int href="networkNumber/" name="networkNumber" val="41"/>
+        <int href="baudRate/" name="baudRate" val="38400"/>
+        <int href="maxMasters/" name="maxMasters" val="127"/>
+        <int href="maxInfoFrames/" name="maxInfoFrames" val="10"/>
+        <int href="N_retryToken/" name="N_retryToken" val="1"/>
+        <int href="T_usageTimeout_Token/" name="T_usageTimeout_Token" val="80"/>
+        <int href="T_usageTimeout_PFM/" name="T_usageTimeout_PFM" val="30"/>
+        <int href="T_turnAround/" name="T_turnAround" val="40"/>
+    </obj>
+    <obj href="/evox/config/bacnet_mstp/link1/" is="trane:bacnetMstpConfig_v2/ trane:bacnetMstpConfig_v1/" xmlns:trane="trane:evox">
+        <bool href="enabled/" name="enabled" val="true"/>
+        <int href="address/" name="address" val="0"/>
+        <int href="networkNumber/" name="networkNumber" val="42"/>
+        <int href="baudRate/" name="baudRate" val="38400"/>
+        <int href="maxMasters/" name="maxMasters" val="127"/>
+        <int href="maxInfoFrames/" name="maxInfoFrames" val="10"/>
+        <int href="N_retryToken/" name="N_retryToken" val="1"/>
+        <int href="T_usageTimeout_Token/" name="T_usageTimeout_Token" val="80"/>
+        <int href="T_usageTimeout_PFM/" name="T_usageTimeout_PFM" val="30"/>
+        <int href="T_turnAround/" name="T_turnAround" val="40"/>
+    </obj>
+</list>

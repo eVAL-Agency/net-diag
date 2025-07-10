@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<list is="obix:BatchOut" xmlns:trane="trane:evox">
+    <obj href="/evox/about" is="trane:SCAbout_v1 trane:About_v2 trane:About_v1" xmlns:trane="trane:evox">
+        <str name="obixVersion" val="1.0"/>
+        <str name="serverName" val="E17SER"/>
+        <abstime name="serverTime" val="2025-07-07T21:09:59-04:00"/>
+        <abstime name="serverBootTime" val="2025-06-09T20:10:34-04:00"/>
+        <str name="vendorName" val="Trane"/>
+        <uri name="vendorUrl" val="http://www.trane.com"/>
+        <str name="productName" val="Tracer SC"/>
+        <str name="productVersion" val="v4.40.1218 (release)"/>
+        <uri name="productUrl" val="http://www.trane.com"/>
+        <str name="kernelVersion" val="2.6.30_HwVer12AB-hydra"/>
+        <str name="evoxVersion" val="1.0"/>
+        <str href="fingerprint/" name="fingerprint" val="0"/>
+        <int name="backIndex" val="0"/>
+        <str name="hardwareType" val="HwVer12AB"/>
+        <str name="hardwarePartNumber" val="0"/>
+        <str name="hardwareSerialNumber" val="E17SER"/>
+        <list name="software" of="trane:AboutSoftware_v1/"></list>
+        <int name="rotarySetting" val="3"/>
+        <reltime name="timeToDie" null="true"/>
+    </obj>
+    <obj href="/evox/config/bacnet_global" is="trane:bacnetGlobalConfig_v3/ trane:bacnetGlobalConfig_v2/ trane:bacnetGlobalConfig_v1/" xmlns:trane="trane:evox">
+        <int href="deviceId/" name="deviceId" val="30000"/>
+        <int href="segmentTimeout/" name="segmentTimeout" val="5000"/>
+        <int href="apduTimeout/" name="apduTimeout" val="10000"/>
+        <int href="apduRetries/" name="apduRetries" val="3"/>
+        <str href="name/" name="name" val="Test SC 1-5"/>
+        <str href="description/" name="description" val="Test SC-3 - E17SER"/>
+        <str href="location/" name="location" val="123 Here St"/>
+        <int href="backupTimeout/" name="backupTimeout" val="900"/>
+        <abstime href="lastRestoreTime/" name="lastRestoreTime" val="1970-01-01T00:00:00"/>
+        <str href="commControlPasswd/" name="commControlPasswd" val="Trane"/>
+        <str href="reinitPasswd/" name="reinitPasswd" val="Trane"/>
+        <str href="backupPasswd/" name="backupPasswd" val="Trane"/>
+        <str href="profileName/" name="profileName" val="2-E type=&#34;Tracer SC&#34;"/>
+        <str href="language/" name="language" val="en_US"/>
+    </obj>
+</list>

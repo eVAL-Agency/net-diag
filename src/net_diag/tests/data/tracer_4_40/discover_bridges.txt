@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<obj href="/evox/bacnet/availableNetworks" is="trane:bacnetAvailableNetworks_v2/ trane:bacnetAvailableNetworks_v1/" xmlns:trane="trane:evox" >
+	<enum name="status" val="discovering" range="trane:availableNetworksState_v1/" />
+	<int name="serialNumber" val="672" />
+	<list name="networks" of="trane:bacnetNetworkInfo_v2/" >
+		<obj is="trane:bacnetNetworkInfo_v2/ trane:bacnetNetworkInfo_v1/" >
+			<int name="networkNumber" val="31" />
+			<str name="localDatalinkName" val="BVLL" />
+			<str name="routerAddress" val="192.168.0.153:47810" />
+			<str name="routerAddressBinhex" val="C0A80099BAC2" />
+			<int name="routerDeviceInstance" null="true" />
+			<str name="routerName" null="true" />
+			<str name="routerVendorName" null="true" />
+			<str name="remoteDatalinkName" null="true" />
+		</obj>
+		<obj is="trane:bacnetNetworkInfo_v2/ trane:bacnetNetworkInfo_v1/" >
+			<int name="networkNumber" val="32" />
+			<str name="localDatalinkName" val="BVLL" />
+			<str name="routerAddress" val="192.168.0.153:47810" />
+			<str name="routerAddressBinhex" val="C0A80099BAC2" />
+			<int name="routerDeviceInstance" null="true" />
+			<str name="routerName" null="true" />
+			<str name="routerVendorName" null="true" />
+			<str name="remoteDatalinkName" null="true" />
+		</obj>
+	</list>
+</obj>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<obj href="/evox/bacnet/availableNetworks" is="trane:bacnetAvailableNetworks_v2/ trane:bacnetAvailableNetworks_v1/" xmlns:trane="trane:evox">
+    <enum name="status" val="discovering" range="trane:availableNetworksState_v1/"/>
+    <int name="serialNumber" val="15"/>
+    <list name="networks" of="trane:bacnetNetworkInfo_v3/"></list>
+</obj>

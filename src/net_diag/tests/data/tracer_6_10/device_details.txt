@@ -1,0 +1,14 @@
+<list is="obix:BatchOut" xmlns:trane="trane:evox">
+    <str href="/evox/equipment/generic/generic/160/VendorName/value" val="Teletrol Systems Inc"/>
+    <err href="/evox/equipment/generic/generic/160/ControllerType/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <str href="/evox/equipment/generic/generic/160/ModelName/value" val="TRC-7600A-5"/>
+    <str href="/evox/equipment/generic/generic/112/VendorName/value" val="Trane"/>
+    <err href="/evox/equipment/generic/generic/112/ControllerType/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <str href="/evox/equipment/generic/generic/112/ModelName/value" val="UC400"/>
+    <str href="/evox/equipment/generic/generic/107/VendorName/value" val="Teletrol Systems Inc"/>
+    <err href="/evox/equipment/generic/generic/107/ControllerType/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <str href="/evox/equipment/generic/generic/107/ModelName/value" val="TRC-7600A-5"/>
+    <str href="/evox/equipment/scc/wshp/6/VendorName/value" val="Teletrol Systems Inc"/>
+    <err href="/evox/equipment/scc/wshp/6/ControllerType/value" is="obix:UnsupportedErr" display="Unsupported request - Error code: 19006"/>
+    <str href="/evox/equipment/scc/wshp/6/ModelName/value" val="TRC-7600H-5"/>
+</list>
