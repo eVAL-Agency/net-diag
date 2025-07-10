@@ -1,4 +1,5 @@
 import os
+import socket
 import subprocess
 import sys
 import json
@@ -11,6 +12,7 @@ import logging
 import multiprocessing
 from queue import Queue
 from queue import Empty
+from mac_vendor_lookup import MacLookup
 
 from net_diag.libs.net_utils import get_neighbors
 from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
@@ -63,15 +65,10 @@ class Application:
 		Queue of results based on the threaded scan
 		"""
 
-		self.hosts = []
+		self.hosts = {}
 		"""
-		List of devices located and scanned
-		:param hosts: Host[]
-		"""
-
-		self.host_map = {}
-		"""
-		Map of IP address to the Host index in the `hosts` list.
+		List of devices located and scanned (indexed by their IP address).
+		:param hosts: dict[str, Host]
 		"""
 
 		self.host_config = {}
@@ -134,18 +131,11 @@ class Application:
 					pass
 			exit(1)
 
-		# Move all hosts discovered from the host queue into a standard list
-		hosts = list(self.host_queue.queue)
-		for host in hosts:
-			if host.is_available() and host.ip not in self.config['exclude']:
-				self.host_map[host.ip] = len(self.hosts)
-				self.hosts.append(host)
-
-		self.resolve_macs()
-
-		# Perform any operations / lookups that require a MAC address
-		for host in self.hosts:
-			host.resolve_manufacturer()
+		# Perform all the local work for hosts, in the primary thread.
+		self._merge_hosts()
+		self._resolve_macs()
+		self._resolve_hostnames()
+		self._resolve_manufacturers()
 
 		self.finalize_results()
 
@@ -309,19 +299,22 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 					# Initial scan of the device
 					print('Scanning host %s' % (host.ip,), file=sys.stderr)
 					if 'icmp' in host.config['scanners']:
-						(ICMPScanner(host)).scan()
+						ICMPScanner.scan(host)
 
 					if 'snmp' in host.config['scanners']:
-						(SNMPScanner(host)).scan()
+						SNMPScanner.scan(host)
 
 					if 'trane-tracer-sc' in host.config['scanners']:
-						(TraneTracerSCScanner(host)).scan()
+						TraneTracerSCScanner.scan(host)
 					self.queue.put(('neighbors', host))
 				elif action == 'neighbors':
 					# Secondary scan, (now that the arp cache of the remote devices should be populated)
-					if 'snmp' in host.config['scanners'] and host.descr:
+					if 'snmp' in host.config['scanners']:
 						print('Scanning host for neighbors %s' % (host.ip,), file=sys.stderr)
-						(SNMPScanner(host)).scan_neighbors()
+						SNMPScanner.scan_neighbors(host)
+
+					if 'trane-tracer-sc' in host.config['scanners']:
+						TraneTracerSCScanner.scan_neighbors(host)
 					self.host_queue.put(host)
 				else:
 					logging.error('Unsupported action %s' % action)
@@ -334,50 +327,93 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				print('Thread closing', file=sys.stderr)
 				return
 
-	def resolve_macs(self):
+	def _resolve_macs(self):
+		"""
+		Resolve missing device MAC addresses from the local ARP cache.
+		:return:
+		"""
 		# Grab the monitoring server's ARP cache to resolve any local devices.
 		# This only works for devices on the same layer 2 network, (ie: same subnet)
 		local_arp = get_neighbors()
 		for data in local_arp:
-			if data['ip'] in self.host_map:
-				# This is a device we are scanning, update its MAC if required
-				i = self.host_map[data['ip']]
-				if self.hosts[i].mac is None:
-					self.hosts[i].mac = data['mac']
-					self.hosts[i].log('Resolved MAC from local ARP cache')
+			if data['ip'] in self.hosts and self.hosts[data['ip']].mac is None:
+				self.hosts[data['ip']].mac = data['mac']
+				self.hosts[data['ip']].log('Resolved MAC from local ARP cache')
 
-		# Resolve any located MAC from the remote arp table
-		# This is important because hosts which do not have SNMP enabled should still have the MAC available.
-		for host in self.hosts:
-			if host.neighbors is not None:
-				for ip, mac in host.neighbors:
-					if ip in self.host_map:
-						# This IP is one of the devices we are scanning, update its MAC if required
-						i = self.host_map[ip]
-						if self.hosts[i].mac is None:
-							self.hosts[i].mac = mac
-							self.hosts[i].log('Resolved MAC from ARP cache on %s' % host.ip)
+	def _resolve_hostnames(self):
+		"""
+		Attempt to resolve hostnames based on local socket data
+		:return:
+		"""
+		for host in self.hosts.values():
+			if host.hostname is None or host.hostname == '':
+				try:
+					host.log('Hostname resolved via local socket lookup')
+					host.hostname = socket.gethostbyaddr(host.ip)[0]
+					host.log('%s = %s' % (host.ip, host.hostname))
+				except socket.herror:
+					host.log('socket lookup failed')
+					pass
+
+	def _resolve_manufacturers(self):
+		"""
+		Attempt to resolve the manufacturer from the MAC address for devices
+		:return:
+		"""
+		for host in self.hosts.values():
+			if (host.manufacturer is None or host.manufacturer == '') and host.mac is not None:
+				try:
+					host.log('Manufacturer not set, trying a MAC lookup to resolve')
+					host.manufacturer = MacLookup().lookup(host.mac)
+					host.log('%s = %s' % (host.mac, host.manufacturer))
+				except Exception:
+					host.log('MAC address lookup failed')
+					pass
 
 	def finalize_results(self):
 		if self.config['format'] == 'json':
-			print(json.dumps([h.to_dict() for h in self.hosts], indent=2))
+			print(json.dumps([h.to_dict() for h in self.hosts.values()], indent=2))
 		elif self.config['format'] == 'csv':
 			# Grab a new host just to retrieve the dictionary keys on the object
 			generic = Host('test', self.config, None)
 			# Set the header (and fields)
 			writer = csv.DictWriter(sys.stdout, fieldnames=list(generic.to_dict().keys()))
 			writer.writeheader()
-			for h in self.hosts:
+			for h in self.hosts.values():
 				writer.writerow(h.to_dict())
 		elif self.config['format'] == 'suitecrm':
-			for h in self.hosts:
-				try:
-					print('Syncing %s to SuiteCRM' % h.ip)
-					h.sync_to_suitecrm()
-				except SuiteCRMSyncException as e:
-					print('Failed to sync %s to SuiteCRM: %s' % (h.ip, e), file=sys.stderr)
+			self._sync_suitecrm()
 		else:
 			print('Unknown format requested', file=sys.stderr)
+
+	def _sync_suitecrm(self):
+		retries = 0
+		while retries <= 5:
+			retries += 1
+			done = True
+
+			for h in self.hosts.values():
+				if h.synced_id is not None:
+					# Skipped already synced hosts
+					continue
+
+				if retries == 5 or h.uplink_device is None or h.uplink_device in h.ip_to_synced_ids:
+					# No uplink device or parent device is already synced
+					# go ahead and sync this host!
+					# Also just sync the host if this is the last retry
+					try:
+						print('Syncing %s to SuiteCRM' % h.ip)
+						h.sync_to_suitecrm()
+					except SuiteCRMSyncException as e:
+						h.synced_id = False
+						print('Failed to sync %s to SuiteCRM: %s' % (h.ip, e), file=sys.stderr)
+				else:
+					# Missing uplink device, skip for the next iteration.
+					done = False
+
+			if done:
+				# If there are no more hosts to sync, exit the loop
+				break
 
 	def get_local_ips(self) -> list:
 		# Get IP and MAC address for this device
@@ -402,6 +438,31 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 			ips.append(iface['addr_info'][0]['local'])
 		return ips
+
+	def _merge_hosts(self):
+		"""
+		Merge all the hosts discovered (and their neighbors when applicable) into a single list.
+
+		:return:
+		"""
+		# Move all hosts discovered from the host queue into a standard list
+		hosts = list(self.host_queue.queue)
+		for host in hosts:
+			if host.reachable and host.ip not in self.config['exclude']:
+				self.hosts[host.ip] = host
+
+		# Iterate through the discovered neighbors from scanned hosts
+		# and add/merge them into the main host list.
+		# (Make a clone of the hosts to avoid modifying the queue while iterating)
+		hosts = list(self.hosts.values())
+		for host in hosts:
+			for neighbor in host.neighbors.values():
+				if neighbor.ip in self.hosts:
+					# Already exists, perform a merge instead
+					self.hosts[neighbor.ip].merge_from_host(neighbor)
+				elif neighbor.ip and neighbor.include:
+					# This is a new host, add it to the list
+					self.hosts[neighbor.ip] = neighbor
 
 
 def run():
