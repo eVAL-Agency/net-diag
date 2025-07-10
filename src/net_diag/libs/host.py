@@ -3,7 +3,6 @@ import logging
 import re
 from datetime import datetime
 from typing import Union
-from mac_vendor_lookup import MacLookup
 
 
 class Host:
@@ -26,6 +25,11 @@ class Host:
 	TYPE_TV = 'TV'
 	TYPE_WIFI = 'Wifi'
 	TYPE_WORKSTATION = 'Workstation'
+
+	ip_to_synced_ids = {}
+	"""
+	Cache of IP addresses to SuiteCRM IDs
+	"""
 
 	def __init__(self, ip: str, config: dict, sync=None):
 		"""
@@ -151,14 +155,20 @@ class Host:
 
 		self.reachable = False
 		"""
-		If this device is reachable on the network, (eg: pingable)
-		:type reachable: bool
+		Set to True if this device is reachable on the network,
+		generally set from a scanner upon a successful connection or ping.
 		"""
 
-		self.interfaces = None
+		self.ping = None
+		"""
+		Ping response time for this device, (if available)
+		:type ping: str|None
+		"""
+
+		self.links = None
 		"""
 		List of network/data ports on the device
-		:type interfaces: dict[str,HostInterface]|None
+		:type links: dict[str,HostLink]|None
 		"""
 
 		self.config = config
@@ -173,10 +183,33 @@ class Host:
 		:type sync: SuiteCRMSync|None
 		"""
 
-		self.neighbors = []
+		self.synced_id = None
 		"""
-		List of neighbors (IP, MAC) tuples for this device.
-		:type neighbors: list[tuple[str, str]]
+		The ID of this object in the remote system, (if applicable)
+		"""
+
+		self.neighbors = {}
+		"""
+		List of neighbors (IP, Host) of this device.
+		:type neighbors: dict[str, Host]
+		"""
+
+		self.include = False
+		"""
+		Set to True to force include this device in the scan results,
+		useful for child devices under a parent device which do not fall under the default scan criteria.
+		"""
+
+		self.uplink_device = None
+		"""
+		IP address of the device that this host is connected to, (if applicable)
+		:type uplink_device: str|None
+		"""
+
+		self.uplink_port = None
+		"""
+		Port name on the uplink device that this host is connected to, (if applicable)
+		:type uplink_port: str|None
 		"""
 
 		# Set override defaults
@@ -206,48 +239,35 @@ class Host:
 		Checks both ping and SNMP, as either could be disabled.
 		:return:
 		"""
-		return self.reachable or self.descr is not None
+		return self.ping is not None or self.descr is not None
 
-	'''
-	(@todo, move the socket logic to somewhere else.)
-	def scan(self):
+	def create_neighbor(self, ip: str):
 		"""
-		Perform a full scan of the device to store all details.
+		Create a neighboring Host device based off this host's config.
+
+		:param ip:
+		:return Host:
+		"""
+		if ip in self.neighbors:
+			# If the neighbor already exists, return it
+			return self.neighbors[ip]
+		new_host = Host(ip, self.config, self.sync)
+		self.neighbors[ip] = new_host
+		return new_host
+
+	def merge_from_host(self, other: 'Host'):
+		"""
+		Merge data from another Host into this one.
+		This is useful for merging data from child devices into a parent device.
+
+		(currently just supports MAC address)
+
+		:param other: Host to merge data from
 		:return:
 		"""
-
-		if 'icmp' in self.config['scanners']:
-			(net_diag.libs.scanners.ICMPScanner(self)).scan()
-
-		if 'snmp' in self.config['scanners']:
-			(net_diag.libs.scanners.SNMPScanner(self)).scan()
-
-		if 'trane-tracer-sc' in self.config['scanners']:
-			(net_diag.libs.scanners.TraneTracerSCScanner(self)).scan()
-
-		if self.hostname is None or self.hostname == '':
-			try:
-				self.log('Hostname not set, trying a socket to resolve')
-				self.hostname = socket.gethostbyaddr(self.ip)[0]
-				self.log('%s = %s' % (self.ip, self.hostname))
-			except socket.herror:
-				self.log('socket lookup failed')
-				pass
-	'''
-
-	def resolve_manufacturer(self):
-		"""
-		Resolve the manufacturer from the MAC address
-		:return:
-		"""
-		if (self.manufacturer is None or self.manufacturer == '') and self.mac is not None:
-			try:
-				self.log('Manufacturer not set, trying a MAC lookup to resolve')
-				self.manufacturer = MacLookup().lookup(self.mac)
-				self.log('%s = %s' % (self.mac, self.manufacturer))
-			except Exception:
-				self.log('MAC address lookup failed')
-				pass
+		if self.mac is None and other.mac is not None:
+			self.mac = other.mac
+			self.log('Resolved MAC from neighbor')
 
 	def sync_to_suitecrm(self):
 		"""
@@ -285,8 +305,11 @@ class Host:
 				'model',
 				'os_version',
 				'type',
+				'serial',
 				'description',
-				'status'
+				'status',
+				'msp_devices_id_c',
+				'uplink_port',
 			)
 		)
 		self.log('Found %s device(s)' % len(ret))
@@ -295,9 +318,25 @@ class Host:
 			# No records located, create
 			data = self._generate_suitecrm_payload(None)
 			self.log('Creating device record for %s: (%s)' % (self.ip, json.dumps(data)))
-			self.sync.create('MSP_Devices', data | {'discover_log': self.log_lines})
+			result = self.sync.create('MSP_Devices', data | {'discover_log': self.log_lines})
+
+			self.synced_id = result['data']['id']
+
+			if 'ip_pri' in data and data['ip_pri']:
+				self.ip_to_synced_ids[data['ip_pri']] = self.synced_id
+			if 'ip_sec' in data and data['ip_sec']:
+				self.ip_to_synced_ids[data['ip_sec']] = self.synced_id
+
 		elif len(ret) == 1:
 			# Update only, (do not overwrite existing data)
+			self.synced_id = ret[0]['id']
+
+			# Store the IP for future reference
+			if ret[0]['ip_pri']:
+				self.ip_to_synced_ids[ret[0]['ip_pri']] = ret[0]['id']
+			if ret[0]['ip_sec']:
+				self.ip_to_synced_ids[ret[0]['ip_sec']] = ret[0]['id']
+
 			data = self._generate_suitecrm_payload(ret[0])
 			if len(data):
 				self.log('Syncing device record for %s: %s' % (self.ip, json.dumps(data)))
@@ -324,6 +363,26 @@ class Host:
 	def _generate_suitecrm_payload_if_empty(self, server_data: Union[dict, None], data: dict, key: str, value: str):
 		if value and (server_data is None or server_data[key] == ''):
 			data[key] = value
+
+	def _generate_suitecrm_uplink_device(self, server_data: Union[dict, None], data: dict):
+		value = self.uplink_device
+		key = 'msp_devices_id_c'
+		if value and (server_data is None or server_data[key] == ''):
+			# Local value set and CRM is empty; populate!
+			# This value is expected to be an IP address of a device,
+			# so try to resolve to that device's ID prior to uploading.
+			if value in self.ip_to_synced_ids:
+				data[key] = self.ip_to_synced_ids[value]
+			else:
+				ret = self.sync.find(
+					'MSP_Devices',
+					{'ip_pri': value},
+					fields=('id', 'ip_pri')
+				)
+				if len(ret) == 1:
+					# A device was located!  Store it and use that device.
+					self.ip_to_synced_ids[ret[0]['ip_pri']] = ret[0]['id']
+					data[key] = ret[0]['id']
 
 	def _generate_suitecrm_payload(self, server_data: Union[dict, None]) -> dict:
 		data = {}
@@ -368,7 +427,9 @@ class Host:
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'os_version', self.os_version)
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'type', self.type)
 		self._generate_suitecrm_payload_if_empty(server_data, data, 'description', self.descr)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'name', self.hostname)
+		self._generate_suitecrm_payload_if_empty(server_data, data, 'uplink_port', self.uplink_port)
+
+		self._generate_suitecrm_uplink_device(server_data, data)
 
 		return data
 
@@ -392,10 +453,10 @@ class Host:
 		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} descr:{self.descr}>'
 
 	def to_dict(self) -> dict:
-		interfaces = {}
-		if self.interfaces is not None:
-			for name, interface in self.interfaces.items():
-				interfaces[name] = interface.to_dict()
+		links = {}
+		if self.links is not None:
+			for name, iface in self.links.items():
+				links[name] = iface.to_dict()
 
 		data = {
 			'ip': self.ip,
@@ -409,13 +470,16 @@ class Host:
 			'manufacturer': self.manufacturer,
 			'model': self.model,
 			'serial': self.serial,
-			'interfaces': interfaces,
+			'links': links,
 			'os_name': self.os_name,
 			'os_version': self.os_version,
 			'descr': self.descr,
 			'address': self.address,
 			'city': self.city,
-			'state': self.state
+			'state': self.state,
+			'ping': self.ping,
+			'uplink_device': self.uplink_device,
+			'uplink_port': self.uplink_port,
 		}
 
 		if 'fields' in self.config and self.config['fields'] is not None:
@@ -425,14 +489,14 @@ class Host:
 		return data
 
 
-class HostInterface:
+class HostLink:
 	"""
 	Represents a single interface (port) on a host.
 	"""
 
 	def __init__(self):
 		"""
-		Initialize a new HostInterface
+		Initialize a new HostLink
 		"""
 		self.name = None
 		self.label = None

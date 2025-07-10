@@ -77,6 +77,7 @@ async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 	snmpEngine = SnmpEngine()
 	run = True
 	while run:
+		var_bind = None
 		error_indication, error_status, error_index, var_binds = await bulk_cmd(
 			snmpEngine,
 			CommunityData(community, mpModel=1),
@@ -121,8 +122,8 @@ async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 				ret[key] = val
 
 		# Reset the lookup to the last OID returned, so we can continue
-		if len(var_binds) > 0 and (len(var_binds) - 1) in var_binds:
-			lookups = [var_binds[len(var_binds) - 1]]
+		if len(var_binds) > 0 and var_bind:
+			lookups = [var_bind]
 		else:
 			run = False
 

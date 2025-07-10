@@ -3,156 +3,17 @@ from typing import Union
 import asyncio
 
 from net_diag.libs.net_utils import format_link_speed
+from net_diag.libs.scanners import ScannerInterface
 from net_diag.libs.snmputils import snmp_lookup_single, snmp_lookup_bulk
-from net_diag.libs.host import Host, HostInterface
+from net_diag.libs.host import Host, HostLink
 
 
-class SNMPScanner:
+class SNMPScanner(ScannerInterface):
 	"""
 	SNMP Scanner class for scanning devices using SNMP protocol.
 	"""
 
 	def __init__(self, host: Host):
-		self.host = host
-
-	def scan(self):
-		"""
-		Scan this device for all SNMP values
-
-		This top-level scanner sets Descr and sysObjectID only.
-		The rest of the values are up to the individual scanners to implement.
-
-		:return:
-		"""
-		if 'community' not in self.host.config:
-			# SNMP scans require a community string
-			return
-
-		val = self.get_descr()
-		if val is None:
-			# Initial lookup of DESCR failed; do not try to continue.
-			return
-		self.host.descr = val
-
-		object_id = self.get_object_id()
-		if object_id is not None:
-			self.host.object_id = object_id
-
-		# Use a device-specific scanner to perform the actual lookups
-		# This allows specific devices to have their own scan functions.
-		scanner = self._get_scanner()
-		scanner.scan()
-
-	def scan_neighbors(self):
-		"""
-		Perform a scan of the ARP table of the device to find neighbors.
-		:return:
-		"""
-
-		if 'community' not in self.host.config:
-			# SNMP scans require a community string
-			return
-
-		if not self.host.descr:
-			# Scan requires SNMP to be available
-			return
-
-		scanner = self._get_scanner()
-		scanner.scan_neighbors()
-
-	def get_descr(self) -> Union[str, None]:
-		"""
-		Perform a basic SNMP scan to get the description of the device.
-		:return:
-		"""
-		return self._lookup_single('DESCR', '1.3.6.1.2.1.1.1.0')
-
-	def get_object_id(self) -> Union[str, None]:
-		"""
-		Grab the sysObjectID of the device, which may be a unique identifier for the device type.
-		:return:
-		"""
-		return self._lookup_single('sysObjectID', '1.3.6.1.2.1.1.2.0')
-
-	def _lookup_single(self, name: str, oid: str) -> Union[str, None]:
-		"""
-		Perform a basic SNMP get to retrieve some value
-		:param name: string Name of this scan for the logs
-		:param oid: string SNMP OID to scan
-		:return:
-		"""
-		self.host.log('Scanning for %s - OID:%s' % (name, oid))
-		val = asyncio.run(snmp_lookup_single(self.host.ip, str(self.host.config['community']), oid))
-		if val is None:
-			self.host.log('OID does not exist or value was NULL')
-		else:
-			self.host.log('Raw response: [%s]' % val)
-		return val
-
-	def _lookup_bulk(self, name: str, oid: str) -> dict:
-		"""
-		Perform a bulk SNMP get to retrieve some values in a given parent
-		:param name: string Name of this scan for the logs
-		:param oid: string SNMP OID to scan
-		:return:
-		"""
-		self.host.log('Scanning for %s - OID:%s' % (name, oid))
-		val = asyncio.run(snmp_lookup_bulk(self.host.ip, str(self.host.config['community']), oid))
-		if len(val) == 0:
-			self.host.log('OID does not exist or value was NULL')
-		else:
-			self.host.log('Found %s items' % len(val))
-		return val
-
-	def _get_scanner(self):
-		"""
-		Get the device-specific scanner based on the sysObjectID.
-
-		Will return the default scanner if none specified.
-		:return:
-		"""
-		# Allow some sysObjectIDs to specify additional scan parameters.
-		scanners = {
-			'1.3.6.1.4.1.14988.1': MikrotikScan,
-			'1.3.6.1.4.1.14988.2': MikrotikScan,
-			'1.3.6.1.4.1.41112': UbiquitiScan,
-			'DEFAULT': DefaultScan,
-		}
-		if self.host.object_id in scanners:
-			return scanners[self.host.object_id](self.host)
-		else:
-			return scanners['DEFAULT'](self.host)
-
-	def _format_snmp_mac(self, val: str) -> Union[str, None]:
-		"""
-		Format a MAC address from SNMP data to a more human-readable format
-
-		:param val:
-		:return:
-		"""
-		if val == '0x000000000000':
-			# Some devices will return a MAC of all 0's for an interface that is not in use.
-			return None
-
-		if val == '':
-			# Some devices will return just a blank string for their interfaces
-			return None
-
-		if val[0:2] == '0x':
-			# SNMP-provided MAC addresses will have a 0x prefix
-			# Drop that and add ':' every 2 characters to be more MAC-like
-			return ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
-
-		# No modifications required
-		return val
-
-
-class DefaultScan(SNMPScanner):
-	"""
-	Default scan function for devices that do not have a specific scan function.
-	"""
-
-	def __init__(self, host):
 		super().__init__(host)
 		self.basic_lookups = {
 			'contact': '1.3.6.1.2.1.1.4.0',
@@ -187,15 +48,114 @@ class DefaultScan(SNMPScanner):
 				# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
 				r'^JetStream 24-Port Gigabit Smart PoE\+ Switch with 4 SFP Slots$',
 				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': 'Switch'}
-			),
-			(
-				# Ubiquiti UniFi UDM-Pro 4.1.13 Linux 4.19.152 al324
-				r'^Ubiquiti UniFi (?P<model>UDM-Pro) (?P<os_version>[^ ]+) Linux [^ ]+ [^ ]+$',
-				{'manufacturer': 'Ubiquiti Networks Inc.', 'type': 'Router'}
 			)
 		)
+		self.vlans_reversed = False
+		"""
+		Some devices, such as Ubiquiti, have their VLANs reversed.
+		"""
 
-	def scan(self):
+	@classmethod
+	def get_scanner(cls, host: Host):
+		"""
+		Get the device-specific scanner based on the sysObjectID.
+
+		Will return the default scanner if none specified.
+		:return SNMPScanner|None:
+		"""
+		# Allow some sysObjectIDs to specify additional scan parameters.
+		scanners = {
+			# 1.3.6.1.4.1.8072.3.2.10 - Linux
+			# 1.3.6.1.4.1.4413 - Broadcom
+			'1.3.6.1.4.1.14988.1': MikrotikScan,
+			'1.3.6.1.4.1.14988.2': MikrotikScan,
+			'1.3.6.1.4.1.41112': UbiquitiScan,
+			'DEFAULT': SNMPScanner,
+		}
+
+		descrs = {
+			r'^Linux UBNT .*': UbiquitiScan,  # Linux UBNT 3.18.24 #0 Thu Aug 30 12:10:54 2018 mips
+			r'^Ubiquiti UniFi .*': UbiquitiScan,  # Ubiquiti UniFi UDM-Pro 4.1.13 Linux 4.19.152 al324
+			r'^US-8-60W, .* Linux .*': UbiquitiScan,  # US-8-60W, 4.0.20.10893, Linux 3.6.5
+		}
+
+		if not host.descr:
+			# No object_id set yet, use the default scanner to try to retrieve it.
+			# (Use descr as the basis though as sysObjectID may actually be empty)
+			scanner = SNMPScanner(host)
+			host.object_id = scanner.get_object_id()
+			host.descr = scanner.get_descr()
+
+		if not host.descr:
+			# A description could not be retrieved, assume this device is not reachable via SNMP.
+			return None
+
+		# Default is to use the sysObjectID to determine the scanner.
+		if host.object_id in scanners:
+			return scanners[host.object_id](host)
+
+		# Some manufacturers don't set a meaningful sysObjectID, so we use the description instead.
+		for pattern, scanner in descrs.items():
+			if re.match(pattern, host.descr):
+				return scanner(host)
+
+		# No specific scanner found, use the default.
+		return scanners['DEFAULT'](host)
+
+	@classmethod
+	def scan(cls, host: Host):
+		if 'community' not in host.config:
+			# SNMP scans require a community string
+			return
+
+		scanner = cls.get_scanner(host)
+		if not scanner:
+			# No scanner found, device is not reachable via SNMP
+			return
+		scanner.run_scan()
+
+	@classmethod
+	def scan_neighbors(cls, host: Host):
+		"""
+		Perform a scan of the ARP table of the device to find neighbors.
+		:return:
+		"""
+
+		if 'community' not in host.config:
+			# SNMP scans require a community string
+			return
+
+		if not host.descr:
+			# A description could not be retrieved, assume this device is not reachable via SNMP.
+			return
+
+		scanner = cls.get_scanner(host)
+		scanner.run_scan_neighbors()
+
+	def run_scan(self):
+		"""
+		Scan this device for all SNMP values
+
+		This top-level scanner sets Descr and sysObjectID only.
+		The rest of the values are up to the individual scanners to implement.
+
+		:return:
+		"""
+		if 'community' not in self.host.config:
+			# SNMP scans require a community string
+			return
+
+		val = self.get_descr()
+		if val is None:
+			# Initial lookup of DESCR failed; do not try to continue.
+			return
+		self.host.descr = val
+		self.host.reachable = True
+
+		object_id = self.get_object_id()
+		if object_id is not None:
+			self.host.object_id = object_id
+
 		# Parse the Descr value for common data
 		for check in self.descr_parses:
 			match = re.match(check[0], self.host.descr)
@@ -217,26 +177,60 @@ class DefaultScan(SNMPScanner):
 		if mac is not None:
 			self.host.mac = mac
 
-		self.host.interfaces = self.get_ports()
+		self.host.links = self.get_ports()
 
-	def scan_neighbors(self):
+	def run_scan_neighbors(self):
 		"""
 		Perform a scan of the ARP table of the device to find neighbors.
 		:return:
 		"""
 
-		ret = []
+		if 'community' not in self.host.config:
+			# SNMP scans require a community string
+			return
+
+		if not self.host.descr:
+			# Scan requires SNMP to be available
+			return
+
+		found = 0
+
+		# Lookup the Address Translation (3) / atTable (1) / atEntry (1) / atPhysAddress (2)
+		# Not all devices will support this.
 		lookup = '1.3.6.1.2.1.3.1.1.2'
-		neighbors = self._lookup_bulk('ARP Table', lookup)
+		skips = 2
+		neighbors = self._lookup_bulk('ARP Table (at)', lookup)
+		if len(neighbors) == 0:
+			# at failed; try the IP space instead.
+			# This will use the IP (4) / ipNetToMediaTable (22) / ipNetToMediaEntry (1) / ipNetToMediaPhysAddress (2)
+			lookup = '1.3.6.1.2.1.4.22.1.2'
+			skips = 1
+			neighbors = self._lookup_bulk('ARP Table (ip)', lookup)
+
 		for key, val in neighbors.items():
-			ip = '.'.join(key[len(lookup) + 1:].split('.')[2:])
+			ip = '.'.join(key[len(lookup) + 1:].split('.')[skips:])
 			val = self._format_snmp_mac(val)
 
 			self.host.log('%s is at %s' % (ip, val))
-			ret.append((ip, val))
+			neighbor = self.host.create_neighbor(ip)
+			neighbor.mac = val
+			found += 1
 
-		self.host.log('Found %s devices' % len(ret))
-		self.host.neighbors = ret
+		self.host.log('Found %s devices' % found)
+
+	def get_descr(self) -> Union[str, None]:
+		"""
+		Perform a basic SNMP scan to get the description of the device.
+		:return:
+		"""
+		return self._lookup_single('DESCR', '1.3.6.1.2.1.1.1.0')
+
+	def get_object_id(self) -> Union[str, None]:
+		"""
+		Grab the sysObjectID of the device, which may be a unique identifier for the device type.
+		:return:
+		"""
+		return self._lookup_single('sysObjectID', '1.3.6.1.2.1.1.2.0')
 
 	def get_basic_keys(self) -> dict:
 		"""
@@ -288,7 +282,7 @@ class DefaultScan(SNMPScanner):
 
 		for key, val in names.items():
 			port_id = key[len(name_lookup) + 1:]
-			ret[port_id] = HostInterface()
+			ret[port_id] = HostLink()
 			ret[port_id].name = val
 
 		label_lookup = '1.3.6.1.2.1.31.1.1.1.18'
@@ -309,7 +303,7 @@ class DefaultScan(SNMPScanner):
 			port_id = key[len(speed_lookup) + 1:]
 			ret[port_id].speed = format_link_speed(val)
 
-		mac_lookup = '1.3.6.1.2.1.2.2.1.6.0'
+		mac_lookup = '1.3.6.1.2.1.2.2.1.6'
 		macs = self._lookup_bulk('Port MACs', mac_lookup)
 		for key, val in macs.items():
 			port_id = key[len(mac_lookup) + 1:]
@@ -334,13 +328,6 @@ class DefaultScan(SNMPScanner):
 			ret[port_id].vlan = val
 
 		vlan_egress_lookup = '1.3.6.1.2.1.17.7.1.4.2.1.4'
-		if 'Linux UBNT' in self.host.descr:
-			# Ubiquiti devices have their port definitions reversed, (lowest port number at bit 0)
-			reversed = True
-		else:
-			# Specification calls for lowest port number at bit 63
-			reversed = False
-
 		vlan_egresses = self._lookup_bulk('VLAN Egress', vlan_egress_lookup)
 		for key, val in vlan_egresses.items():
 			vlan_id = key[len(vlan_egress_lookup) + 3:]
@@ -353,18 +340,71 @@ class DefaultScan(SNMPScanner):
 				if int(port) >= 64:
 					# Only check the first 64 ports
 					break
-				if not reversed and vlan_set >> 64 - int(port) & 1 == 1:
+				if not self.vlans_reversed and vlan_set >> 64 - int(port) & 1 == 1:
 					# This port is enabled for this VLAN
 					port_data.vlan_allow.append(vlan_id)
 					self.host.log('Port %s allows VLAN %s' % (port, vlan_id))
-				elif reversed and vlan_set >> int(port) & 1 == 1:
+				elif self.vlans_reversed and vlan_set >> int(port) & 1 == 1:
 					port_data.vlan_allow.append(vlan_id)
 					self.host.log('Port %s allows VLAN %s' % (port, vlan_id))
 
 		return ret
 
+	def _lookup_single(self, name: str, oid: str) -> Union[str, None]:
+		"""
+		Perform a basic SNMP get to retrieve some value
+		:param name: string Name of this scan for the logs
+		:param oid: string SNMP OID to scan
+		:return:
+		"""
+		self.host.log('Scanning for %s - OID:%s' % (name, oid))
+		val = asyncio.run(snmp_lookup_single(self.host.ip, str(self.host.config['community']), oid))
+		if val is None:
+			self.host.log('OID does not exist or value was NULL')
+		else:
+			self.host.log('Raw response: [%s]' % val)
+		return val
 
-class MikrotikScan(DefaultScan):
+	def _lookup_bulk(self, name: str, oid: str) -> dict:
+		"""
+		Perform a bulk SNMP get to retrieve some values in a given parent
+		:param name: string Name of this scan for the logs
+		:param oid: string SNMP OID to scan
+		:return:
+		"""
+		self.host.log('Scanning for %s - OID:%s' % (name, oid))
+		val = asyncio.run(snmp_lookup_bulk(self.host.ip, str(self.host.config['community']), oid))
+		if len(val) == 0:
+			self.host.log('OID does not exist or value was NULL')
+		else:
+			self.host.log('Found %s items' % len(val))
+		return val
+
+	def _format_snmp_mac(self, val: str) -> Union[str, None]:
+		"""
+		Format a MAC address from SNMP data to a more human-readable format
+
+		:param val:
+		:return:
+		"""
+		if val == '0x000000000000':
+			# Some devices will return a MAC of all 0's for an interface that is not in use.
+			return None
+
+		if val == '':
+			# Some devices will return just a blank string for their interfaces
+			return None
+
+		if val[0:2] == '0x':
+			# SNMP-provided MAC addresses will have a 0x prefix
+			# Drop that and add ':' every 2 characters to be more MAC-like
+			return ':'.join([val[2:][i:i + 2] for i in range(0, len(val[2:]), 2)])
+
+		# No modifications required
+		return val
+
+
+class MikrotikScan(SNMPScanner):
 	"""
 	Mikrotik-specific scan function.
 	"""
@@ -386,8 +426,8 @@ class MikrotikScan(DefaultScan):
 			)
 		)
 
-	def scan(self):
-		super().scan()
+	def run_scan(self):
+		super().run_scan()
 
 		self.host.manufacturer = 'Mikrotik'
 
@@ -401,7 +441,7 @@ class MikrotikScan(DefaultScan):
 				self.host.os_version = val
 
 
-class UbiquitiScan(DefaultScan):
+class UbiquitiScan(SNMPScanner):
 	"""
 	Ubiquiti-specific scan function.
 	"""
@@ -411,18 +451,36 @@ class UbiquitiScan(DefaultScan):
 		self.descr_parses = (
 			(
 				# UAP-AC-Lite 6.6.77.15402
-				r'^(?P<model>UAP-AC-Lite) (?P<os_version>[^ ]+)$',
-				{'type': 'WIFI'}
+				# UAP-AC-Pro-Gen2 6.6.77.15402
+				r'^(?P<model>UAP-AC-[^ ]*) (?P<os_version>[^ ]+)$',
+				{'type': Host.TYPE_WIFI}
 			),
 			(
-				# UAP-AC-Pro-Gen2 6.6.77.15402
-				r'^(?P<model>UAP-AC-Pro-Gen2) (?P<os_version>[^ ]+)$',
-				{'type': 'WIFI'}
+				# Ubiquiti UniFi UDM-Pro 4.1.13 Linux 4.19.152 al324
+				r'^Ubiquiti UniFi (?P<model>UDM-[^ ]*) (?P<os_version>[^ ]+) Linux [^ ]+ [^ ]+$',
+				{'type': Host.TYPE_ROUTER}
 			),
+			(
+				# Ubiquiti UniFi UXG-Lite 4.1.13 Linux 5.4.213 ipq5018
+				r'^Ubiquiti UniFi (?P<model>UXG-[^ ]*) (?P<os_version>[^ ]+) Linux [^ ]+ [^ ]+$',
+				{'type': Host.TYPE_GATEWAY}
+			),
+			(
+				# US-8-60W, 7.0.50.15613, Linux 3.6.5
+				r'^(?P<model>US-8-60W), (?P<os_version>[^,]+), Linux .*$',
+				{'type': Host.TYPE_SWITCH}
+			)
 		)
-		self.basic_lookups['serial'] = ''
 
-	def scan(self):
-		super().scan()
+		if 'Linux UBNT' in self.host.descr:
+			# The Ubiquiti USW-24 POE has its VLAN declaration reversed, (first port is 64, last port is 1)
+			self.vlans_reversed = True
+
+		if 'US-8-60W' in self.host.descr:
+			self.basic_lookups['serial'] = '1.3.6.1.2.1.47.1.1.1.1.11.1'
+
+	def run_scan(self):
+		super().run_scan()
 
 		self.host.manufacturer = 'Ubiquiti Networks Inc.'
+		self.host.os_name = 'UniFi OS'

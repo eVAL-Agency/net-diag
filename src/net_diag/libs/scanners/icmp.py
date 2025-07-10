@@ -1,7 +1,9 @@
+from net_diag.libs.host import Host
 from net_diag.libs.nativeping import ping
+from net_diag.libs.scanners import ScannerInterface
 
 
-class ICMPScanner:
+class ICMPScanner(ScannerInterface):
 	"""
 	ICMP Scanner class for performing ICMP ping scans.
 	"""
@@ -10,12 +12,21 @@ class ICMPScanner:
 		"""
 		:param host:
 		"""
-		self.host = host
+		super().__init__(host)
 
-	def scan(self):
+	@classmethod
+	def scan(cls, host: Host):
 		"""
 		Perform an ICMP ping scan on the target.
 		"""
-		self.host.log('Pinging %s' % (self.host.ip,))
-		self.host.reachable = ping(self.host.ip)
-		self.host.log('Reachable' if self.host.reachable else 'Not reachable')
+		host.log('Pinging %s' % (host.ip,))
+		host.ping = ping(host.ip, return_latency=True, formatted=True)
+		if not host.ping:
+			host.log('Not reachable via ICMP ping')
+		else:
+			host.reachable = True
+			host.log('Reachable via ICMP ping')
+
+	@classmethod
+	def scan_neighbors(cls, host: Host):
+		pass

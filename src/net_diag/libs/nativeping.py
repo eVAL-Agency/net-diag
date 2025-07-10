@@ -4,7 +4,13 @@ import time
 from typing import Union
 
 
-def ping(host_or_ip: str, packets: int = 1, timeout: int = 1, return_latency: bool = False) -> Union[float, bool]:
+def ping(
+	host_or_ip: str,
+	packets: int = 1,
+	timeout: int = 1,
+	return_latency: bool = False,
+	formatted: bool = False
+) -> Union[float, bool, str]:
 	"""
 	Calls system "ping" command, returns True if ping succeeds.
 
@@ -12,6 +18,7 @@ def ping(host_or_ip: str, packets: int = 1, timeout: int = 1, return_latency: bo
 	:param packets: Number of retries
 	:param timeout: seconds to wait for response
 	:param return_latency: If True, returns the latency in seconds as a float.
+	:param formatted: If True, returns the latency in a formatted string (e.g. "123 ms").
 	If False, returns True/False based on ping success.
 	:return: True if ping succeeds or the latency in milliseconds if return_latency is True, False if failed.
 
@@ -43,7 +50,7 @@ def ping(host_or_ip: str, packets: int = 1, timeout: int = 1, return_latency: bo
 		if result.returncode == 0 and b'TTL=' in result.stdout:
 			if return_latency:
 				# Return the latency (in ms) instead of just True
-				return latency * 1000 / packets
+				res = latency * 1000 / packets
 			else:
 				return True
 		else:
@@ -63,9 +70,16 @@ def ping(host_or_ip: str, packets: int = 1, timeout: int = 1, return_latency: bo
 		if result.returncode == 0:
 			if return_latency:
 				# Return the latency (in ms) instead of just True
-				return latency * 1000 / packets
+				res = latency * 1000 / packets
 			else:
 				return True
 		else:
 			# Ping failed.
 			return False
+
+	if formatted:
+		# Return the latency in a formatted string
+		return f"{res:.2f} ms"
+	else:
+		# Return the latency as a float
+		return res
