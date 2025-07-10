@@ -1,0 +1,15 @@
+meta {
+  name: API discover_bridges
+  type: http
+  seq: 21
+}
+
+post {
+  url: http://{{trane.url}}/evox/bacnet/availableNetworks
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <bool val="true"/>
+}

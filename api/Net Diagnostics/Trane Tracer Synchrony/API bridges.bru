@@ -1,0 +1,15 @@
+meta {
+  name: API bridges
+  type: http
+  seq: 22
+}
+
+post {
+  url: http://{{trane.url}}/evox/bacnet/availableNetworks
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <obj is="obix:Nil"/>
+}

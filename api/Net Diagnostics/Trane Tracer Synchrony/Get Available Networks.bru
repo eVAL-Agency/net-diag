@@ -1,0 +1,15 @@
+meta {
+  name: Get Available Networks
+  type: http
+  seq: 20
+}
+
+post {
+  url: http://{{trane.url}}/evox/bacnet/availableNetworks
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <obj is="obix:Nil"/>
+}

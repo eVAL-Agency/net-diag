@@ -1,0 +1,20 @@
+meta {
+  name: API device_details
+  type: http
+  seq: 18
+}
+
+post {
+  url: http://{{trane.url}}/evox/batch
+  body: xml
+  auth: inherit
+}
+
+body:xml {
+  <list is="obix:BatchIn">
+  	<uri is="obix:Read" val="/evox/equipment/generic/generic/100/VendorName/value" />
+  	<uri is="obix:Read" val="/evox/equipment/generic/generic/100/ControllerType/value" />
+  	<uri is="obix:Read" val="/evox/equipment/generic/generic/100/ModelName/value" />
+  	<uri is="obix:Read" val="/evox/equipment/generic/generic/100/FirmwareRevision/value" />
+  </list>
+}
