@@ -13,6 +13,7 @@ import multiprocessing
 from queue import Queue
 from queue import Empty
 from mac_vendor_lookup import MacLookup
+from urllib.error import HTTPError
 
 from net_diag.libs.net_utils import get_neighbors
 from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
@@ -157,8 +158,10 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('--net', help='Network to scan eg: 192.168.0.0/24')
 		parser.add_argument('--config', help='Configuration file to use for this scan, see (@todo) for more information')
 		parser.add_argument('-c', '--community', help='SNMP community string to use')
-		parser.add_argument('--format', choices=('json', 'csv', 'suitecrm'), help='Output format')
+		parser.add_argument('--format', choices=('json', 'csv', 'suitecrm', 'grist'), help='Output format')
 		parser.add_argument('--debug', action='store_true', help='Enable debug output')
+		parser.add_argument('--grist-url', help='URL of the Grist instance')
+		parser.add_argument('--grist-account', help='Account token for discovered devices')
 		parser.add_argument('--crm-url', help='URL of the SuiteCRM instance')
 		parser.add_argument('--crm-client-id', help='Client ID for the SuiteCRM instance')
 		parser.add_argument('--crm-client-secret', help='Client secret for the SuiteCRM instance')
@@ -217,6 +220,12 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		if cli_args.fields:
 			self.globals['fields'] = cli_args.fields.split(',')
 
+		if cli_args.grist_url:
+			self.globals['grist_url'] = cli_args.grist_url
+
+		if cli_args.grist_account:
+			self.globals['grist_account'] = cli_args.grist_account
+
 		if cli_args.exclude_self:
 			# Include local IPs to be excluded
 			# This is useful for dedicated scanning devices implanted in a client location
@@ -274,6 +283,12 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				except SuiteCRMSyncException as e:
 					print('Failed to connect to SuiteCRM: %s' % e, file=sys.stderr)
 					sys.exit(1)
+
+			if config['format'] == 'grist':
+				if 'grist_url' not in config or 'grist_account' not in config:
+					print('Grist format requires --grist-url and --grist-account to be defined', file=sys.stderr)
+					sys.exit(1)
+				sync = ('grist', config['grist_url'], config['grist_account'])
 
 			# Add all hosts from this requested network
 			for ip in ipaddress.ip_network(target['net']).hosts():
@@ -383,6 +398,8 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				writer.writerow(h.to_dict())
 		elif self.config['format'] == 'suitecrm':
 			self._sync_suitecrm()
+		elif self.config['format'] == 'grist':
+			self._sync_grist()
 		else:
 			print('Unknown format requested', file=sys.stderr)
 
@@ -407,6 +424,35 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 					except SuiteCRMSyncException as e:
 						h.synced_id = False
 						print('Failed to sync %s to SuiteCRM: %s' % (h.ip, e), file=sys.stderr)
+				else:
+					# Missing uplink device, skip for the next iteration.
+					done = False
+
+			if done:
+				# If there are no more hosts to sync, exit the loop
+				break
+
+	def _sync_grist(self):
+		retries = 0
+		while retries <= 5:
+			retries += 1
+			done = True
+
+			for h in self.hosts.values():
+				if h.synced_id is not None:
+					# Skipped already synced hosts
+					continue
+
+				if retries == 5 or h.uplink_device is None or h.uplink_device in h.ip_to_synced_ids:
+					# No uplink device or parent device is already synced
+					# go ahead and sync this host!
+					# Also just sync the host if this is the last retry
+					try:
+						print('Syncing %s to Grist' % h.ip)
+						h.sync_to_grist()
+					except HTTPError as e:
+						h.synced_id = False
+						print('Failed to sync %s to Grist: %s' % (h.ip, e), file=sys.stderr)
 				else:
 					# Missing uplink device, skip for the next iteration.
 					done = False

@@ -6,3 +6,4 @@
 * Add a small icon to signify the scan is still active
 * Add support in network_discover to use local ARP cache
 * Implement Windows support for network_diag
+* Add support for publishing scans to Grist

@@ -3,6 +3,7 @@ import logging
 import re
 from datetime import datetime
 from typing import Union
+from urllib import request
 
 
 class Host:
@@ -345,6 +346,54 @@ class Host:
 			self.sync.update('MSP_Devices', ret[0]['id'], data | {'discover_log': self.log_lines})
 		else:
 			logging.warning('Multiple records found for %s' % self.mac)
+
+	def sync_to_grist(self):
+		"""
+		:return:
+		"""
+		if self.mac is None:
+			logging.warning('No MAC address found for Grist sync on %s' % self.ip)
+			return
+
+		# Grist does not require a hostname for devices, but it helps
+		self.ensure_hostname()
+
+		uplink_device = None
+		if self.uplink_device is not None:
+			# Resolve the IP to a synced ID if possible
+			if self.uplink_device in self.ip_to_synced_ids:
+				uplink_device = self.ip_to_synced_ids[self.uplink_device]
+
+		self.log('Pushing device data to Grist')
+		payload = {
+			'hostname': self.hostname,
+			'manufacturer': self.manufacturer,
+			'model': self.model,
+			'ip_primary': self.ip,
+			'mac_primary': self.mac,
+			'floor': self.floor,
+			'room': self.location,
+			'uplink_device': uplink_device,
+			'uplink_port': self.uplink_port,
+			'discover_log': self.log_lines,
+			'type': self.type,
+			'_weak': ['hostname', 'manufacturer', 'model', 'type']
+		}
+		headers = {
+			'Content-Type': 'application/json',
+			'X-Token': self.sync[2]
+		}
+		req = request.Request(
+			self.sync[1] + '/scripts/device_inventory',
+			method='POST',
+			headers=headers,
+			data=json.dumps(payload).encode('utf-8')
+		)
+		result = request.urlopen(req)
+		response = json.loads(result.read())
+		if 'id' in response:
+			self.synced_id = response['id']
+			self.ip_to_synced_ids[self.ip] = response['id']
 
 	def ensure_hostname(self):
 		"""

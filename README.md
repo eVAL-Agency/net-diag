@@ -13,8 +13,10 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 * --net: Single network to scan, in CIDR notation
 * --config: Configuration file to use for this scan
 * --community: SNMP community string (default: public)
-* --format: Output format, either "json", "csv", or "suitecrm" (default: json)
+* --format: Output format, either "json", "csv", "suitecrm", or "grist" (default: json)
 * --debug: Include to print debug information on stderr
+* --grist-url: URL of the Grist instance
+* --grist-account: Account token for destination account
 * --crm-url: URL of the SuiteCRM instance
 * --crm-client-id: Client ID for the SuiteCRM instance
 * --crm-client-secret: Client secret for the SuiteCRM instance
@@ -113,6 +115,14 @@ ip,mac,hostname,contact,floor,location,type,manufacturer,model,os_version,descr,
 10.10.10.106,,UBNT,root@localhost,,Unknown,,,,,UAP 4.3.28.11361,,,
 10.10.10.120,00:11:22:33:44:61,,,,,,,,,,,,
 ```
+
+#### Publish discovery data to Grist
+
+When using [compatible middleware for Grist](https://github.com/eVAL-Agency/Grist-Scripts),
+device information can be published automatically to your Grist database.
+
+Set `--format grist` to publish to Grist and ensure to set `--grist-url` as the URL (ex: `https://grist.yourdomain.tld`) to your Grist instance
+and set `--grist-account` to a valid account token for this scan.
 
 #### Publish discovery data to SuiteCRM
 
