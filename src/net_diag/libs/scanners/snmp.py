@@ -27,27 +27,22 @@ class SNMPScanner(ScannerInterface):
 			(
 				#  ; AXIS 212 PTZ; Network Camera; 4.49; Jun 18 2009 13:28; 14D; 1;
 				r'^ ; AXIS (?P<model>[^;]*); Network Camera; (?P<os_version>[^;]*); [ADFJMNOS][aceopu][bcglnprtvy] [0-9]{1,2} [0-9]{4} [0-9]{1,2}:[0-9]{2};.*',  # noqa: E501
-				{'manufacturer': 'Axis Communications AB.', 'type': 'Camera'}
+				{'manufacturer': 'Axis Communications AB.', 'type': Host.TYPE_CAMERA}
 			),
 			(
 				# 24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots
 				r'^24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots$',
-				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': 'Switch'}
+				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': Host.TYPE_SWITCH}
 			),
 			(
 				# H.264 Mega-Pixel Network Camera
 				r'^H.264 Mega-Pixel Network Camera$',
-				{'type': 'Camera'}
-			),
-			(
-				# HP ETHERNET MULTI-ENVIRONMENT,SN:VNB8JCKF0M,FN:1N807W6,SVCID:27057,PID:HP Color LaserJet MFP M477fnw
-				r'^HP ETHERNET MULTI-ENVIRONMENT,SN:(?P<serial>[^,]+),FN:[^,]+,SVCID:[^,]+,PID:(?P<model>.*)$',
-				{'manufacturer': 'Hewlett Packard', 'type': 'Printer'}
+				{'type': Host.TYPE_CAMERA}
 			),
 			(
 				# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
 				r'^JetStream 24-Port Gigabit Smart PoE\+ Switch with 4 SFP Slots$',
-				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': 'Switch'}
+				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': Host.TYPE_SWITCH}
 			)
 		)
 		self.vlans_reversed = False
@@ -67,6 +62,7 @@ class SNMPScanner(ScannerInterface):
 		scanners = {
 			# 1.3.6.1.4.1.8072.3.2.10 - Linux
 			# 1.3.6.1.4.1.4413 - Broadcom
+			'1.3.6.1.4.1.11.2.3.9.1': HPScan,
 			'1.3.6.1.4.1.14988.1': MikrotikScan,
 			'1.3.6.1.4.1.14988.2': MikrotikScan,
 			'1.3.6.1.4.1.41112': UbiquitiScan,
@@ -404,6 +400,27 @@ class SNMPScanner(ScannerInterface):
 		return val
 
 
+class HPScan(SNMPScanner):
+	"""
+	HP-specific scan function.
+	"""
+
+	def __init__(self, host):
+		super().__init__(host)
+		self.descr_parses = (
+			(
+				# HP ETHERNET MULTI-ENVIRONMENT,SN:VNB8JCKF0M,FN:1N807W6,SVCID:27057,PID:HP Color LaserJet MFP M477fnw
+				r'^HP ETHERNET MULTI-ENVIRONMENT,SN:(?P<serial>[^,]+),FN:[^,]+,SVCID:[^,]+,PID:(?P<model>.*)$',
+				{'manufacturer': 'Hewlett Packard', 'type': Host.TYPE_PRINTER}
+			),
+			(
+				# HP ETHERNET MULTI-ENVIRONMENT
+				r'^HP ETHERNET MULTI-ENVIRONMENT$',
+				{'manufacturer': 'Hewlett Packard', 'type': Host.TYPE_PRINTER}
+			),
+		)
+
+
 class MikrotikScan(SNMPScanner):
 	"""
 	Mikrotik-specific scan function.
@@ -417,12 +434,12 @@ class MikrotikScan(SNMPScanner):
 			(
 				# RouterOS RB3011UiAS
 				r'^(?P<os_name>RouterOS) (?P<model>.*)$',
-				{'type': 'Router'}
+				{'type': Host.TYPE_ROUTER}
 			),
 			(
 				# CSS326-24G-2S+ SwOS v2.17
 				r'^(?P<model>.*) SwOS v(?P<os_version>[^ ]+)$',
-				{'type': 'Switch'}
+				{'type': Host.TYPE_SWITCH}
 			)
 		)
 
