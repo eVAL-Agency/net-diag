@@ -1,0 +1,15 @@
+meta {
+  name: Workspace Workpackage Types
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://{{openproject.url}}/api/v3/workspaces/{{openproject.workspace}}/types
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

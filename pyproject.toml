@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "net_diag"
-version = "1.0.0"
+version = "1.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9.16"
 authors = [
-    {name = "Charlie Powell", email = "cdp1337@veraciousnetwork.com"},
+    {name = "Charlie Powell", email = "cdp1337@bitsnbytes.dev"},
 ]
 license = {text = "GNU AGPLv3"}
 keywords = ["network", "diagnostics", "snmp"]
@@ -26,7 +26,7 @@ dependencies = [
     'psutil>=7.0.0',
     'beautifulsoup4>=4.13.4',
     'lxml>=6.0.0',
-    'requests>=2.32.4',
+    'requests>=2.32.4'
 ]
 
 [project.optional-dependencies]

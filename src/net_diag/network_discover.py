@@ -16,6 +16,7 @@ from mac_vendor_lookup import MacLookup
 from urllib.error import HTTPError
 
 from net_diag.libs.net_utils import get_neighbors
+from net_diag.libs.openprojectsync import OpenProjectSync, OpenProjectSyncException
 from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
 from net_diag.libs.host import Host
 from net_diag.libs.scanners.icmp import ICMPScanner
@@ -158,13 +159,16 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('--net', help='Network to scan eg: 192.168.0.0/24')
 		parser.add_argument('--config', help='Configuration file to use for this scan, see (@todo) for more information')
 		parser.add_argument('-c', '--community', help='SNMP community string to use')
-		parser.add_argument('--format', choices=('json', 'csv', 'suitecrm', 'grist'), help='Output format')
+		parser.add_argument('--format', choices=('json', 'csv', 'suitecrm', 'grist', 'openproject'), help='Output format')
 		parser.add_argument('--debug', action='store_true', help='Enable debug output')
 		parser.add_argument('--grist-url', help='URL of the Grist instance')
 		parser.add_argument('--grist-account', help='Account token for discovered devices')
 		parser.add_argument('--crm-url', help='URL of the SuiteCRM instance')
 		parser.add_argument('--crm-client-id', help='Client ID for the SuiteCRM instance')
 		parser.add_argument('--crm-client-secret', help='Client secret for the SuiteCRM instance')
+		parser.add_argument('--openproject-url', help='URL of the OpenProject instance')
+		parser.add_argument('--openproject-api-key', help='API key for the OpenProject instance')
+		parser.add_argument('--openproject-workspace', help='Workspace for the OpenProject instance')
 		parser.add_argument('--address', help='Optional address for this scan (for reporting)')
 		parser.add_argument('--city', help='Optional city for this scan (for reporting)')
 		parser.add_argument('--state', help='Optional state for this scan (for reporting)')
@@ -226,6 +230,15 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		if cli_args.grist_account:
 			self.globals['grist_account'] = cli_args.grist_account
 
+		if cli_args.openproject_url:
+			self.globals['openproject_url'] = cli_args.openproject_url
+
+		if cli_args.openproject_api_key:
+			self.globals['openproject_api_key'] = cli_args.openproject_api_key
+
+		if cli_args.openproject_workspace:
+			self.globals['openproject_workspace'] = cli_args.openproject_workspace
+
 		if cli_args.exclude_self:
 			# Include local IPs to be excluded
 			# This is useful for dedicated scanning devices implanted in a client location
@@ -283,12 +296,20 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				except SuiteCRMSyncException as e:
 					print('Failed to connect to SuiteCRM: %s' % e, file=sys.stderr)
 					sys.exit(1)
-
-			if config['format'] == 'grist':
+			elif config['format'] == 'grist':
 				if 'grist_url' not in config or 'grist_account' not in config:
 					print('Grist format requires --grist-url and --grist-account to be defined', file=sys.stderr)
 					sys.exit(1)
 				sync = ('grist', config['grist_url'], config['grist_account'])
+			elif config['format'] == 'openproject':
+				if 'openproject_url' not in config or 'openproject_api_key' not in config or 'openproject_workspace' not in config:
+					print(
+						'OpenProject format requires --openproject-url, --openproject-api-key, and --openproject-workspace to be defined',
+						file=sys.stderr
+					)
+					sys.exit(1)
+				sync = OpenProjectSync(config['openproject_url'], config['openproject_api_key'])
+				sync.workspace = config['openproject_workspace']
 
 			# Add all hosts from this requested network
 			for ip in ipaddress.ip_network(target['net']).hosts():
@@ -400,8 +421,39 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 			self._sync_suitecrm()
 		elif self.config['format'] == 'grist':
 			self._sync_grist()
+		elif self.config['format'] == 'openproject':
+			self._sync_openproject()
 		else:
 			print('Unknown format requested', file=sys.stderr)
+
+	def _sync_openproject(self):
+		retries = 0
+		while retries <= 5:
+			retries += 1
+			done = True
+
+			for h in self.hosts.values():
+				if h.synced_id is not None:
+					# Skipped already synced hosts
+					continue
+
+				if retries == 5 or h.uplink_device is None or h.uplink_device in h.ip_to_synced_ids:
+					# No uplink device or parent device is already synced
+					# go ahead and sync this host!
+					# Also just sync the host if this is the last retry
+					try:
+						print('Syncing %s to OpenProject' % h.ip)
+						h.sync_to_openproject()
+					except OpenProjectSyncException as e:
+						h.synced_id = False
+						print('Failed to sync %s to OpenProject: %s' % (h.ip, e), file=sys.stderr)
+				else:
+					# Missing uplink device, skip for the next iteration.
+					done = False
+
+			if done:
+				# If there are no more hosts to sync, exit the loop
+				break
 
 	def _sync_suitecrm(self):
 		retries = 0

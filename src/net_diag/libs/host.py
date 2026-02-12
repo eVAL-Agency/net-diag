@@ -181,7 +181,7 @@ class Host:
 		self.sync = sync
 		"""
 		Sync handler to use for publishing records, if applicable.
-		:type sync: SuiteCRMSync|None
+		:type sync: SuiteCRMSync|OpenProjectSync|None
 		"""
 
 		self.synced_id = None
@@ -269,6 +269,30 @@ class Host:
 		if self.mac is None and other.mac is not None:
 			self.mac = other.mac
 			self.log('Resolved MAC from neighbor')
+
+	def sync_to_openproject(self):
+		"""
+		:return:
+		"""
+		if self.mac is None:
+			logging.warning('No MAC address found for OpenProject sync on %s' % self.ip)
+			return
+
+		# OpenProject requires a hostname for devices
+		self.ensure_hostname()
+
+		self.log('Searching for devices in OpenProject with MAC %s' % self.mac)
+		ret = self.sync.find_device_by_mac(self)
+
+		if ret is None:
+			self.log('No existing device found in OpenProject with MAC %s, creating new record' % self.mac)
+			self.sync.create_host(self)
+		else:
+			self.log('Existing device found in OpenProject with MAC %s, updating record' % self.mac)
+			logging.debug(ret)
+			self.sync.update_host(ret, self)
+
+		self.ip_to_synced_ids[self.ip] = self.synced_id
 
 	def sync_to_suitecrm(self):
 		"""

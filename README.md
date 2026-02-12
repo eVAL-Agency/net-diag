@@ -3,7 +3,7 @@
 Collection of network diagnostic scripts, useful for technicians.
 
 
-## Network Discover (SNMP)
+## Network Discover
 
 Scan a network for hosts and host details.
 Since this operates via SNMP, it can provide MAC details over a layer-3 network, (ie: a VPN).
@@ -13,19 +13,26 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 * --net: Single network to scan, in CIDR notation
 * --config: Configuration file to use for this scan
 * --community: SNMP community string (default: public)
-* --format: Output format, either "json", "csv", "suitecrm", or "grist" (default: json)
+* --format: Output format, either (json, csv, suitecrm, grist, openproject) (default: json)
 * --debug: Include to print debug information on stderr
-* --grist-url: URL of the Grist instance
-* --grist-account: Account token for destination account
-* --crm-url: URL of the SuiteCRM instance
-* --crm-client-id: Client ID for the SuiteCRM instance
-* --crm-client-secret: Client secret for the SuiteCRM instance
 * --address: Optional physical address to include in the report
 * --city: Optional city to include in the report
 * --state: Optional state to include in the report
 * --exclude: Optional list of IP addresses to exclude from the report
 * --exclude-self: Optional flag to exclude the host running the script from the report
 * --fields: Comma-separated list of fields to include in the output
+* Grist specific options (with --format grist)
+  * --grist-url: URL of the Grist instance
+  * --grist-account: Account token for destination account
+* SuiteCRM specific options (with --format suitecrm)
+  * --crm-url: URL of the SuiteCRM instance
+  * --crm-client-id: Client ID for the SuiteCRM instance
+  * --crm-client-secret: Client secret for the SuiteCRM instance
+* OpenProject specific options (with --format openproject)
+  * --openproject-url: URL of the OpenProject instance
+  * --openproject-api-key: API key for the OpenProject instance
+  * --openproject-workspace: Workspace identifier for the OpenProject instance
+
 
 ### Fields provided
 
@@ -82,8 +89,23 @@ Any command line parameter can be specified in both `default` and individual `ta
 
 ### Scanners
 
-At the moment, only `ICMP` and `SNMP` scanners are supported. 
-By default, both are utilized but that behaviour can be modified via a config file.
+#### ICMP
+
+Perform a standard ping to check if hosts are online
+
+Performed by default, but can be omitted by not including 'icmp' in target scanners
+
+#### SNMP
+
+Attempt to connect to devices using SNMPv2 to retrieve host and neighbor information.
+
+Performed by default, but can be omitted by not including 'snmp' in target scanners
+
+#### Trane Tracer HVAC controllers
+
+Connects to the Trane Tracer SC+ API to retrieve information about HVAC controllers on the BACnet.
+
+Can be included with 'trane' in the target scanners, but is not performed by default.
 
 ### Examples
 
@@ -153,6 +175,29 @@ Syncing 192.168.0.73 to SuiteCRM
 Syncing 192.168.0.75 to SuiteCRM
 Syncing 192.168.0.76 to SuiteCRM
 Syncing 192.168.0.77 to SuiteCRM
+```
+
+#### Publish discovery data to OpenProject
+
+If using OpenProject to store device information, this format can upload scan data as work packages directly to OpenProject.
+
+Requires an API key (Account Settings -> Access tokens -> API), for a user with create/update permissions on the target workspace.
+
+Expects a 'Device' work package type to be configured to store the data,
+along with some custom fields:
+
+* IP Address
+* MAC Address
+* Device Type
+* Manufacturer
+* Model
+* Serial Number
+* Floor
+* Room
+* Uplink Port
+
+```
+network_discover --net=192.168.0.0/24 --format=openproject --openproject-url=project.yourdomain.tld --openproject-workspace=your-project-tag --openproject-api-key=123456789abcdef --community public
 ```
 
 #### Exclude specific IP addresses from report
