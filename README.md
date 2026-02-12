@@ -294,7 +294,7 @@ This can be disabled by specifying `--no-threads`.
 Get the code and setup the initial environment
 
 ```bash
-git clone git@github.com:cdp1337/net-diag.git
+git clone git@github.com:eVAL-Agency/net-diag.git
 cd net-diag
 python3 -m venv venv
 source venv/bin/activate
@@ -306,7 +306,7 @@ Get the code running on Windows
 
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-git clone git@github.com:cdp1337/net-diag.git
+git clone git@github.com:eVAL-Agency/net-diag.git
 cd net-diag
 python -m venv venv
 & venv\Scripts\Activate.ps1
