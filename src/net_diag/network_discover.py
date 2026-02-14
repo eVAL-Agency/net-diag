@@ -161,6 +161,11 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('-c', '--community', help='SNMP community string to use')
 		parser.add_argument('--format', choices=('json', 'csv', 'suitecrm', 'grist', 'openproject'), help='Output format')
 		parser.add_argument('--debug', action='store_true', help='Enable debug output')
+		parser.add_argument(
+			'--dry-run',
+			action='store_true',
+			help='Perform a scan without syncing to any external systems, useful for testing and debugging'
+		)
 		parser.add_argument('--grist-url', help='URL of the Grist instance')
 		parser.add_argument('--grist-account', help='Account token for discovered devices')
 		parser.add_argument('--crm-url', help='URL of the SuiteCRM instance')
@@ -239,6 +244,12 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		if cli_args.openproject_workspace:
 			self.globals['openproject_workspace'] = cli_args.openproject_workspace
 
+		if cli_args.dry_run:
+			logging.info('Dry run, no output will be written')
+			self.globals['dry_run'] = True
+		else:
+			self.globals['dry_run'] = False
+
 		if cli_args.exclude_self:
 			# Include local IPs to be excluded
 			# This is useful for dedicated scanning devices implanted in a client location
@@ -290,6 +301,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 			if config['format'] == 'suitecrm':
 				sync = SuiteCRMSync(config['crm_url'], config['crm_client_id'], config['crm_client_secret'])
+				sync.dry_run = config['dry_run']
 				try:
 					# Perform a connection to check credentials prior to scanning for hosts
 					sync.get_token()
@@ -310,6 +322,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 					sys.exit(1)
 				sync = OpenProjectSync(config['openproject_url'], config['openproject_api_key'])
 				sync.workspace = config['openproject_workspace']
+				sync.dry_run = config['dry_run']
 
 			# Add all hosts from this requested network
 			for ip in ipaddress.ip_network(target['net']).hosts():
@@ -485,6 +498,9 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				break
 
 	def _sync_grist(self):
+		if self.config['dry_run']:
+			print('Dry run enabled, skipping sync to Grist')
+			return
 		retries = 0
 		while retries <= 5:
 			retries += 1

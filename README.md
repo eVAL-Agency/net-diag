@@ -15,6 +15,7 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 * --community: SNMP community string (default: public)
 * --format: Output format, either (json, csv, suitecrm, grist, openproject) (default: json)
 * --debug: Include to print debug information on stderr
+* --dry-run: Perform a scan without publishing results, useful for testing and debugging (no change for json/csv outputs)
 * --address: Optional physical address to include in the report
 * --city: Optional city to include in the report
 * --state: Optional state to include in the report

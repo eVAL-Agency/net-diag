@@ -59,6 +59,7 @@ class SuiteCRMSync:
 		self.url = url
 		self.client_id = client_id
 		self.client_secret = client_secret
+		self.dry_run = False
 
 	def _send(
 		self,
@@ -159,6 +160,9 @@ class SuiteCRMSync:
 		:param data:
 		:return
 		"""
+		if self.dry_run:
+			logging.info('[suitecrmsync] Dry run enabled, skipping update of %s %s\n%s' % (object_type, object_id, json.dumps(data)))
+			return None
 
 		# Send the UPDATE request to SuiteCRM
 		try:
@@ -183,6 +187,9 @@ class SuiteCRMSync:
 		:param data:
 		:return
 		"""
+		if self.dry_run:
+			logging.info('[suitecrmsync] Dry run enabled, skipping update of %s\n%s' % (object_type, json.dumps(data)))
+			return None
 
 		# Send the device data to SuiteCRM
 		try:

@@ -20,6 +20,7 @@ class OpenProjectSync:
 		self.api_key = api_key
 		self.workspace = ''
 		self.type_name = 'Device'
+		self.dry_run = False
 
 	@classmethod
 	def _send_get(cls, url, path, api_key):
@@ -188,6 +189,12 @@ class OpenProjectSync:
 			return ret['_embedded']['elements'][0]
 
 	def _populate_host_data(self, existing_data, host):
+		def empty_or_null(key):
+			if existing_data is None:
+				return True
+			val = existing_data.get(key, '')
+			return val is None or val == ''
+
 		mac_field = self.resolve_custom_field('MAC Address')
 		type_id = self.resolve_type()
 		project_id = self.resolve_project_id()
@@ -222,47 +229,44 @@ class OpenProjectSync:
 			}
 			data_set = False
 
+		# IP tends to be flexible, so keep this in sync.
 		ip_field = self.resolve_custom_field('IP Address')
 		if ip_field is not None and host.ip:
 			if existing_data is None or host.ip != existing_data.get(ip_field, ''):
 				data[ip_field] = host.ip
 				data_set = True
 
+		# All other fields should only update the database if they're not otherwise set.
+		# This allows the operators to change incorrect data when necessary.
 		manufacturer_field = self.resolve_custom_field('Manufacturer')
-		if manufacturer_field is not None and host.manufacturer:
-			if existing_data is None or host.manufacturer != existing_data.get(manufacturer_field, ''):
-				data[manufacturer_field] = host.manufacturer
-				data_set = True
+		if manufacturer_field is not None and host.manufacturer and empty_or_null(manufacturer_field):
+			data[manufacturer_field] = host.manufacturer
+			data_set = True
 
 		model_field = self.resolve_custom_field('Model')
-		if model_field is not None and host.model:
-			if existing_data is None or host.model != existing_data.get(model_field, ''):
-				data[model_field] = host.model
-				data_set = True
+		if model_field is not None and host.model and empty_or_null(model_field):
+			data[model_field] = host.model
+			data_set = True
 
 		type_field = self.resolve_custom_field('Device Type')
-		if type_field is not None and host.type:
-			if existing_data is None or host.type != existing_data.get(type_field, ''):
-				data[type_field] = host.type
-				data_set = True
+		if type_field is not None and host.type and empty_or_null(type_field):
+			data[type_field] = host.type
+			data_set = True
 
 		serial_field = self.resolve_custom_field('Serial Number')
-		if serial_field is not None and host.serial:
-			if existing_data is None or host.serial != existing_data.get(serial_field, ''):
-				data[serial_field] = host.serial
-				data_set = True
+		if serial_field is not None and host.serial and empty_or_null(serial_field):
+			data[serial_field] = host.serial
+			data_set = True
 
 		floor_field = self.resolve_custom_field('Floor')
-		if floor_field is not None and host.floor:
-			if existing_data is None or host.floor != existing_data.get(floor_field, ''):
-				data[floor_field] = host.floor
-				data_set = True
+		if floor_field is not None and host.floor and empty_or_null(floor_field):
+			data[floor_field] = host.floor
+			data_set = True
 
 		room_field = self.resolve_custom_field('Room')
-		if room_field is not None and host.location:
-			if existing_data is None or host.location != existing_data.get(room_field, ''):
-				data[room_field] = host.location
-				data_set = True
+		if room_field is not None and host.location and empty_or_null(room_field):
+			data[room_field] = host.location
+			data_set = True
 
 		status_value = self.resolve_status('Active')
 		if status_value is not None:
@@ -270,10 +274,17 @@ class OpenProjectSync:
 				data['_links'] = {}
 			data['_links']['status'] = {'href': status_value}
 
-		if host.uplink_device and host.uplink_port in host.ip_to_synced_ids:
+		uplink_field = self.resolve_custom_field('Uplink Port')
+		if uplink_field is not None and host.uplink_port and empty_or_null(uplink_field):
+			data[uplink_field] = host.uplink_port
+			data_set = True
+
+		if host.uplink_device and host.uplink_device in host.ip_to_synced_ids:
 			if '_links' not in data:
 				data['_links'] = {}
-			data['_links']['parent'] = {'href': '/api/v3/work_packages/' + str(host.ip_to_synced_ids[host.uplink_port])}
+			if 'parent' not in data['_links'] or data['_links']['parent']['href'] is None:
+				data['_links']['parent'] = {'href': '/api/v3/work_packages/' + str(host.ip_to_synced_ids[host.uplink_device])}
+				data_set = True
 
 		if data_set:
 			return data
@@ -288,10 +299,20 @@ class OpenProjectSync:
 
 		data = self._populate_host_data(None, host)
 
+		if self.dry_run:
+			logging.info(
+				' '.join([
+					f'[openprojectsync] Dry run enabled, skipping creation of host {host.hostname}',
+					f'(MAC: {host.mac}) in OpenProject with new data:'
+					f'\n{json.dumps(data)}'
+				])
+			)
+			return
+
 		ret = self._send_post(self.api_url, '/api/v3/workspaces/%s/work_packages' % str(project_id), self.api_key, data)
 
 		# Save the new ID to the host for future reference.
-		host.sync_id = ret['id']
+		host.synced_id = ret['id']
 
 	def update_host(self, existing_data, host):
 		"""
@@ -311,13 +332,22 @@ class OpenProjectSync:
 		target_url = existing_data['_links']['updateImmediately']['href']
 		data = self._populate_host_data(existing_data, host)
 
+		# Save the existing ID to the host for future reference.
+		host.synced_id = existing_data['id']
+
 		if data is not None:
+			if self.dry_run:
+				logging.info(
+					' '.join([
+						f'[openprojectsync] Dry run enabled, skipping update of host {host.hostname}',
+						f'(MAC: {host.mac}) in OpenProject with new data:'
+						f'\n{json.dumps(data)}'
+					])
+				)
+				return
 			logging.debug(f"Updating host {host.hostname} (MAC: {host.mac}) in OpenProject with new data: {data}")
 			self._send_patch(self.api_url, target_url, self.api_key, data)
 		else:
 			logging.debug(
 				f"No update needed for host {host.hostname} (MAC: {host.mac}), all relevant fields are already set in OpenProject"
 			)
-
-		# Save the existing ID to the host for future reference.
-		host.sync_id = existing_data['id']
