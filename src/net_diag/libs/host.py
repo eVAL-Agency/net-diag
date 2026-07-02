@@ -469,12 +469,16 @@ class Host:
 					link_data['ips'] = [self.ip]
 
 			if link.speed is not None:
-				if link.speed.endswith('mbps'):
+				if link.speed.endswith('kbps'):
+					link_data['speed'] = link.speed * 1000
+				elif link.speed.endswith('mbps'):
 					link_data['ifspeed'] = int(link.speed[:-4]) * 1000 * 1000
 				elif link.speed.endswith('gbps'):
 					link_data['ifspeed'] = int(link.speed[:-4]) * 1000 * 1000 * 1000
-				else:
-					link_data['ifspeed'] = int(link.speed)
+				elif link.speed.endswith('tbps'):
+					link_data['ifspeed'] = int(link.speed[:-4]) * 1000 * 1000 * 1000 * 1000
+				elif link.speed.endswith('bps'):
+					link_data['ifspeed'] = int(link.speed[:-3])
 
 			if link.user_status is None:
 				link_data['ifstatus'] = 4
