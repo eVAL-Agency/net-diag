@@ -490,7 +490,7 @@ class Host:
 			if link.mtu is not None:
 				link_data['ifmtu'] = link.mtu
 
-			payload['network_ports'].append(link_data)
+			payload['content']['network_ports'].append(link_data)
 
 		headers = {
 			'Content-Type': 'application/json'
