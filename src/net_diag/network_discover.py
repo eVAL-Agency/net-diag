@@ -175,6 +175,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('--openproject-api-key', help='API key for the OpenProject instance')
 		parser.add_argument('--openproject-workspace', help='Workspace for the OpenProject instance')
 		parser.add_argument('--glpi-url', help='URL of GLPI instance to push results to')
+		parser.add_argument('--glpi-token', help='Token for the user in GLPI to authenticate with')
 		parser.add_argument('--address', help='Optional address for this scan (for reporting)')
 		parser.add_argument('--city', help='Optional city for this scan (for reporting)')
 		parser.add_argument('--state', help='Optional state for this scan (for reporting)')
@@ -247,6 +248,9 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 		if cli_args.glpi_url:
 			self.globals['glpi_url'] = cli_args.glpi_url
+
+		if cli_args.glpi_token:
+			self.globals['glpi_token'] = cli_args.glpi_token
 
 		if cli_args.dry_run:
 			logging.info('Dry run, no output will be written')
@@ -328,13 +332,13 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				sync.workspace = config['openproject_workspace']
 				sync.dry_run = config['dry_run']
 			elif config['format'] == 'glpi':
-				if 'glpi_url' not in config:
+				if 'glpi_url' not in config or 'glpi_token' not in config:
 					print(
-						'GLPI format requires --glpi_url to be defined',
+						'GLPI format requires --glpi-url and --glpi-token to be defined',
 						file=sys.stderr
 					)
 					sys.exit(1)
-				sync = ('glpi', config['glpi_url'])
+				sync = ('glpi', config['glpi_url'], config['glpi_token'])
 
 			# Add all hosts from this requested network
 			for ip in ipaddress.ip_network(target['net']).hosts():

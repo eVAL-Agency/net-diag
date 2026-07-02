@@ -432,11 +432,11 @@ class Host:
 
 		self.log('Pushing device data to GLPI')
 		payload = {
+			'deviceid': self.mac,
+			'itemtype': 'NetworkEquipment',
+			'action': 'netinventory',
 			'content': {
 				'versionclient': 'NetworkDiagnostics-Discover',
-				'deviceid': self.mac,
-				'itemtype': 'NetworkEquipment',
-				'action': 'netinventory',
 				'hardware': {
 					'name': self.hostname,
 					'type': self.type,
@@ -497,7 +497,8 @@ class Host:
 			payload['content']['network_ports'].append(link_data)
 
 		headers = {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'Authorization': 'GLPI-Token ' + self.sync[2]
 		}
 		req = request.Request(
 			self.sync[1] + '/front/inventory.php',
