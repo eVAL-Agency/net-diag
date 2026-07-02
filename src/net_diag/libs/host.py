@@ -450,7 +450,6 @@ class Host:
 					'mac': self.mac,
 					'name': self.hostname,
 					'contact': self.contact,
-					'type': self.type,
 				}
 			},
 		}
