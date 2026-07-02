@@ -448,15 +448,21 @@ class Host:
 					'firmware': self.os_version,
 					'ips': [self.ip],
 					'mac': self.mac,
-					'model': self.model,
 					'name': self.hostname,
-					'serial': self.serial,
-					'manufacturer': self.manufacturer,
 					'contact': self.contact,
 					'type': self.type,
 				}
 			},
 		}
+
+		if self.serial is not None:
+			payload['content']['network_device']['serial'] = self.serial
+
+		if self.model is not None:
+			payload['content']['network_device']['model'] = self.model
+
+		if self.manufacturer is not None:
+			payload['content']['network_device']['manufacturer'] = self.manufacturer
 
 		for link in self.links.values():
 			link_data = {
