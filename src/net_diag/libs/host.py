@@ -419,6 +419,91 @@ class Host:
 			self.synced_id = response['id']
 			self.ip_to_synced_ids[self.ip] = response['id']
 
+	def sync_to_glpi(self):
+		"""
+		:return:
+		"""
+		if self.mac is None:
+			logging.warning('No MAC address found for GLPI sync on %s' % self.ip)
+			return
+
+		# Ensure this device has a hostname
+		self.ensure_hostname()
+
+		self.log('Pushing device data to GLPI')
+		payload = {
+			'content': {
+				'versionclient': 'NetworkDiagnostics-Discover',
+				'deviceid': self.mac,
+				'itemtype': 'NetworkEquipment',
+				'action': 'netinventory',
+				'hardware': {
+					'name': self.hostname,
+					'type': self.type,
+					'description': self.descr,
+					'defaultgateway': self.gateway,
+				},
+				'network_ports': [],
+				'network_device': {
+					'firmware': self.os_version,
+					'ips': [self.ip],
+					'mac': self.mac,
+					'model': self.model,
+					'name': self.hostname,
+					'serial': self.serial,
+					'manufacturer': self.manufacturer,
+					'contact': self.contact,
+				}
+			},
+		}
+
+		for link in self.links:
+			link_data = {
+				'ifname': link['name']
+			}
+
+			if 'mac' in link:
+				link_data['mac'] = link['mac']
+
+				if link['mac'] == self.mac:
+					link_data['ips'] = [self.ip]
+
+			if 'speed' in link:
+				if link['speed'].endswith('mbps'):
+					link_data['ifspeed'] = int(link['speed'][:-4]) * 1000 * 1000
+				elif link['speed'].endswith('gbps'):
+					link_data['ifspeed'] = int(link['speed'][:-4]) * 1000 * 1000 * 1000
+				else:
+					link_data['ifspeed'] = int(link['speed'])
+
+			if 'user_status' in link:
+				if link['user_status'].upper() == 'UP':
+					link_data['ifstatus'] = 1
+				elif link['user_status'].upper() == 'DOWN':
+					link_data['ifstatus'] = 2
+				elif link['user_status'].upper() == 'TESTING':
+					link_data['ifstatus'] = 3
+				else:
+					link_data['ifstatus'] = 4
+
+			if 'mtu' in link:
+				link_data['ifmtu'] = link['mtu']
+
+			payload['network_ports'].append(link_data)
+
+		headers = {
+			'Content-Type': 'application/json'
+		}
+		req = request.Request(
+			self.sync[1] + '/front/inventory.php',
+			method='POST',
+			headers=headers,
+			data=json.dumps(payload).encode('utf-8')
+		)
+		result = request.urlopen(req)
+		response = json.loads(result.read())
+		self.log(response)
+
 	def ensure_hostname(self):
 		"""
 		Ensure this device has a hostname, (of at least something)

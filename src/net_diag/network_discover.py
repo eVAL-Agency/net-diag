@@ -159,7 +159,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('--net', help='Network to scan eg: 192.168.0.0/24')
 		parser.add_argument('--config', help='Configuration file to use for this scan, see (@todo) for more information')
 		parser.add_argument('-c', '--community', help='SNMP community string to use')
-		parser.add_argument('--format', choices=('json', 'csv', 'suitecrm', 'grist', 'openproject'), help='Output format')
+		parser.add_argument('--format', choices=('json', 'csv', 'suitecrm', 'grist', 'openproject', 'glpi'), help='Output format')
 		parser.add_argument('--debug', action='store_true', help='Enable debug output')
 		parser.add_argument(
 			'--dry-run',
@@ -174,6 +174,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('--openproject-url', help='URL of the OpenProject instance')
 		parser.add_argument('--openproject-api-key', help='API key for the OpenProject instance')
 		parser.add_argument('--openproject-workspace', help='Workspace for the OpenProject instance')
+		parser.add_argument('--glpi-url', help='URL of GLPI instance to push results to')
 		parser.add_argument('--address', help='Optional address for this scan (for reporting)')
 		parser.add_argument('--city', help='Optional city for this scan (for reporting)')
 		parser.add_argument('--state', help='Optional state for this scan (for reporting)')
@@ -243,6 +244,9 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 		if cli_args.openproject_workspace:
 			self.globals['openproject_workspace'] = cli_args.openproject_workspace
+
+		if cli_args.glpi_url:
+			self.globals['glpi_url'] = cli_args.glpi_url
 
 		if cli_args.dry_run:
 			logging.info('Dry run, no output will be written')
@@ -323,6 +327,14 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				sync = OpenProjectSync(config['openproject_url'], config['openproject_api_key'])
 				sync.workspace = config['openproject_workspace']
 				sync.dry_run = config['dry_run']
+			elif config['format'] == 'glpi':
+				if 'glpi_url' not in config:
+					print(
+						'GLPI format requires --glpi_url to be defined',
+						file=sys.stderr
+					)
+					sys.exit(1)
+				sync = ('glpi', config['glpi_url'])
 
 			# Add all hosts from this requested network
 			for ip in ipaddress.ip_network(target['net']).hosts():
@@ -436,6 +448,8 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 			self._sync_grist()
 		elif self.config['format'] == 'openproject':
 			self._sync_openproject()
+		elif self.config['format'] == 'glpi':
+			self._sync_glpi()
 		else:
 			print('Unknown format requested', file=sys.stderr)
 
@@ -528,6 +542,15 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 			if done:
 				# If there are no more hosts to sync, exit the loop
 				break
+
+	def _sync_glpi(self):
+		if self.config['dry_run']:
+			print('Dry run enabled, skipping sync to Grist')
+			return
+
+		for h in self.hosts.values():
+			print('Syncing %s to GLPI' % h.ip)
+			h.sync_to_glpi()
 
 	def get_local_ips(self) -> list:
 		# Get IP and MAC address for this device
