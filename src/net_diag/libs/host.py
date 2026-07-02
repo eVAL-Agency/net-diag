@@ -457,37 +457,38 @@ class Host:
 			},
 		}
 
-		for link in self.links:
+		for link in self.links.values():
 			link_data = {
-				'ifname': link['name']
+				'ifname': link.name
 			}
 
-			if 'mac' in link:
-				link_data['mac'] = link['mac']
+			if link.mac is not None:
+				link_data['mac'] = link.mac
 
-				if link['mac'] == self.mac:
+				if link.mac == self.mac:
 					link_data['ips'] = [self.ip]
 
-			if 'speed' in link:
-				if link['speed'].endswith('mbps'):
-					link_data['ifspeed'] = int(link['speed'][:-4]) * 1000 * 1000
-				elif link['speed'].endswith('gbps'):
-					link_data['ifspeed'] = int(link['speed'][:-4]) * 1000 * 1000 * 1000
+			if link.speed is not None:
+				if link.speed.endswith('mbps'):
+					link_data['ifspeed'] = int(link.speed[:-4]) * 1000 * 1000
+				elif link.speed.endswith('gbps'):
+					link_data['ifspeed'] = int(link.speed[:-4]) * 1000 * 1000 * 1000
 				else:
-					link_data['ifspeed'] = int(link['speed'])
+					link_data['ifspeed'] = int(link.speed)
 
-			if 'user_status' in link:
-				if link['user_status'].upper() == 'UP':
-					link_data['ifstatus'] = 1
-				elif link['user_status'].upper() == 'DOWN':
-					link_data['ifstatus'] = 2
-				elif link['user_status'].upper() == 'TESTING':
-					link_data['ifstatus'] = 3
-				else:
-					link_data['ifstatus'] = 4
+			if link.user_status is None:
+				link_data['ifstatus'] = 4
+			elif link.user_status.upper() == 'UP':
+				link_data['ifstatus'] = 1
+			elif link.user_status.upper() == 'DOWN':
+				link_data['ifstatus'] = 2
+			elif link.user_status.upper() == 'TESTING':
+				link_data['ifstatus'] = 3
+			else:
+				link_data['ifstatus'] = 4
 
-			if 'mtu' in link:
-				link_data['ifmtu'] = link['mtu']
+			if link.mtu is not None:
+				link_data['ifmtu'] = link.mtu
 
 			payload['network_ports'].append(link_data)
 
