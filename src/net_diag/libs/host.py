@@ -453,6 +453,7 @@ class Host:
 					'serial': self.serial,
 					'manufacturer': self.manufacturer,
 					'contact': self.contact,
+					'type': self.type,
 				}
 			},
 		}
