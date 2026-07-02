@@ -498,6 +498,7 @@ class Host:
 
 		headers = {
 			'Content-Type': 'application/json',
+			'User-Agent': 'NetworkDiagnostics-Discover',
 			'Authorization': 'GLPI-Token ' + self.sync[2]
 		}
 		req = request.Request(
@@ -506,9 +507,13 @@ class Host:
 			headers=headers,
 			data=json.dumps(payload).encode('utf-8')
 		)
-		result = request.urlopen(req)
-		response = json.loads(result.read())
-		self.log(response)
+		try:
+			result = request.urlopen(req)
+			response = json.loads(result.read())
+			self.log(response)
+		except request.HTTPError as e:
+			error_body = e.read().decode('utf-8')
+			self.log(error_body)
 
 	def ensure_hostname(self):
 		"""
