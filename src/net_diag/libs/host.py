@@ -565,7 +565,7 @@ class Host:
 		"""
 
 		if self.manufacturer is not None:
-			dev_id = [self.manufacturer.replace(' ', '').replace('.', '').lower()[8:]]
+			dev_id = [self.manufacturer.replace(' ', '').replace('.', '').lower()[:8]]
 		else:
 			dev_id = ['device']
 
