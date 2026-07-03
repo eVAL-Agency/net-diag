@@ -453,7 +453,6 @@ class Host:
 					'name': self.hostname,
 					'type': self.type,
 					'description': self.descr,
-					'defaultgateway': self.gateway,
 				},
 				'network_ports': [],
 				'network_device': {
@@ -465,6 +464,9 @@ class Host:
 				}
 			},
 		}
+
+		if self.gateway is not None:
+			payload['content']['hardware']['defaultgateway'] = self.gateway
 
 		if self.os_version is not None:
 			firmware = {
