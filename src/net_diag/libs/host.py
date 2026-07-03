@@ -453,8 +453,7 @@ class Host:
 					'name': self.hostname,
 					'type': self.type,
 					'description': self.descr,
-					'defaultgateway': self.gateway,
-					'uuid': self.generate_device_uuid()
+					'defaultgateway': self.gateway
 				},
 				'network_ports': [],
 				'network_device': {
@@ -470,6 +469,9 @@ class Host:
 
 		if self.serial is not None:
 			payload['content']['network_device']['serial'] = self.serial
+		else:
+			# GLPI really wants a serial
+			payload['content']['network_device']['serial'] = self.get_identifier()
 
 		if self.model is not None:
 			payload['content']['network_device']['model'] = self.model
