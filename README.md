@@ -13,7 +13,7 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 * --net: Single network to scan, in CIDR notation
 * --config: Configuration file to use for this scan
 * --community: SNMP community string (default: public)
-* --format: Output format, either (json, csv, suitecrm, grist, openproject) (default: json)
+* --format: Output format, either (json, csv, suitecrm, grist, openproject, glpi) (default: json)
 * --debug: Include to print debug information on stderr
 * --dry-run: Perform a scan without publishing results, useful for testing and debugging (no change for json/csv outputs)
 * --address: Optional physical address to include in the report
@@ -33,6 +33,9 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
   * --openproject-url: URL of the OpenProject instance
   * --openproject-api-key: API key for the OpenProject instance
   * --openproject-workspace: Workspace identifier for the OpenProject instance
+* GLPI specific options (with --format glpi)
+  * --glpi-url: URL of the GLPI instance
+  * --glpi-token: Authorization token of the user to perform the import
 
 
 ### Fields provided
@@ -199,6 +202,17 @@ along with some custom fields:
 
 ```
 network_discover --net=192.168.0.0/24 --format=openproject --openproject-url=project.yourdomain.tld --openproject-workspace=your-project-tag --openproject-api-key=123456789abcdef --community public
+```
+
+#### Publish discovery data to GLPI
+
+As of v1.1.2, GLPI is supported as a target to store discovery data to;
+this saves scanned devices as network devices.
+
+Requires a user with permission to POST data and an authorization token generated for that user.
+
+```
+network_discover --net=192.168.0.0/24 --format=glpi --glpi-url=glpi.yourdomain.tld --glpi-token=123456789abcdef --community public
 ```
 
 #### Exclude specific IP addresses from report

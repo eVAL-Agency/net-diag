@@ -1,3 +1,28 @@
+## v1.1.2 - 2026-07-03
+
+* Add support for saving discovery data to GLPI
+
+## v1.1.1 - 2026-02-14
+
+* Add support for --dry-run, useful for testing
+* Fix bugs related to OpenProject syncing
+
+## v1.1.0 - 2026-02-11
+
+* Add support for publishing reports to OpenProject.
+
+## v1.0.0 - 2025-09-07
+
+* Fix for no DNS providers available
+* Fix ping to be more accurate and correct render errors
+* Fix spacing on fully-functional terminals
+* Fix exiting throwing an exception after compilation
+* Fix uncaught exceptions rendering to stderr
+* Add a small icon to signify the scan is still active
+* Add support in network_discover to use local ARP cache
+* Implement Windows support for network_diag
+* Add support for publishing scans to Grist
+
 ## v0.9.0 - 2025.06.27
 
 * Port network_diag to this project

@@ -1,2 +1,1 @@
-* Add support for --dry-run, useful for testing
-* Fix bugs related to OpenProject syncing
+* Add support for saving discovery data to GLPI
