@@ -10,7 +10,7 @@ from requests.exceptions import RequestException
 
 from net_diag.libs.scanners import ScannerInterface
 from net_diag.libs.net_utils import format_link_speed
-from net_diag.libs.host import Host, HostPort
+from net_diag.libs.host import Host, HostPort, HostType
 
 
 class HTTPScanner(ScannerInterface):
@@ -181,7 +181,7 @@ class TraneTracerSCScanner(HTTPScanner):
 		about = xml.find('obj', {'href': '/evox/about'})
 		bacnet_global = xml.find('obj', {'href': '/evox/config/bacnet_global'})
 
-		self.host.type = Host.TYPE_ENVIRONMENTAL
+		self.host.type = HostType.ENVIRONMENTAL
 		self.host.hostname = bacnet_global.find('str', {'name': 'name'}).get('val')
 		self.host.set_location(bacnet_global.find('str', {'name': 'location'}).get('val'))
 		self.host.manufacturer = about.find('str', {'name': 'vendorName'}).get('val')
@@ -252,7 +252,7 @@ class TraneTracerSCScanner(HTTPScanner):
 				host.mac = mac
 				host.hostname = dev.find('str', {'name': 'routerName'}).get('val')
 				host.manufacturer = dev.find('str', {'name': 'routerVendorName'}).get('val')
-				host.type = Host.TYPE_ENVIRONMENTAL
+				host.type = HostType.ENVIRONMENTAL
 
 				self._remote_networks[network] = (
 					ip,
@@ -343,7 +343,7 @@ class TraneTracerSCScanner(HTTPScanner):
 			host.include = True
 			host.uplink_port = uplink_port
 			host.uplink_device = uplink_device
-			host.type = Host.TYPE_ENVIRONMENTAL
+			host.type = HostType.ENVIRONMENTAL
 
 			equipment_uris[equipment_uri] = host
 
