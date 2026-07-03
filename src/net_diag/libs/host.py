@@ -431,6 +431,11 @@ class Host:
 		self.ensure_hostname()
 
 		self.log('Pushing device data to GLPI')
+		dev_type = 'Networking'
+		if self.type == self.TYPE_PRINTER:
+			# Special case for printers
+			dev_type = 'Printer'
+
 		payload = {
 			'deviceid': self.mac,
 			'itemtype': 'NetworkEquipment',
@@ -450,6 +455,7 @@ class Host:
 					'mac': self.mac,
 					'name': self.hostname,
 					'contact': self.contact,
+					'type': dev_type,
 				}
 			},
 		}
