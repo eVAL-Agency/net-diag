@@ -453,7 +453,8 @@ class Host:
 					'name': self.hostname,
 					'type': self.type,
 					'description': self.descr,
-					'defaultgateway': self.gateway
+					'defaultgateway': self.gateway,
+					'firmware': self.os_version,
 				},
 				'network_ports': [],
 				'network_device': {
