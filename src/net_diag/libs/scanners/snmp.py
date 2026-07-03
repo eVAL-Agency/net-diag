@@ -290,6 +290,12 @@ class SNMPScanner(ScannerInterface):
 			port_id = key[len(label_lookup) + 1:]
 			ret[port_id].label = val
 
+		type_lookup = '1.3.6.1.2.1.2.2.1.3'
+		types = self._lookup_bulk('Port Types', type_lookup)
+		for key, val in types.items():
+			port_id = key[len(type_lookup) + 1:]
+			ret[port_id].type = int(val)
+
 		mtu_lookup = '1.3.6.1.2.1.2.2.1.4'
 		mtus = self._lookup_bulk('Port MTUs', mtu_lookup)
 		for key, val in mtus.items():
@@ -319,6 +325,30 @@ class SNMPScanner(ScannerInterface):
 		for key, val in user_statuses.items():
 			port_id = key[len(status_lookup) + 1:]
 			ret[port_id].user_status = 'UP' if val == '1' else 'DOWN'
+
+		bytes_received_lookup = '1.3.6.1.2.1.2.2.1.10'
+		bytes_received = self._lookup_bulk('Bytes Received', bytes_received_lookup)
+		for key, val in bytes_received.items():
+			port_id = key[len(bytes_received_lookup) + 1:]
+			ret[port_id].bytes_rx = int(val)
+
+		errors_received_lookup = '1.3.6.1.2.1.2.2.1.14'
+		errors_received = self._lookup_bulk('Errors Received', errors_received_lookup)
+		for key, val in errors_received.items():
+			port_id = key[len(errors_received_lookup) + 1:]
+			ret[port_id].errors_rx = int(val)
+
+		bytes_sent_lookup = '1.3.6.1.2.1.2.2.1.16'
+		bytes_sent = self._lookup_bulk('Bytes Sent', bytes_sent_lookup)
+		for key, val in bytes_sent.items():
+			port_id = key[len(bytes_sent_lookup) + 1:]
+			ret[port_id].bytes_tx = int(val)
+
+		errors_sent_lookup = '1.3.6.1.2.1.2.2.1.16'
+		errors_sent = self._lookup_bulk('Errors Sent', errors_sent_lookup)
+		for key, val in errors_sent.items():
+			port_id = key[len(errors_sent_lookup) + 1:]
+			ret[port_id].errors_tx = int(val)
 
 		vlan_pid_lookup = '1.3.6.1.2.1.17.7.1.4.5.1.1'
 		vlan_pids = self._lookup_bulk('Native VLAN', vlan_pid_lookup)

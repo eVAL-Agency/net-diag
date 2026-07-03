@@ -530,6 +530,18 @@ class Host:
 			if link.mtu is not None:
 				link_data['ifmtu'] = link.mtu
 
+			if link.type is not None:
+				link_data['iftype'] = link.type
+
+			if link.bytes_rx is not None:
+				link_data['ifinbytes'] = link.bytes_rx
+			if link.bytes_tx is not None:
+				link_data['ifoutbytes'] = link.bytes_tx
+			if link.errors_rx is not None:
+				link_data['ifinerrors'] = link.errors_rx
+			if link.errors_tx is not None:
+				link_data['ifouterrors'] = link.errors_tx
+
 			payload['content']['network_ports'].append(link_data)
 
 		self.log(json.dumps(payload))
@@ -768,6 +780,11 @@ class HostLink:
 		self.speed = None
 		self.vlan = None
 		self.vlan_allow = []
+		self.type = None
+		self.bytes_rx = None
+		self.bytes_tx = None
+		self.errors_rx = None
+		self.errors_tx = None
 
 	def to_dict(self) -> dict:
 		"""
