@@ -168,6 +168,8 @@ class SNMPScanner(ScannerInterface):
 			if key == 'location':
 				self.host.set_location(val)
 			else:
+				if key == 'uptime' and val is not None:
+					val = int(val)
 				setattr(self.host, key, val)
 
 		mac = self.get_mac()
