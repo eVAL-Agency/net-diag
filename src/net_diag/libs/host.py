@@ -454,7 +454,6 @@ class Host:
 					'type': self.type,
 					'description': self.descr,
 					'defaultgateway': self.gateway,
-					'firmware_version': self.os_version,
 				},
 				'network_ports': [],
 				'network_device': {
@@ -467,6 +466,18 @@ class Host:
 				}
 			},
 		}
+
+		if self.os_version is not None:
+			firmware = {
+				'version': self.os_version,
+			}
+
+			if self.os_name is not None:
+				firmware['name'] = self.os_name
+			if self.manufacturer is not None:
+				firmware['manufacturer'] = self.manufacturer
+
+			payload['content']['firmwares'] = [firmware]
 
 		if self.serial is not None:
 			payload['content']['network_device']['serial'] = self.serial
