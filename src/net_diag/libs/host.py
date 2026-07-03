@@ -519,6 +519,14 @@ class Host:
 			else:
 				link_data['ifstatus'] = 4
 
+			if link.admin_status is None:
+				# Unknown, default to enabled
+				link_data['ifinternalstatus'] = 1
+			elif link.admin_status.upper() == 'UP':
+				link_data['ifinternalstatus'] = 1
+			else:
+				link_data['ifinternalstatus'] = 2
+
 			if link.mtu is not None:
 				link_data['ifmtu'] = link.mtu
 
