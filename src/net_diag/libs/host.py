@@ -457,10 +457,10 @@ class Host:
 				'network_ports': [],
 				'network_device': {
 					'firmware': self.os_version,
-					'ips': [self.ip],
 					'mac': self.mac,
 					'name': self.hostname,
 					'contact': self.contact,
+					'description': self.descr,
 					'type': dev_type,
 				}
 			},
