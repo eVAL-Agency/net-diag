@@ -443,9 +443,9 @@ class Host:
 			dev_type = 'Printer'
 
 		payload = {
-			'deviceid': self.mac,
+			'deviceid': self.get_identifier(),
 			'itemtype': 'NetworkEquipment',
-			'action': 'netinventory',
+			'action': 'inventory',
 			'content': {
 				'versionclient': 'NetworkDiagnostics-Discover',
 				'hardware': {
@@ -556,6 +556,25 @@ class Host:
 		seconds, centiseconds = divmod(remainder, 100)
 
 		return f"{days} days, {hours:02}:{minutes:02}:{seconds:02}"
+
+	def get_identifier(self) -> str:
+		"""
+		Get a mostly unique identifier for this device based off its mac
+
+		:return:
+		"""
+
+		if self.manufacturer is not None:
+			dev_id = [self.manufacturer.lower()]
+		else:
+			dev_id = ['device']
+
+		dev_id.append(self.mac.replace(':', '').lower())
+
+		# Include the network diagnostics to track where this device was seen
+		dev_id.append('network-diagnostics')
+
+		return '-'.join(dev_id)
 
 	def ensure_hostname(self):
 		"""
