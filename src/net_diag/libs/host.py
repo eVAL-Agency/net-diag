@@ -5,6 +5,86 @@ from datetime import datetime
 from typing import Union
 from urllib import request
 import uuid
+from enum import IntEnum, StrEnum
+
+
+class HostPortAdminStatus(IntEnum):
+	UP = 1       # Ready to pass packets
+	DOWN = 2     # Administratively disabled / shut down
+	TESTING = 3  # In some test mode
+
+
+class HostPortUserStatus(IntEnum):
+	UP = 1                # Ready to pass packets (Link up)
+	DOWN = 2              # Interface down (No link / No cable)
+	TESTING = 3           # In test mode, no operational packets can pass
+	UNKNOWN = 4           # Status cannot be determined
+	DORMANT = 5           # Waiting for an external trigger (e.g., dial-up/serial line)
+	NOT_PRESENT = 6       # Refers to missing components (e.g., an empty SFP module slot)
+	LOWER_LAYER_DOWN = 7  # This interface depends on a lower sub-layer which is down
+
+
+class HostPortType(IntEnum):
+	OTHER = 1
+	REGULAR_1822 = 2
+	HDH_1822 = 3
+	DDN_X25 = 4
+	RFC877_X25 = 5
+	ETHERNET_CSMACD = 6     # Standard Physical Ethernet Port (10/100/1G/10G+)
+	ISO88023_CSMACD = 7
+	ISO88024_TOKENBUS = 8
+	ISO88025_TOKENRING = 9
+	STAR_LAN = 11
+	FDDI = 15
+	LAP_B = 16
+	SDLC = 17
+	T1 = 18
+	CEPT = 19
+	BASIC_ISDN = 20
+	PRIMARY_ISDN = 21
+	PROP_POINT_TO_POINT_SERIAL = 22
+	PPP = 23                # Point-to-Point Protocol
+	SOFTWARE_LOOPBACK = 24  # Local Loopback Interface (127.0.0.1)
+	EON = 25
+	ETHERNET_3MBIT = 26
+	NSIP = 27
+	SLIP = 28
+	ULTRA = 29
+	DS3 = 30
+	SIP = 31
+	FRAME_RELAY = 32
+	RS232 = 33
+	PARA = 34
+	ARCNET = 35
+	ATM = 37
+	SONET = 39
+	X25_PLE = 40
+	ISO88026_MAN = 41
+	SMDS_DXI = 42
+	FR_FORWARD = 43
+	CENTRONICS = 44
+	IEEE80211 = 71          # Wireless LAN / Wi-Fi
+	TUNNEL = 131            # Encapsulated tunnel interfaces (GRE, IPsec, etc.)
+	IEEE8023AD_LAG = 161    # Link Aggregation / Port Channel / LACP Bond
+	VLAN = 135              # Layer 2 Virtual LAN Interface (SVI)
+
+
+class HostType(StrEnum):
+	ACCESS = 'Access'
+	CAMERA = 'Camera'
+	ELEVATOR = 'Elevator'
+	ENVIRONMENTAL = 'Environmental'
+	FIREWALL = 'Firewall'
+	GATEWAY = 'Gateway'
+	PHONE = 'Phone'
+	PRINTER = 'Printer'
+	ROUTER = 'Router'
+	SENSOR = 'Sensor'
+	SERVER = 'Server'
+	SWITCH = 'Switch'
+	TV = 'TV'
+	WIFI = 'Wifi'
+	WORKSTATION = 'Workstation'
 
 
 class Host:
@@ -12,28 +92,12 @@ class Host:
 	Represents a single host on the network.
 	"""
 
-	TYPE_ACCESS = 'Access'
-	TYPE_CAMERA = 'Camera'
-	TYPE_ELEVATOR = 'Elevator'
-	TYPE_ENVIRONMENTAL = 'Environmental'
-	TYPE_FIREWALL = 'Firewall'
-	TYPE_GATEWAY = 'Gateway'
-	TYPE_PHONE = 'Phone'
-	TYPE_PRINTER = 'Printer'
-	TYPE_ROUTER = 'Router'
-	TYPE_SENSOR = 'Sensor'
-	TYPE_SERVER = 'Server'
-	TYPE_SWITCH = 'Switch'
-	TYPE_TV = 'TV'
-	TYPE_WIFI = 'Wifi'
-	TYPE_WORKSTATION = 'Workstation'
-
 	ip_to_synced_ids = {}
 	"""
 	Cache of IP addresses to SuiteCRM IDs
 	"""
 
-	def __init__(self, ip: str, config: dict, sync=None):
+	def __init__(self, ip: str, config: dict):
 		"""
 		Initialize a new Host device to be scanned
 
@@ -84,10 +148,10 @@ class Host:
 		:type location: str|None
 		"""
 
-		self.type = None
+		self.type: HostType | None = None
 		"""
 		Device type, (eg: switch, router, server, etc)
-		:type type: str|None
+		:type type: HostType|None
 		"""
 
 		self.manufacturer = None
@@ -167,22 +231,16 @@ class Host:
 		:type ping: str|None
 		"""
 
-		self.links = None
+		self.ports = {}
 		"""
 		List of network/data ports on the device
-		:type links: dict[str,HostLink]|None
+		:type ports: dict[str,HostPort]
 		"""
 
 		self.config = config
 		"""
 		Configuration to use for this device, (eg: SNMP community string, scanners to use, etc)
 		:type config: dict
-		"""
-
-		self.sync = sync
-		"""
-		Sync handler to use for publishing records, if applicable.
-		:type sync: SuiteCRMSync|OpenProjectSync|None
 		"""
 
 		self.synced_id = None
@@ -259,7 +317,7 @@ class Host:
 		if ip in self.neighbors:
 			# If the neighbor already exists, return it
 			return self.neighbors[ip]
-		new_host = Host(ip, self.config, self.sync)
+		new_host = Host(ip, self.config)
 		self.neighbors[ip] = new_host
 		return new_host
 
@@ -276,107 +334,6 @@ class Host:
 		if self.mac is None and other.mac is not None:
 			self.mac = other.mac
 			self.log('Resolved MAC from neighbor')
-
-	def sync_to_openproject(self):
-		"""
-		:return:
-		"""
-		if self.mac is None:
-			logging.warning('No MAC address found for OpenProject sync on %s' % self.ip)
-			return
-
-		# OpenProject requires a hostname for devices
-		self.ensure_hostname()
-
-		self.log('Searching for devices in OpenProject with MAC %s' % self.mac)
-		ret = self.sync.find_device_by_mac(self)
-
-		if ret is None:
-			self.log('No existing device found in OpenProject with MAC %s, creating new record' % self.mac)
-			self.sync.create_host(self)
-		else:
-			self.log('Existing device found in OpenProject with MAC %s, updating record' % self.mac)
-			logging.debug(ret)
-			self.sync.update_host(ret, self)
-
-		self.ip_to_synced_ids[self.ip] = self.synced_id
-
-	def sync_to_suitecrm(self):
-		"""
-		:param sync:
-		:raises SuiteCRMSyncException:
-		:return:
-		"""
-		if self.mac is None:
-			logging.warning('No MAC address found for SuiteCRM sync on %s' % self.ip)
-			return
-
-		# SuiteCRM requires a hostname for devices
-		self.ensure_hostname()
-
-		self.log('Searching for devices in SuiteCRM with MAC %s' % self.mac)
-		ret = self.sync.find(
-			'MSP_Devices',
-			{'mac_pri': self.mac, 'mac_sec': self.mac, 'mac_oob': self.mac},
-			operator='OR',
-			fields=(
-				'id',
-				'ip_pri',
-				'mac_pri',
-				'ip_sec',
-				'mac_sec',
-				'ip_oob',
-				'mac_oob',
-				'name',
-				'loc_room',
-				'loc_floor',
-				'loc_address',
-				'loc_address_city',
-				'loc_address_state',
-				'manufacturer',
-				'model',
-				'os_version',
-				'type',
-				'serial',
-				'description',
-				'status',
-				'msp_devices_id_c',
-				'uplink_port',
-			)
-		)
-		self.log('Found %s device(s)' % len(ret))
-
-		if len(ret) == 0:
-			# No records located, create
-			data = self._generate_suitecrm_payload(None)
-			self.log('Creating device record for %s: (%s)' % (self.ip, json.dumps(data)))
-			result = self.sync.create('MSP_Devices', data | {'discover_log': self.log_lines})
-
-			self.synced_id = result['data']['id']
-
-			if 'ip_pri' in data and data['ip_pri']:
-				self.ip_to_synced_ids[data['ip_pri']] = self.synced_id
-			if 'ip_sec' in data and data['ip_sec']:
-				self.ip_to_synced_ids[data['ip_sec']] = self.synced_id
-
-		elif len(ret) == 1:
-			# Update only, (do not overwrite existing data)
-			self.synced_id = ret[0]['id']
-
-			# Store the IP for future reference
-			if ret[0]['ip_pri']:
-				self.ip_to_synced_ids[ret[0]['ip_pri']] = ret[0]['id']
-			if ret[0]['ip_sec']:
-				self.ip_to_synced_ids[ret[0]['ip_sec']] = ret[0]['id']
-
-			data = self._generate_suitecrm_payload(ret[0])
-			if len(data):
-				self.log('Syncing device record for %s: %s' % (self.ip, json.dumps(data)))
-			else:
-				self.log('No data changed for %s' % self.ip)
-			self.sync.update('MSP_Devices', ret[0]['id'], data | {'discover_log': self.log_lines})
-		else:
-			logging.warning('Multiple records found for %s' % self.mac)
 
 	def sync_to_grist(self):
 		"""
@@ -437,7 +394,7 @@ class Host:
 		if self.type is None:
 			logging.warning('No type found for GLPI sync on %s' % self.ip)
 
-		if self.type in [self.TYPE_SERVER, self.TYPE_WORKSTATION]:
+		if self.type in [HostType.SERVER, HostType.WORKSTATION]:
 			logging.info('Skipping GLPI sync for computers')
 			return
 
@@ -446,7 +403,7 @@ class Host:
 
 		self.log('Pushing device data to GLPI')
 		dev_type = 'Networking'
-		if self.type == self.TYPE_PRINTER:
+		if self.type == HostType.PRINTER:
 			# Special case for printers
 			dev_type = 'Printer'
 
@@ -471,6 +428,10 @@ class Host:
 				}
 			},
 		}
+
+		if 'glpi_credentials' in self.config:
+			# Add the SNMP credentials, mostly for reference.
+			payload['content']['network_device']['credentials'] = self.config['glpi_credentials']
 
 		if self.gateway is not None:
 			payload['content']['hardware']['defaultgateway'] = self.gateway
@@ -502,80 +463,18 @@ class Host:
 		if self.uptime is not None:
 			payload['content']['network_device']['uptime'] = self.format_timeticks(self.uptime)
 
-		if self.links is None:
-			self.links = []
-
-		for link_idx in self.links:
-			link = self.links[link_idx]
-
-			link_data = {
-				'ifnumber': link_idx,
-				'ifname': link.name
-			}
-
-			if link.mac is not None:
-				link_data['mac'] = link.mac
-
-				if link.mac == self.mac:
-					link_data['ips'] = [self.ip]
-
-			if link.speed is not None:
-				if link.speed.endswith('kbps'):
-					link_data['speed'] = link.speed * 1000
-				elif link.speed.endswith('mbps'):
-					link_data['ifspeed'] = int(link.speed[:-4]) * 1000 * 1000
-				elif link.speed.endswith('gbps'):
-					link_data['ifspeed'] = int(link.speed[:-4]) * 1000 * 1000 * 1000
-				elif link.speed.endswith('tbps'):
-					link_data['ifspeed'] = int(link.speed[:-4]) * 1000 * 1000 * 1000 * 1000
-				elif link.speed.endswith('bps'):
-					link_data['ifspeed'] = int(link.speed[:-3])
-
-			if link.user_status is None:
-				link_data['ifstatus'] = 4
-			elif link.user_status.upper() == 'UP':
-				link_data['ifstatus'] = 1
-			elif link.user_status.upper() == 'DOWN':
-				link_data['ifstatus'] = 2
-			elif link.user_status.upper() == 'TESTING':
-				link_data['ifstatus'] = 3
-			else:
-				link_data['ifstatus'] = 4
-
-			if link.admin_status is None:
-				# Unknown, default to enabled
-				link_data['ifinternalstatus'] = 1
-			elif link.admin_status.upper() == 'UP':
-				link_data['ifinternalstatus'] = 1
-			else:
-				link_data['ifinternalstatus'] = 2
-
-			if link.mtu is not None:
-				link_data['ifmtu'] = link.mtu
-
-			if link.type is not None:
-				link_data['iftype'] = link.type
-
-			if link.bytes_rx is not None:
-				link_data['ifinbytes'] = link.bytes_rx
-			if link.bytes_tx is not None:
-				link_data['ifoutbytes'] = link.bytes_tx
-			if link.errors_rx is not None:
-				link_data['ifinerrors'] = link.errors_rx
-			if link.errors_tx is not None:
-				link_data['ifouterrors'] = link.errors_tx
-
-			payload['content']['network_ports'].append(link_data)
+		for port in self.ports.values():
+			payload['content']['network_ports'].append(port.to_glpi())
 
 		self.log(json.dumps(payload))
 
 		headers = {
 			'Content-Type': 'application/json',
 			'User-Agent': 'NetworkDiagnostics-Discover',
-			'Authorization': 'GLPI-Token ' + self.sync[2]
+			'Authorization': 'GLPI-Token ' + self.config['glpi_token']
 		}
 		req = request.Request(
-			self.sync[1] + '/front/inventory.php',
+			self.config['glpi_url'] + '/front/inventory.php',
 			method='POST',
 			headers=headers,
 			data=json.dumps(payload).encode('utf-8')
@@ -748,10 +647,9 @@ class Host:
 		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} descr:{self.descr}>'
 
 	def to_dict(self) -> dict:
-		links = {}
-		if self.links is not None:
-			for name, iface in self.links.items():
-				links[name] = iface.to_dict()
+		ports = {}
+		for name, iface in self.ports.items():
+			ports[name] = iface.to_dict()
 
 		data = {
 			'ip': self.ip,
@@ -765,7 +663,7 @@ class Host:
 			'manufacturer': self.manufacturer,
 			'model': self.model,
 			'serial': self.serial,
-			'links': links,
+			'ports': ports,
 			'os_name': self.os_name,
 			'os_version': self.os_version,
 			'descr': self.descr,
@@ -784,30 +682,31 @@ class Host:
 		return data
 
 
-class HostLink:
+class HostPort:
 	"""
 	Represents a single interface (port) on a host.
 	"""
 
 	def __init__(self):
 		"""
-		Initialize a new HostLink
+		Initialize a new HostPort
 		"""
-		self.name = None
-		self.label = None
-		self.ip = None
-		self.mac = None
-		self.admin_status = None
-		self.user_status = None
-		self.mtu = None
-		self.speed = None
+		self.number: int | None = None
+		self.name: str | None = None
+		self.label: str | None = None
+		self.ips: list = []
+		self.mac: str | None = None
+		self.admin_status: HostPortAdminStatus | None = None
+		self.user_status: HostPortUserStatus | None = None
+		self.mtu: int | None = None
+		self.speed: int | None = None
 		self.vlan = None
 		self.vlan_allow = []
-		self.type = None
-		self.bytes_rx = None
-		self.bytes_tx = None
-		self.errors_rx = None
-		self.errors_tx = None
+		self.type: HostPortType | None = None
+		self.bytes_rx: int | None = None
+		self.bytes_tx: int | None = None
+		self.errors_rx: int | None = None
+		self.errors_tx: int | None = None
 
 	def to_dict(self) -> dict:
 		"""
@@ -818,7 +717,12 @@ class HostLink:
 
 		# Only include keys that are not None or empty lists
 		# This is because many scanners will only populate a subset of these fields
-		keys = ['name', 'label', 'ip', 'mac', 'admin_status', 'user_status', 'mtu', 'speed', 'vlan', 'vlan_allow']
+		keys = [
+			'name', 'label', 'ips', 'mac',
+			'admin_status', 'user_status',
+			'mtu', 'speed', 'vlan', 'vlan_allow', 'type',
+			'bytes_rx', 'bytes_tx', 'errors_rx', 'errors_tx'
+		]
 		for key in keys:
 			value = getattr(self, key)
 			if value is None:
@@ -828,3 +732,27 @@ class HostLink:
 
 			data[key] = value
 		return data
+
+	def to_glpi(self) -> dict:
+		link_data = {}
+		field_mapping = {
+			'speed': 'ifspeed',
+			'name': 'ifname',
+			'number': 'ifnumber',
+			'mac': 'mac',
+			'ips': 'ips',
+			'user_status': 'ifstatus',
+			'admin_status': 'ifinternalstatus',
+			'mtu': 'ifmtu',
+			'type': 'iftype',
+			'bytes_rx': 'ifinbytes',
+			'bytes_tx': 'ifoutbytes',
+			'errors_rx': 'ifinerrors',
+			'errors_tx': 'ifouterrors',
+		}
+
+		for attr, key in field_mapping.items():
+			if getattr(self, attr) is not None:
+				link_data[key] = getattr(self, attr)
+
+		return link_data

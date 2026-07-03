@@ -10,7 +10,7 @@ from requests.exceptions import RequestException
 
 from net_diag.libs.scanners import ScannerInterface
 from net_diag.libs.net_utils import format_link_speed
-from net_diag.libs.host import Host, HostLink
+from net_diag.libs.host import Host, HostPort
 
 
 class HTTPScanner(ScannerInterface):
@@ -192,10 +192,10 @@ class TraneTracerSCScanner(HTTPScanner):
 			# Trim off the leading 'v' version indicator if present
 			self.host.os_version = self.host.os_version[1:]
 
-		self.host.links = self.get_ports()
+		self.host.ports = self.get_ports()
 
 		# Find the mac address from the interfaces
-		for iface in self.host.links.values():
+		for iface in self.host.ports.values():
 			if iface.ip == self.host.ip:
 				self.host.mac = iface.mac
 				break
@@ -401,7 +401,7 @@ class TraneTracerSCScanner(HTTPScanner):
 			for tag in ip_interfaces.find_all('obj', {'is': 'trane:SC/ipNetworkConfig/enetInterface_v1'}):
 				port = tag.find('str', {'name': 'name'}).get('val')
 
-				ports[port] = HostLink()
+				ports[port] = HostPort()
 				ports[port].name = port
 				ports[port].ip = tag.find('str', {'name': 'ipaddr'}).get('val')
 				ports[port].mac = tag.find('str', {'name': 'macaddr'}).get('val')
@@ -410,7 +410,7 @@ class TraneTracerSCScanner(HTTPScanner):
 			for tag in ip_interfaces.find_all('obj', {'is': 'trane:SC/ipNetworkConfig/wifiInterface_v1'}):
 				port = tag.find('str', {'name': 'name'}).get('val')
 
-				ports[port] = HostLink()
+				ports[port] = HostPort()
 				ports[port].name = port
 				ports[port].ip = tag.find('str', {'name': 'ipaddr'}).get('val')
 				ports[port].mac = tag.find('str', {'name': 'macaddr'}).get('val')
@@ -422,7 +422,7 @@ class TraneTracerSCScanner(HTTPScanner):
 			pretty_id = str(int(link[-2:-1]) + 1)
 			port = 'mstp' + pretty_id
 
-			ports[port] = HostLink()
+			ports[port] = HostPort()
 			ports[port].name = port
 			ports[port].label = 'BACnet MS/TP ' + pretty_id
 			ports[port].ip = tag.find('int', {'name': 'networkNumber'}).get('val')

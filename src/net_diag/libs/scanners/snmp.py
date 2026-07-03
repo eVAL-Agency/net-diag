@@ -2,10 +2,9 @@ import re
 from typing import Union
 import asyncio
 
-from net_diag.libs.net_utils import format_link_speed
 from net_diag.libs.scanners import ScannerInterface
 from net_diag.libs.snmputils import snmp_lookup_single, snmp_lookup_bulk
-from net_diag.libs.host import Host, HostLink
+from net_diag.libs.host import Host, HostPort, HostPortUserStatus, HostPortAdminStatus, HostPortType, HostType
 
 
 class SNMPScanner(ScannerInterface):
@@ -28,22 +27,22 @@ class SNMPScanner(ScannerInterface):
 			(
 				#  ; AXIS 212 PTZ; Network Camera; 4.49; Jun 18 2009 13:28; 14D; 1;
 				r'^ ; AXIS (?P<model>[^;]*); Network Camera; (?P<os_version>[^;]*); [ADFJMNOS][aceopu][bcglnprtvy] [0-9]{1,2} [0-9]{4} [0-9]{1,2}:[0-9]{2};.*',  # noqa: E501
-				{'manufacturer': 'Axis Communications AB.', 'type': Host.TYPE_CAMERA}
+				{'manufacturer': 'Axis Communications AB.', 'type': HostType.CAMERA}
 			),
 			(
 				# 24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots
 				r'^24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots$',
-				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': Host.TYPE_SWITCH}
+				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': HostType.SWITCH}
 			),
 			(
 				# H.264 Mega-Pixel Network Camera
 				r'^H.264 Mega-Pixel Network Camera$',
-				{'type': Host.TYPE_CAMERA}
+				{'type': HostType.CAMERA}
 			),
 			(
 				# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
 				r'^JetStream 24-Port Gigabit Smart PoE\+ Switch with 4 SFP Slots$',
-				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': Host.TYPE_SWITCH}
+				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': HostType.SWITCH}
 			)
 		)
 		self.vlans_reversed = False
@@ -176,7 +175,7 @@ class SNMPScanner(ScannerInterface):
 		if mac is not None:
 			self.host.mac = mac
 
-		self.host.links = self.get_ports()
+		self.host.ports = self.get_ports()
 
 	def run_scan_neighbors(self):
 		"""
@@ -272,8 +271,24 @@ class SNMPScanner(ScannerInterface):
 		:return:
 		"""
 
-		ret = {}
 		name_lookup = '1.3.6.1.2.1.2.2.1.2'
+		type_lookup = '1.3.6.1.2.1.2.2.1.3'
+		mtu_lookup = '1.3.6.1.2.1.2.2.1.4'
+		speed_lookup = '1.3.6.1.2.1.2.2.1.5'
+		mac_lookup = '1.3.6.1.2.1.2.2.1.6'
+		admin_lookup = '1.3.6.1.2.1.2.2.1.7'
+		status_lookup = '1.3.6.1.2.1.2.2.1.8'
+		bytes_rx_lookup = '1.3.6.1.2.1.2.2.1.10'
+		errors_rx_lookup = '1.3.6.1.2.1.2.2.1.14'
+		bytes_tx_lookup = '1.3.6.1.2.1.2.2.1.16'
+		errors_tx_lookup = '1.3.6.1.2.1.2.2.1.20'
+		ips_lookup = '1.3.6.1.2.1.4.20.1.2'
+		vlan_pid_lookup = '1.3.6.1.2.1.17.7.1.4.5.1.1'
+		vlan_egress_lookup = '1.3.6.1.2.1.17.7.1.4.2.1.4'
+		label_lookup = '1.3.6.1.2.1.31.1.1.1.18'
+
+		ret = {}
+
 		names = self._lookup_bulk('Port Names', name_lookup)
 		if len(names) == 0:
 			self.host.log('Device does not contain any port information, skipping')
@@ -281,82 +296,77 @@ class SNMPScanner(ScannerInterface):
 
 		for key, val in names.items():
 			port_id = key[len(name_lookup) + 1:]
-			ret[port_id] = HostLink()
+			ret[port_id] = HostPort()
 			ret[port_id].name = val
+			ret[port_id].number = int(port_id)
 
-		label_lookup = '1.3.6.1.2.1.31.1.1.1.18'
 		labels = self._lookup_bulk('Port Labels', label_lookup)
 		for key, val in labels.items():
 			port_id = key[len(label_lookup) + 1:]
 			ret[port_id].label = val
 
-		type_lookup = '1.3.6.1.2.1.2.2.1.3'
 		types = self._lookup_bulk('Port Types', type_lookup)
 		for key, val in types.items():
 			port_id = key[len(type_lookup) + 1:]
-			ret[port_id].type = int(val)
+			ret[port_id].type = HostPortType(int(val))
 
-		mtu_lookup = '1.3.6.1.2.1.2.2.1.4'
 		mtus = self._lookup_bulk('Port MTUs', mtu_lookup)
 		for key, val in mtus.items():
 			port_id = key[len(mtu_lookup) + 1:]
 			ret[port_id].mtu = int(val)
 
-		speed_lookup = '1.3.6.1.2.1.2.2.1.5'
 		speeds = self._lookup_bulk('Port Speeds', speed_lookup)
 		for key, val in speeds.items():
 			port_id = key[len(speed_lookup) + 1:]
-			ret[port_id].speed = format_link_speed(val)
+			ret[port_id].speed = int(val)
 
-		mac_lookup = '1.3.6.1.2.1.2.2.1.6'
 		macs = self._lookup_bulk('Port MACs', mac_lookup)
 		for key, val in macs.items():
 			port_id = key[len(mac_lookup) + 1:]
 			ret[port_id].mac = self._format_snmp_mac(val)
 
-		admin_lookup = '1.3.6.1.2.1.2.2.1.7'
 		admin_statuses = self._lookup_bulk('Admin Status', admin_lookup)
 		for key, val in admin_statuses.items():
 			port_id = key[len(admin_lookup) + 1:]
-			ret[port_id].admin_status = 'UP' if val == '1' else 'DOWN'
+			ret[port_id].admin_status = HostPortAdminStatus(int(val))
 
-		status_lookup = '1.3.6.1.2.1.2.2.1.8'
 		user_statuses = self._lookup_bulk('User Status', status_lookup)
 		for key, val in user_statuses.items():
 			port_id = key[len(status_lookup) + 1:]
-			ret[port_id].user_status = 'UP' if val == '1' else 'DOWN'
+			ret[port_id].user_status = HostPortUserStatus(int(val))
 
-		bytes_received_lookup = '1.3.6.1.2.1.2.2.1.10'
-		bytes_received = self._lookup_bulk('Bytes Received', bytes_received_lookup)
+		bytes_received = self._lookup_bulk('Bytes Received', bytes_rx_lookup)
 		for key, val in bytes_received.items():
-			port_id = key[len(bytes_received_lookup) + 1:]
+			port_id = key[len(bytes_rx_lookup) + 1:]
 			ret[port_id].bytes_rx = int(val)
 
-		errors_received_lookup = '1.3.6.1.2.1.2.2.1.14'
-		errors_received = self._lookup_bulk('Errors Received', errors_received_lookup)
+		errors_received = self._lookup_bulk('Errors Received', errors_rx_lookup)
 		for key, val in errors_received.items():
-			port_id = key[len(errors_received_lookup) + 1:]
+			port_id = key[len(errors_rx_lookup) + 1:]
 			ret[port_id].errors_rx = int(val)
 
-		bytes_sent_lookup = '1.3.6.1.2.1.2.2.1.16'
-		bytes_sent = self._lookup_bulk('Bytes Sent', bytes_sent_lookup)
+		bytes_sent = self._lookup_bulk('Bytes Sent', bytes_tx_lookup)
 		for key, val in bytes_sent.items():
-			port_id = key[len(bytes_sent_lookup) + 1:]
+			port_id = key[len(bytes_tx_lookup) + 1:]
 			ret[port_id].bytes_tx = int(val)
 
-		errors_sent_lookup = '1.3.6.1.2.1.2.2.1.20'
-		errors_sent = self._lookup_bulk('Errors Sent', errors_sent_lookup)
+		errors_sent = self._lookup_bulk('Errors Sent', errors_tx_lookup)
 		for key, val in errors_sent.items():
-			port_id = key[len(errors_sent_lookup) + 1:]
+			port_id = key[len(errors_tx_lookup) + 1:]
 			ret[port_id].errors_tx = int(val)
 
-		vlan_pid_lookup = '1.3.6.1.2.1.17.7.1.4.5.1.1'
+		interface_ips = self._lookup_bulk('IP Addresses', ips_lookup)
+		for key, val in interface_ips.items():
+			ip_address = key[len(ips_lookup) + 1:]
+			port_id = str(val)
+			if port_id in ret:
+				ret[port_id].ips.append(ip_address)
+
 		vlan_pids = self._lookup_bulk('Native VLAN', vlan_pid_lookup)
 		for key, val in vlan_pids.items():
 			port_id = key[len(vlan_pid_lookup) + 1:]
 			ret[port_id].vlan = val
 
-		vlan_egress_lookup = '1.3.6.1.2.1.17.7.1.4.2.1.4'
 		vlan_egresses = self._lookup_bulk('VLAN Egress', vlan_egress_lookup)
 		for key, val in vlan_egresses.items():
 			vlan_id = key[len(vlan_egress_lookup) + 3:]
@@ -444,12 +454,12 @@ class HPScan(SNMPScanner):
 			(
 				# HP ETHERNET MULTI-ENVIRONMENT,SN:VNB8JCKF0M,FN:1N807W6,SVCID:27057,PID:HP Color LaserJet MFP M477fnw
 				r'^HP ETHERNET MULTI-ENVIRONMENT,SN:(?P<serial>[^,]+),FN:[^,]+,SVCID:[^,]+,PID:(?P<model>.*)$',
-				{'manufacturer': 'Hewlett Packard', 'type': Host.TYPE_PRINTER}
+				{'manufacturer': 'Hewlett Packard', 'type': HostType.PRINTER}
 			),
 			(
 				# HP ETHERNET MULTI-ENVIRONMENT
 				r'^HP ETHERNET MULTI-ENVIRONMENT$',
-				{'manufacturer': 'Hewlett Packard', 'type': Host.TYPE_PRINTER}
+				{'manufacturer': 'Hewlett Packard', 'type': HostType.PRINTER}
 			),
 		)
 
@@ -467,12 +477,12 @@ class MikrotikScan(SNMPScanner):
 			(
 				# RouterOS RB3011UiAS
 				r'^(?P<os_name>RouterOS) (?P<model>.*)$',
-				{'type': Host.TYPE_ROUTER}
+				{'type': HostType.ROUTER}
 			),
 			(
 				# CSS326-24G-2S+ SwOS v2.17
 				r'^(?P<model>.*) SwOS v(?P<os_version>[^ ]+)$',
-				{'type': Host.TYPE_SWITCH}
+				{'type': HostType.SWITCH}
 			)
 		)
 
@@ -503,22 +513,22 @@ class UbiquitiScan(SNMPScanner):
 				# UAP-AC-Lite 6.6.77.15402
 				# UAP-AC-Pro-Gen2 6.6.77.15402
 				r'^(?P<model>UAP-AC-[^ ]*) (?P<os_version>[^ ]+)$',
-				{'type': Host.TYPE_WIFI}
+				{'type': HostType.WIFI}
 			),
 			(
 				# Ubiquiti UniFi UDM-Pro 4.1.13 Linux 4.19.152 al324
 				r'^Ubiquiti UniFi (?P<model>UDM-[^ ]*) (?P<os_version>[^ ]+) Linux [^ ]+ [^ ]+$',
-				{'type': Host.TYPE_ROUTER}
+				{'type': HostType.ROUTER}
 			),
 			(
 				# Ubiquiti UniFi UXG-Lite 4.1.13 Linux 5.4.213 ipq5018
 				r'^Ubiquiti UniFi (?P<model>UXG-[^ ]*) (?P<os_version>[^ ]+) Linux [^ ]+ [^ ]+$',
-				{'type': Host.TYPE_GATEWAY}
+				{'type': HostType.GATEWAY}
 			),
 			(
 				# US-8-60W, 7.0.50.15613, Linux 3.6.5
 				r'^(?P<model>US-8-60W), (?P<os_version>[^,]+), Linux .*$',
-				{'type': Host.TYPE_SWITCH}
+				{'type': HostType.SWITCH}
 			)
 		)
 

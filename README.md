@@ -25,14 +25,6 @@ Since this operates via SNMP, it can provide MAC details over a layer-3 network,
 * Grist specific options (with --format grist)
   * --grist-url: URL of the Grist instance
   * --grist-account: Account token for destination account
-* SuiteCRM specific options (with --format suitecrm)
-  * --crm-url: URL of the SuiteCRM instance
-  * --crm-client-id: Client ID for the SuiteCRM instance
-  * --crm-client-secret: Client secret for the SuiteCRM instance
-* OpenProject specific options (with --format openproject)
-  * --openproject-url: URL of the OpenProject instance
-  * --openproject-api-key: API key for the OpenProject instance
-  * --openproject-workspace: Workspace identifier for the OpenProject instance
 * GLPI specific options (with --format glpi)
   * --glpi-url: URL of the GLPI instance
   * --glpi-token: Authorization token of the user to perform the import
@@ -111,9 +103,19 @@ Connects to the Trane Tracer SC+ API to retrieve information about HVAC controll
 
 Can be included with 'trane' in the target scanners, but is not performed by default.
 
-### Examples
+### Formats / Targets
 
-#### Save report to CSV
+#### JSON
+
+The default rendering format; outputs all host discovery to JSON via stdout.
+
+**Example**
+
+```bash
+network_discover --net 10.10.10.0/24 --community public --format json > network.json
+```
+
+#### CSV
 
 Simple usage, write scan results to a local file
 
@@ -142,7 +144,7 @@ ip,mac,hostname,contact,floor,location,type,manufacturer,model,os_version,descr,
 10.10.10.120,00:11:22:33:44:61,,,,,,,,,,,,
 ```
 
-#### Publish discovery data to Grist
+#### Grist
 
 When using [compatible middleware for Grist](https://github.com/eVAL-Agency/Grist-Scripts),
 device information can be published automatically to your Grist database.
@@ -150,70 +152,31 @@ device information can be published automatically to your Grist database.
 Set `--format grist` to publish to Grist and ensure to set `--grist-url` as the URL (ex: `https://grist.yourdomain.tld`) to your Grist instance
 and set `--grist-account` to a valid account token for this scan.
 
-#### Publish discovery data to SuiteCRM
 
-If using the MSP plugin for SuiteCRM or another compatible library, 
-using `--format suitecrm` can sync data directly to the device database.
-
-@todo Publish the SuiteCRM MSP plugin once it's more polished.  Contact me if you want an early alpha version.
-
-This functionality requires oauth to be configured for your instance and a client ID/secret to be provided.
-
-Required roles are:
-
-* MSP_Devices read/list
-* MSP_Devices edit
-* MSP_Devices create
-
-```bash
-network_discover --net=192.168.0.0/24 --format=suitecrm --crm-url=crm.yourdomain.tld --crm-client-id=123456-1234-1234-123456789 --crm-client-secret=oauth_secret_key -c public
-
-# Example output
-Scanning host 192.168.0.100
-Scanning host 192.168.0.143
-Scanning host 192.168.0.150
-Scanning host 192.168.0.151
-Scanning host 192.168.0.152
-...
-Syncing 192.168.0.73 to SuiteCRM
-Syncing 192.168.0.75 to SuiteCRM
-Syncing 192.168.0.76 to SuiteCRM
-Syncing 192.168.0.77 to SuiteCRM
-```
-
-#### Publish discovery data to OpenProject
-
-If using OpenProject to store device information, this format can upload scan data as work packages directly to OpenProject.
-
-Requires an API key (Account Settings -> Access tokens -> API), for a user with create/update permissions on the target workspace.
-
-Expects a 'Device' work package type to be configured to store the data,
-along with some custom fields:
-
-* IP Address
-* MAC Address
-* Device Type
-* Manufacturer
-* Model
-* Serial Number
-* Floor
-* Room
-* Uplink Port
-
-```
-network_discover --net=192.168.0.0/24 --format=openproject --openproject-url=project.yourdomain.tld --openproject-workspace=your-project-tag --openproject-api-key=123456789abcdef --community public
-```
-
-#### Publish discovery data to GLPI
+#### GLPI
 
 As of v1.1.2, GLPI is supported as a target to store discovery data to;
 this saves scanned devices as network devices.
 
 Requires a user with permission to POST data and an authorization token generated for that user.
 
-```
+**Example**
+
+```bash
 network_discover --net=192.168.0.0/24 --format=glpi --glpi-url=glpi.yourdomain.tld --glpi-token=123456789abcdef --community public
 ```
+
+Optionally, you can include the default **SNMP Credentials** by adding the following to your configuration:
+
+```yaml
+override:
+  - net: 10.200.0.0/24
+    community: public
+    glpi_credentials: 2
+```
+
+This is the ID of the SNMP credentials to link, as available from {glip_url}/front/snmpcredential.php.
+Does not look up the credentials and still needs the community setting.
 
 #### Exclude specific IP addresses from report
 

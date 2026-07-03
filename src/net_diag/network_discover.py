@@ -16,8 +16,6 @@ from mac_vendor_lookup import MacLookup
 from urllib.error import HTTPError
 
 from net_diag.libs.net_utils import get_neighbors
-from net_diag.libs.openprojectsync import OpenProjectSync, OpenProjectSyncException
-from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
 from net_diag.libs.host import Host
 from net_diag.libs.scanners.icmp import ICMPScanner
 from net_diag.libs.scanners.snmp import SNMPScanner
@@ -77,6 +75,12 @@ class Application:
 		"""
 		Configuration for individual hosts set from the config file.
 		Useful to define credentials or scanners on a per-device basis.
+		"""
+
+		self.net_config = {}
+		"""
+		Configuration for a group of hosts set from the config file.
+		Useful to define scanning policies for an entire network
 		"""
 
 		self.config = {}
@@ -157,9 +161,9 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		)
 
 		parser.add_argument('--net', help='Network to scan eg: 192.168.0.0/24')
-		parser.add_argument('--config', help='Configuration file to use for this scan, see (@todo) for more information')
+		parser.add_argument('--config', help='Configuration file to use for this scan')
 		parser.add_argument('-c', '--community', help='SNMP community string to use')
-		parser.add_argument('--format', choices=('json', 'csv', 'suitecrm', 'grist', 'openproject', 'glpi'), help='Output format')
+		parser.add_argument('--format', choices=('json', 'csv', 'grist', 'glpi'), help='Output format')
 		parser.add_argument('--debug', action='store_true', help='Enable debug output')
 		parser.add_argument(
 			'--dry-run',
@@ -168,12 +172,6 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		)
 		parser.add_argument('--grist-url', help='URL of the Grist instance')
 		parser.add_argument('--grist-account', help='Account token for discovered devices')
-		parser.add_argument('--crm-url', help='URL of the SuiteCRM instance')
-		parser.add_argument('--crm-client-id', help='Client ID for the SuiteCRM instance')
-		parser.add_argument('--crm-client-secret', help='Client secret for the SuiteCRM instance')
-		parser.add_argument('--openproject-url', help='URL of the OpenProject instance')
-		parser.add_argument('--openproject-api-key', help='API key for the OpenProject instance')
-		parser.add_argument('--openproject-workspace', help='Workspace for the OpenProject instance')
 		parser.add_argument('--glpi-url', help='URL of GLPI instance to push results to')
 		parser.add_argument('--glpi-token', help='Token for the user in GLPI to authenticate with')
 		parser.add_argument('--address', help='Optional address for this scan (for reporting)')
@@ -197,7 +195,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 			logging.basicConfig(level=logging.DEBUG)
 
 		if cli_args.config is None and cli_args.net is None:
-			print('Required run parameters missing, please use --net or --config', file=sys.stderr)
+			logging.error('Required run parameters missing, please use --net or --config')
 			sys.exit(1)
 
 		if cli_args.config:
@@ -206,9 +204,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		# Parameters that can be set from the command line get defined on the global list to take priority
 		if cli_args.net:
 			# If a network was specified on the command line, override the config file
-			self.targets = [{
-				'net': cli_args.net,
-			}]
+			self.targets = [cli_args.net]
 
 		if cli_args.community:
 			self.globals['community'] = cli_args.community
@@ -236,15 +232,6 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 		if cli_args.grist_account:
 			self.globals['grist_account'] = cli_args.grist_account
-
-		if cli_args.openproject_url:
-			self.globals['openproject_url'] = cli_args.openproject_url
-
-		if cli_args.openproject_api_key:
-			self.globals['openproject_api_key'] = cli_args.openproject_api_key
-
-		if cli_args.openproject_workspace:
-			self.globals['openproject_workspace'] = cli_args.openproject_workspace
 
 		if cli_args.glpi_url:
 			self.globals['glpi_url'] = cli_args.glpi_url
@@ -275,6 +262,11 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		# Store all options
 		self.config = self.defaults | self.globals
 
+		# validate format before running the application
+		if self.config['format'] not in ['json', 'csv', 'glpi', 'grist']:
+			logging.error('Invalid format requested!')
+			sys.exit(1)
+
 	def _setup_load_config(self, cli_args):
 		# Allow user to specify a config file to load, this provides the ability to scan multiple networks at once.
 		if not os.path.exists(cli_args.config):
@@ -286,69 +278,56 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				self.defaults |= data['default']
 			if 'targets' in data:
 				self.targets = data['targets']
-			if 'hosts' in data:
-				# Load host-specific configuration, (eg: credentials)
-				for host in data['hosts']:
-					if 'ip' not in host:
-						print('Host configuration missing IP address, skipping', file=sys.stderr)
-						continue
-					self.host_config[host['ip']] = host
+			if 'override' in data:
+				for override in data['override']:
+					if 'format' in override:
+						logging.error('format is not valid within override!')
+						sys.exit(1)
+
+					if 'ip' in override:
+						# Single host override
+						self.host_config[override['ip']] = override
+					elif 'net' in override:
+						# Entire network override
+						self.net_config[override['net']] = override
+					else:
+						logging.warning('Override defined without ip or net!')
 
 	def _setup_load_targets(self):
 		# Build the queue of devices to scan
+		# Pre-compile subnet strings into ipaddress objects ONCE before the loop starts
+		compiled_net_configs = [
+			(ipaddress.IPv4Network(net_ip), net_data)
+			for net_ip, net_data in self.net_config.items()
+		]
+
 		for target in self.targets:
-			if 'net' not in target:
-				print('No network specified for scan, skipping', file=sys.stderr)
-				continue
-
-			# Compile the options for this network scan
-			# 'default' options should be default, followed by any network-specific options.
-			# 'global' options are usually set from the command line and should override everything.
-			config = self.defaults | target | self.globals
-			sync = None
-
-			if config['format'] == 'suitecrm':
-				sync = SuiteCRMSync(config['crm_url'], config['crm_client_id'], config['crm_client_secret'])
-				sync.dry_run = config['dry_run']
-				try:
-					# Perform a connection to check credentials prior to scanning for hosts
-					sync.get_token()
-				except SuiteCRMSyncException as e:
-					print('Failed to connect to SuiteCRM: %s' % e, file=sys.stderr)
-					sys.exit(1)
-			elif config['format'] == 'grist':
-				if 'grist_url' not in config or 'grist_account' not in config:
-					print('Grist format requires --grist-url and --grist-account to be defined', file=sys.stderr)
-					sys.exit(1)
-				sync = ('grist', config['grist_url'], config['grist_account'])
-			elif config['format'] == 'openproject':
-				if 'openproject_url' not in config or 'openproject_api_key' not in config or 'openproject_workspace' not in config:
-					print(
-						'OpenProject format requires --openproject-url, --openproject-api-key, and --openproject-workspace to be defined',
-						file=sys.stderr
-					)
-					sys.exit(1)
-				sync = OpenProjectSync(config['openproject_url'], config['openproject_api_key'])
-				sync.workspace = config['openproject_workspace']
-				sync.dry_run = config['dry_run']
-			elif config['format'] == 'glpi':
-				if 'glpi_url' not in config or 'glpi_token' not in config:
-					print(
-						'GLPI format requires --glpi-url and --glpi-token to be defined',
-						file=sys.stderr
-					)
-					sys.exit(1)
-				sync = ('glpi', config['glpi_url'], config['glpi_token'])
-
-			# Add all hosts from this requested network
-			for ip in ipaddress.ip_network(target['net']).hosts():
+			# Extract each target to the list of actual hosts within that range.
+			# For /32 networks, this will resolve to a single host and
+			# other networks will resolve to the host IPs within that range.
+			hosts = ipaddress.ip_network(target).hosts()
+			for ip in hosts:
+				# Compile the options for this network scan
+				# 'default' options should be default, followed by any network-specific options.
+				# 'global' options are usually set from the command line and should override everything.
 				host_ip = str(ip)
-				if host_ip in self.host_config:
-					# Use a host-specific config, as defined in the config file
-					h = Host(host_ip, self.defaults | target | self.host_config[host_ip] | self.globals, sync)
-				else:
-					# Use target-shared configuration
-					h = Host(host_ip, config, sync)
+				host_config = self.host_config[host_ip] if host_ip in self.host_config else {}
+				net_config = {}
+				for net, net_data in compiled_net_configs:
+					if ip in net:
+						net_config = net_data
+				config = self.defaults | net_config | host_config | self.globals
+
+				# Do some basic pre-run checks
+				if config['format'] == 'grist':
+					if 'grist_url' not in config or 'grist_account' not in config:
+						logging.error('Grist format requires --grist-url and --grist-account to be defined')
+						sys.exit(1)
+				elif config['format'] == 'glpi':
+					if 'glpi_url' not in config or 'glpi_token' not in config:
+						logging.error('GLPI format requires --glpi-url and --glpi-token to be defined')
+						sys.exit(1)
+				h = Host(host_ip, config)
 				self.queue.put(('scan', h))
 
 	def worker(self):
@@ -440,80 +419,18 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 			print(json.dumps([h.to_dict() for h in self.hosts.values()], indent=2))
 		elif self.config['format'] == 'csv':
 			# Grab a new host just to retrieve the dictionary keys on the object
-			generic = Host('test', self.config, None)
+			generic = Host('test', self.config)
 			# Set the header (and fields)
 			writer = csv.DictWriter(sys.stdout, fieldnames=list(generic.to_dict().keys()))
 			writer.writeheader()
 			for h in self.hosts.values():
 				writer.writerow(h.to_dict())
-		elif self.config['format'] == 'suitecrm':
-			self._sync_suitecrm()
 		elif self.config['format'] == 'grist':
 			self._sync_grist()
-		elif self.config['format'] == 'openproject':
-			self._sync_openproject()
 		elif self.config['format'] == 'glpi':
 			self._sync_glpi()
 		else:
 			print('Unknown format requested', file=sys.stderr)
-
-	def _sync_openproject(self):
-		retries = 0
-		while retries <= 5:
-			retries += 1
-			done = True
-
-			for h in self.hosts.values():
-				if h.synced_id is not None:
-					# Skipped already synced hosts
-					continue
-
-				if retries == 5 or h.uplink_device is None or h.uplink_device in h.ip_to_synced_ids:
-					# No uplink device or parent device is already synced
-					# go ahead and sync this host!
-					# Also just sync the host if this is the last retry
-					try:
-						print('Syncing %s to OpenProject' % h.ip)
-						h.sync_to_openproject()
-					except OpenProjectSyncException as e:
-						h.synced_id = False
-						print('Failed to sync %s to OpenProject: %s' % (h.ip, e), file=sys.stderr)
-				else:
-					# Missing uplink device, skip for the next iteration.
-					done = False
-
-			if done:
-				# If there are no more hosts to sync, exit the loop
-				break
-
-	def _sync_suitecrm(self):
-		retries = 0
-		while retries <= 5:
-			retries += 1
-			done = True
-
-			for h in self.hosts.values():
-				if h.synced_id is not None:
-					# Skipped already synced hosts
-					continue
-
-				if retries == 5 or h.uplink_device is None or h.uplink_device in h.ip_to_synced_ids:
-					# No uplink device or parent device is already synced
-					# go ahead and sync this host!
-					# Also just sync the host if this is the last retry
-					try:
-						print('Syncing %s to SuiteCRM' % h.ip)
-						h.sync_to_suitecrm()
-					except SuiteCRMSyncException as e:
-						h.synced_id = False
-						print('Failed to sync %s to SuiteCRM: %s' % (h.ip, e), file=sys.stderr)
-				else:
-					# Missing uplink device, skip for the next iteration.
-					done = False
-
-			if done:
-				# If there are no more hosts to sync, exit the loop
-				break
 
 	def _sync_grist(self):
 		if self.config['dry_run']:
