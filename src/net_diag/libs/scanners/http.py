@@ -128,7 +128,8 @@ class HTTPScanner(ScannerInterface):
 				auth=self.auth,
 				data=data,
 				headers=headers,
-				timeout=10
+				timeout=10,
+				verify=False
 			)
 		except requests.exceptions.RequestException as e:
 			self.host.log('Failed to perform POST to %s: %s' % (url, e))
