@@ -344,7 +344,7 @@ class SNMPScanner(ScannerInterface):
 			port_id = key[len(bytes_sent_lookup) + 1:]
 			ret[port_id].bytes_tx = int(val)
 
-		errors_sent_lookup = '1.3.6.1.2.1.2.2.1.16'
+		errors_sent_lookup = '1.3.6.1.2.1.2.2.1.20'
 		errors_sent = self._lookup_bulk('Errors Sent', errors_sent_lookup)
 		for key, val in errors_sent.items():
 			port_id = key[len(errors_sent_lookup) + 1:]
