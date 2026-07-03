@@ -457,7 +457,6 @@ class Host:
 				},
 				'network_ports': [],
 				'network_device': {
-					'firmware': self.os_version,
 					'mac': self.mac,
 					'name': self.hostname,
 					'contact': self.contact,
