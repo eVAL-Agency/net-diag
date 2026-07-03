@@ -311,8 +311,8 @@ Get the code and setup the initial environment
 ```bash
 git clone git@github.com:eVAL-Agency/net-diag.git
 cd net-diag
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install --upgrade pip
 pip3 install -e .[dev]
 ```
@@ -323,8 +323,8 @@ Get the code running on Windows
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 git clone git@github.com:eVAL-Agency/net-diag.git
 cd net-diag
-python -m venv venv
-& venv\Scripts\Activate.ps1
+python -m venv .venv
+& .venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip3 install -e .[dev]
 python -m pip install windows-curses
@@ -333,7 +333,7 @@ python -m pip install windows-curses
 Run the application from source
 
 ```bash
-source venv/bin/activate
+source .venv/bin/activate
 python src/net_diag/network_discover.py --ip 192.168.1.1 --community somestring --format json --debug
 ```
 

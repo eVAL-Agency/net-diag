@@ -32,8 +32,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     'pyinstaller>=4.5.1',
-    'flake8>=3.9.2',
-    'pre-commit>=2.15.0',
+    'flake8>=7.3.0',
+    'pre-commit>=4.0.0',
     'responses>=0.25.7',
 ]
 

@@ -434,6 +434,13 @@ class Host:
 			logging.warning('No MAC address found for GLPI sync on %s' % self.ip)
 			return
 
+		if self.type is None:
+			logging.warning('No type found for GLPI sync on %s' % self.ip)
+
+		if self.type in [self.TYPE_SERVER, self.TYPE_WORKSTATION]:
+			logging.info('Skipping GLPI sync for computers')
+			return
+
 		# Ensure this device has a hostname
 		self.ensure_hostname()
 

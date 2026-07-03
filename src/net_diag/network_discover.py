@@ -21,7 +21,7 @@ from net_diag.libs.suitecrmsync import SuiteCRMSync, SuiteCRMSyncException
 from net_diag.libs.host import Host
 from net_diag.libs.scanners.icmp import ICMPScanner
 from net_diag.libs.scanners.snmp import SNMPScanner
-from net_diag.libs.scanners.trane import TraneTracerSCScanner
+from net_diag.libs.scanners.http import HTTPScanner
 
 
 def is_local_ip(ip: str) -> bool:
@@ -369,8 +369,8 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 					if 'snmp' in host.config['scanners']:
 						SNMPScanner.scan(host)
 
-					if 'trane-tracer-sc' in host.config['scanners']:
-						TraneTracerSCScanner.scan(host)
+					if 'http' in host.config['scanners']:
+						HTTPScanner.scan(host)
 					self.queue.put(('neighbors', host))
 				elif action == 'neighbors':
 					# Secondary scan, (now that the arp cache of the remote devices should be populated)
@@ -378,8 +378,8 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 						print('Scanning host for neighbors %s' % (host.ip,), file=sys.stderr)
 						SNMPScanner.scan_neighbors(host)
 
-					if 'trane-tracer-sc' in host.config['scanners']:
-						TraneTracerSCScanner.scan_neighbors(host)
+					if 'http' in host.config['scanners']:
+						HTTPScanner.scan_neighbors(host)
 					self.host_queue.put(host)
 				else:
 					logging.error('Unsupported action %s' % action)
