@@ -493,6 +493,9 @@ class Host:
 		if self.uptime is not None:
 			payload['content']['network_device']['uptime'] = self.format_timeticks(self.uptime)
 
+		if self.links is None:
+			self.links = []
+
 		for link_idx in self.links:
 			link = self.links[link_idx]
 
