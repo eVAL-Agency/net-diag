@@ -454,7 +454,7 @@ class Host:
 					'type': self.type,
 					'description': self.descr,
 					'defaultgateway': self.gateway,
-					'firmware': self.os_version,
+					'firmware_version': self.os_version,
 				},
 				'network_ports': [],
 				'network_device': {
