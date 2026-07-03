@@ -213,6 +213,12 @@ class Host:
 		:type uplink_port: str|None
 		"""
 
+		self.uptime = None
+		"""
+		Uptime (number of seconds) since the last boot, or None if not available
+		:type uptime: int|None
+		"""
+
 		# Set override defaults
 		if 'address' in config:
 			self.address = config['address']
@@ -469,8 +475,14 @@ class Host:
 		if self.manufacturer is not None:
 			payload['content']['network_device']['manufacturer'] = self.manufacturer
 
-		for link in self.links.values():
+		if self.uptime is not None:
+			payload['content']['network_device']['uptime'] = self.format_timeticks(self.uptime)
+
+		for link_idx in self.links:
+			link = self.links[link_idx]
+
 			link_data = {
+				'ifnumber': link_idx,
 				'ifname': link.name
 			}
 
@@ -508,6 +520,8 @@ class Host:
 
 			payload['content']['network_ports'].append(link_data)
 
+		self.log(json.dumps(payload))
+
 		headers = {
 			'Content-Type': 'application/json',
 			'User-Agent': 'NetworkDiagnostics-Discover',
@@ -526,6 +540,22 @@ class Host:
 		except request.HTTPError as e:
 			error_body = e.read().decode('utf-8')
 			self.log(error_body)
+
+	def format_timeticks(self, ticks: int) -> str:
+		"""
+		Format timeticks (number of seconds) to a formatted string SNMP string
+
+		:param ticks:
+		:return:
+		"""
+
+		# Extract elements using sequential division matching centisecond markers
+		days, remainder = divmod(ticks, 8640000)      # 100 * 60 * 60 * 24
+		hours, remainder = divmod(remainder, 360000)     # 100 * 60 * 60
+		minutes, remainder = divmod(remainder, 6000)      # 100 * 60
+		seconds, centiseconds = divmod(remainder, 100)
+
+		return f"{days} days, {hours:02}:{minutes:02}:{seconds:02}"
 
 	def ensure_hostname(self):
 		"""

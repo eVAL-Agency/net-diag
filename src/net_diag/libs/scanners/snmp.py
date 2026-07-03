@@ -22,6 +22,7 @@ class SNMPScanner(ScannerInterface):
 			'os_version': '1.3.6.1.2.1.16.19.2',
 			'model': '1.3.6.1.2.1.16.19.3.0',
 			'gateway': '1.3.6.1.2.1.4.21.1.7.0.0.0.0',
+			'uptime': '1.3.6.1.2.1.1.3.0'
 		}
 		self.descr_parses = (
 			(
