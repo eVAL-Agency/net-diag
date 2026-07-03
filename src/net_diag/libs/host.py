@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from typing import Union
 from urllib import request
+import uuid
 
 
 class Host:
@@ -453,6 +454,7 @@ class Host:
 					'type': self.type,
 					'description': self.descr,
 					'defaultgateway': self.gateway,
+					'uuid': self.generate_device_uuid()
 				},
 				'network_ports': [],
 				'network_device': {
@@ -575,6 +577,24 @@ class Host:
 		dev_id.append('network-diagnostics')
 
 		return '-'.join(dev_id)
+
+	def generate_device_uuid(self) -> str:
+		"""
+		Generates a repeatable, deterministic UUID v5 from any device string.
+		"""
+		# 1. Establish a standard baseline Namespace.
+		# We use the built-in OID namespace as an anchor for infrastructure assets.
+		NAMESPACE = uuid.NAMESPACE_OID
+
+		device_identifier = self.get_identifier()
+
+		# 2. Clean the input string to ensure minor whitespace differences don't break the hash
+		clean_identifier = device_identifier.strip().lower()
+
+		# 3. Generate the deterministic UUID v5
+		device_uuid = uuid.uuid5(NAMESPACE, clean_identifier)
+
+		return str(device_uuid)
 
 	def ensure_hostname(self):
 		"""
