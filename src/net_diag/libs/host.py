@@ -2,7 +2,6 @@ import json
 import logging
 import re
 from datetime import datetime
-from typing import Union
 from urllib import request
 import uuid
 from enum import IntEnum, StrEnum
@@ -178,6 +177,13 @@ class Host:
 		:type os_version: str|None
 		"""
 
+		self.os_date = None
+		"""
+		Date of the OS release, supported by a few platforms
+		Should be in YYYY-MM-DD format
+		:type os_date: str|None
+		"""
+
 		self.serial = None
 		"""
 		Serial number of the device, (if available)
@@ -260,18 +266,6 @@ class Host:
 		useful for child devices under a parent device which do not fall under the default scan criteria.
 		"""
 
-		self.uplink_device = None
-		"""
-		IP address of the device that this host is connected to, (if applicable)
-		:type uplink_device: str|None
-		"""
-
-		self.uplink_port = None
-		"""
-		Port name on the uplink device that this host is connected to, (if applicable)
-		:type uplink_port: str|None
-		"""
-
 		self.uptime = None
 		"""
 		Uptime (number of seconds) since the last boot, or None if not available
@@ -307,19 +301,31 @@ class Host:
 		"""
 		return self.ping is not None or self.descr is not None
 
-	def create_neighbor(self, ip: str):
+	def create_neighbor(self, mac: str):
 		"""
 		Create a neighboring Host device based off this host's config.
 
-		:param ip:
+		:param mac:
 		:return Host:
 		"""
-		if ip in self.neighbors:
+		if mac in self.neighbors:
 			# If the neighbor already exists, return it
-			return self.neighbors[ip]
-		new_host = Host(ip, self.config)
-		self.neighbors[ip] = new_host
+			return self.neighbors[mac]
+		new_host = Host('', self.config)
+		new_host.mac = mac
+		self.neighbors[mac] = new_host
 		return new_host
+
+	def find_port_by_mac(self, mac: str):
+		"""
+		Find a host port by its MAC address, or None if not found
+		:param mac:
+		:return: HostPort or None
+		"""
+		for port in self.ports.values():
+			if port.mac.lower() == mac.lower():
+				return port
+		return None
 
 	def merge_from_host(self, other: 'Host'):
 		"""
@@ -346,12 +352,6 @@ class Host:
 		# Grist does not require a hostname for devices, but it helps
 		self.ensure_hostname()
 
-		uplink_device = None
-		if self.uplink_device is not None:
-			# Resolve the IP to a synced ID if possible
-			if self.uplink_device in self.ip_to_synced_ids:
-				uplink_device = self.ip_to_synced_ids[self.uplink_device]
-
 		self.log('Pushing device data to Grist')
 		payload = {
 			'hostname': self.hostname,
@@ -361,8 +361,6 @@ class Host:
 			'mac_primary': self.mac,
 			'floor': self.floor,
 			'room': self.location,
-			'uplink_device': uplink_device,
-			'uplink_port': self.uplink_port,
 			'discover_log': self.log_lines,
 			'type': self.type,
 			'_weak': ['hostname', 'manufacturer', 'model', 'type']
@@ -416,20 +414,24 @@ class Host:
 				'hardware': {
 					'name': self.hostname,
 					'type': self.type,
-					'description': self.descr,
 				},
 				'network_ports': [],
 				'network_device': {
 					'mac': self.mac,
 					'name': self.hostname,
-					'contact': self.contact,
-					'description': self.descr,
 					'type': dev_type,
 				}
 			},
 		}
 
-		if 'glpi_credentials' in self.config:
+		if self.descr is not None:
+			payload['content']['hardware']['description'] = self.descr
+			payload['content']['network_device']['description'] = self.descr
+
+		if self.contact is not None:
+			payload['content']['network_device']['contact'] = self.contact
+
+		if self.object_id is not None and self.descr is not None and 'glpi_credentials' in self.config:
 			# Add the SNMP credentials, mostly for reference.
 			payload['content']['network_device']['credentials'] = self.config['glpi_credentials']
 
@@ -439,12 +441,15 @@ class Host:
 		if self.os_version is not None:
 			firmware = {
 				'version': self.os_version,
+				'type': 'Firmware'
 			}
 
 			if self.os_name is not None:
 				firmware['name'] = self.os_name
 			if self.manufacturer is not None:
 				firmware['manufacturer'] = self.manufacturer
+			if self.os_date is not None:
+				firmware['date'] = self.os_date
 
 			payload['content']['firmwares'] = [firmware]
 
@@ -463,8 +468,14 @@ class Host:
 		if self.uptime is not None:
 			payload['content']['network_device']['uptime'] = self.format_timeticks(self.uptime)
 
+		counter = 0
 		for port in self.ports.values():
-			payload['content']['network_ports'].append(port.to_glpi())
+			port_data = port.to_glpi()
+			if 'ifnumber' not in port_data:
+				port_data['ifnumber'] = counter
+			payload['content']['network_ports'].append(port_data)
+
+			counter = max(port_data['ifnumber'], counter) + 1
 
 		self.log(json.dumps(payload))
 
@@ -550,83 +561,6 @@ class Host:
 		if self.hostname is None or self.hostname == '':
 			self.hostname = self.ip
 
-	def _generate_suitecrm_payload_if_different(self, server_data: Union[dict, None], data: dict, key: str, value: str):
-		if value and (server_data is None or server_data[key] != value):
-			data[key] = value
-
-	def _generate_suitecrm_payload_if_empty(self, server_data: Union[dict, None], data: dict, key: str, value: str):
-		if value and (server_data is None or server_data[key] == ''):
-			data[key] = value
-
-	def _generate_suitecrm_uplink_device(self, server_data: Union[dict, None], data: dict):
-		value = self.uplink_device
-		key = 'msp_devices_id_c'
-		if value and (server_data is None or server_data[key] == ''):
-			# Local value set and CRM is empty; populate!
-			# This value is expected to be an IP address of a device,
-			# so try to resolve to that device's ID prior to uploading.
-			if value in self.ip_to_synced_ids:
-				data[key] = self.ip_to_synced_ids[value]
-			else:
-				ret = self.sync.find(
-					'MSP_Devices',
-					{'ip_pri': value},
-					fields=('id', 'ip_pri')
-				)
-				if len(ret) == 1:
-					# A device was located!  Store it and use that device.
-					self.ip_to_synced_ids[ret[0]['ip_pri']] = ret[0]['id']
-					data[key] = ret[0]['id']
-
-	def _generate_suitecrm_payload(self, server_data: Union[dict, None]) -> dict:
-		data = {}
-
-		# Fields that are guaranteed to be present; MAC and IP Address
-		# Mac determines where the IP gets stored, (primary/secondary/out-of-band)
-		mac = self.mac.lower()
-		if server_data is not None and server_data['mac_sec'].lower() == mac:
-			if server_data['ip_sec'] != self.ip:
-				data['ip_sec'] = self.ip
-		elif server_data is not None and server_data['mac_oob'].lower() == mac:
-			if server_data['ip_oob'] != self.ip:
-				data['ip_oob'] = self.ip
-		else:
-			if server_data is None or server_data['ip_pri'] != self.ip:
-				data['ip_pri'] = self.ip
-
-		if server_data is None:
-			# Mac gets set only for new records
-			# (otherwise it is the primary key used to lookup this record)
-			data['mac_pri'] = self.mac
-
-		# Fields that should always override inventory data
-		self._generate_suitecrm_payload_if_different(server_data, data, 'loc_address', self.address)
-		self._generate_suitecrm_payload_if_different(server_data, data, 'loc_address_city', self.city)
-		self._generate_suitecrm_payload_if_different(server_data, data, 'loc_address_state', self.state)
-		self._generate_suitecrm_payload_if_different(
-			server_data,
-			data,
-			'status',
-			'active' if self.reachable else False
-		)
-
-		# Fields that should only be set if they are present in the scan
-		# and not already set in the inventory data.
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'name', self.hostname)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'loc_room', self.location)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'loc_floor', self.floor)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'manufacturer', self.manufacturer)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'model', self.model)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'serial', self.serial)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'os_version', self.os_version)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'type', self.type)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'description', self.descr)
-		self._generate_suitecrm_payload_if_empty(server_data, data, 'uplink_port', self.uplink_port)
-
-		self._generate_suitecrm_uplink_device(server_data, data)
-
-		return data
-
 	def set_location(self, val: str):
 		"""
 		Check if there is a floor indication ("FL...") in the location and separate that as the floor attribute
@@ -671,8 +605,6 @@ class Host:
 			'city': self.city,
 			'state': self.state,
 			'ping': self.ping,
-			'uplink_device': self.uplink_device,
-			'uplink_port': self.uplink_port,
 		}
 
 		if 'fields' in self.config and self.config['fields'] is not None:
@@ -707,6 +639,7 @@ class HostPort:
 		self.bytes_tx: int | None = None
 		self.errors_rx: int | None = None
 		self.errors_tx: int | None = None
+		self.connections: list[str] = []
 
 	def to_dict(self) -> dict:
 		"""
@@ -721,7 +654,8 @@ class HostPort:
 			'name', 'label', 'ips', 'mac',
 			'admin_status', 'user_status',
 			'mtu', 'speed', 'vlan', 'vlan_allow', 'type',
-			'bytes_rx', 'bytes_tx', 'errors_rx', 'errors_tx'
+			'bytes_rx', 'bytes_tx', 'errors_rx', 'errors_tx',
+			'connections'
 		]
 		for key in keys:
 			value = getattr(self, key)
@@ -738,6 +672,7 @@ class HostPort:
 		field_mapping = {
 			'speed': 'ifspeed',
 			'name': 'ifname',
+			'label': 'ifalias',
 			'number': 'ifnumber',
 			'mac': 'mac',
 			'ips': 'ips',
@@ -754,5 +689,10 @@ class HostPort:
 		for attr, key in field_mapping.items():
 			if getattr(self, attr) is not None:
 				link_data[key] = getattr(self, attr)
+
+		if len(self.connections) > 0:
+			link_data['connections'] = []
+			for connection in self.connections:
+				link_data['connections'].append({'mac': connection})
 
 		return link_data

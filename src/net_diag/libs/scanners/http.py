@@ -9,8 +9,7 @@ from requests.auth import HTTPDigestAuth, AuthBase
 from requests.exceptions import RequestException
 
 from net_diag.libs.scanners import ScannerInterface
-from net_diag.libs.net_utils import format_link_speed
-from net_diag.libs.host import Host, HostPort, HostType
+from net_diag.libs.host import Host, HostPort, HostType, HostPortAdminStatus, HostPortUserStatus, HostPortType
 
 
 class HTTPScanner(ScannerInterface):
@@ -31,37 +30,22 @@ class HTTPScanner(ScannerInterface):
 		"""
 		Perform an HTTP/S scan on the target.
 		"""
-		host.log('Checking HTTP and HTTPS on %s' % (host.ip,))
-		try:
-			# Attempts a TCP connection; raises an exception if it times out or is refused
-			with socket.create_connection((host.ip, 443), timeout=1):
-				host.log('Port 443 appears to be open!')
-				scanner = cls._perform_discovery(host, 443)
-				if scanner is not None:
-					return scanner._scan()
-		except (socket.timeout, ConnectionRefusedError, OSError):
-			host.log('Port 443 appears to be closed!')
-
-		try:
-			# Attempts a TCP connection; raises an exception if it times out or is refused
-			with socket.create_connection((host.ip, 80), timeout=1):
-				host.log('Port 80 appears to be open!')
-				scanner = cls._perform_discovery(host, 80)
-				if scanner is not None:
-					return scanner._scan()
-		except (socket.timeout, ConnectionRefusedError, OSError):
-			host.log('Port 80 appears to be closed!')
+		scanner = cls._perform_discovery(host)
+		if scanner is not None:
+			return scanner._scan()
 
 	@classmethod
 	def scan_neighbors(cls, host: Host):
-		pass
+		scanner = cls._perform_discovery(host)
+		if scanner is not None:
+			return scanner._scan_neighbors()
 
 	@classmethod
 	def matches(cls, response: Response) -> bool:
 		return True
 
 	@classmethod
-	def _perform_discovery(cls, host: Host, port: int) -> ScannerInterface | None:
+	def _perform_discovery(cls, host: Host) -> ScannerInterface | None:
 		"""
 		Initial discovery to detect the type of scanning to perform, or retrieve a standard scanner instead
 
@@ -69,30 +53,39 @@ class HTTPScanner(ScannerInterface):
 		:param port:
 		:return:
 		"""
-		protocol = "https" if port == 443 else "http"
-		url = f"{protocol}://{host.ip}:{port}"
+		ports = [443, 80]
+		for port in ports:
+			try:
+				# Attempts a TCP connection; raises an exception if it times out or is refused
+				with socket.create_connection((host.ip, port), timeout=1):
+					host.log('Port %s appears to be open!' % port)
 
-		try:
-			# verify=False ignores self-signed SSL cert errors typical on local subnets
-			# timeout ensures the script doesn't hang on slow responses
-			response = requests.get(url, timeout=2.0, verify=False)
-			server_header = response.headers.get('Server', '').lower()
-			host.log('HTTP Server: %s' % (server_header,))
-			# Parse the HTML content
-			soup = BeautifulSoup(response.text, 'html.parser')
-			page_title = soup.title.string.lower() if soup.title else ""
-			host.log('HTTP Page Title: %s' % (page_title,))
+				protocol = "https" if port == 443 else "http"
+				url = f"{protocol}://{host.ip}:{port}"
 
-			# Try the different HTTP scanners
-			if TraneTracerSCScanner.matches(response):
-				# Matches a Trane Tracer SC
-				return TraneTracerSCScanner(host, port)
-			else:
-				# No matches available, default to the baseline HTTP scanner
-				return HTTPScanner(host, port)
-		except requests.exceptions.RequestException as e:
-			host.log('HTTP retrieval on port %s failed with %s' % (port, e))
-			return None
+				# verify=False ignores self-signed SSL cert errors typical on local subnets
+				# timeout ensures the script doesn't hang on slow responses
+				response = requests.get(url, timeout=2.0, verify=False)
+				server_header = response.headers.get('Server', '').lower()
+				host.log('HTTP Server: %s' % (server_header,))
+				# Parse the HTML content
+				soup = BeautifulSoup(response.text, 'html.parser')
+				page_title = soup.title.string.lower() if soup.title else ""
+				host.log('HTTP Page Title: %s' % (page_title,))
+
+				# Try the different HTTP scanners
+				if TraneTracerSCScanner.matches(response):
+					# Matches a Trane Tracer SC
+					return TraneTracerSCScanner(host, port)
+				else:
+					# No matches available, default to the baseline HTTP scanner
+					return HTTPScanner(host, port)
+			except (socket.timeout, ConnectionRefusedError, OSError):
+				host.log('Port %s appears to be closed!' % port)
+
+		# No ports available / open on this host.
+		host.log('No HTTP or HTTPS ports appear to be available for this host')
+		return None
 
 	def _ready(self) -> bool:
 		"""
@@ -186,9 +179,11 @@ class TraneTracerSCScanner(HTTPScanner):
 		self.host.hostname = bacnet_global.find('str', {'name': 'name'}).get('val')
 		self.host.set_location(bacnet_global.find('str', {'name': 'location'}).get('val'))
 		self.host.manufacturer = about.find('str', {'name': 'vendorName'}).get('val')
-		self.host.model = about.find('str', {'name': 'productName'}).get('val')
+		self.host.model = about.find('str', {'name': 'hardwareType'}).get('val')
 		self.host.serial = about.find('str', {'name': 'hardwareSerialNumber'}).get('val')
+		self.host.os_name = about.find('str', {'name': 'productName'}).get('val')
 		self.host.os_version = about.find('str', {'name': 'productVersion'}).get('val')
+		self.host.os_date = about.find('date', {'name': 'softwareVersionDate'}).get('val')
 		if self.host.os_version.startswith('v'):
 			# Trim off the leading 'v' version indicator if present
 			self.host.os_version = self.host.os_version[1:]
@@ -197,7 +192,7 @@ class TraneTracerSCScanner(HTTPScanner):
 
 		# Find the mac address from the interfaces
 		for iface in self.host.ports.values():
-			if iface.ip == self.host.ip:
+			if self.host.ip in iface.ips:
 				self.host.mac = iface.mac
 				break
 
@@ -272,8 +267,8 @@ class TraneTracerSCScanner(HTTPScanner):
 		for dev in container.find_all('obj', recursive=False):
 			mac = None
 			ip = None
-			uplink_port = None
-			uplink_device = None
+			network_number = None
+
 			equipment_uri = self._get_tag_val(dev, 'uri', 'equipmentUri')
 			# <uri name="deviceUri" val="//bacnet!76124/"/>
 			# <uri name="deviceUri" val="/lon/nid/02.3d.18.f5.0c.00/"/>
@@ -282,9 +277,32 @@ class TraneTracerSCScanner(HTTPScanner):
 			# <str name="displayName" val="Penthouse Plant Controls"/>
 			display_name = self._get_tag_val(dev, 'str', 'displayName')
 			# <str name="addressOnLink" val="1.C0A8008FBAC2"/>
+			# <str name="addressOnLink" val="31.06"/>
+			# <str name="addressOnLink" val="02.3d.18.f5.0c.00"/>
 			address_on_link = self._get_tag_val(dev, 'str', 'addressOnLink')
-			# <str name="netAddr" val="23.56|wshp-6"/>
-			net_addr = self._get_tag_val(dev, 'str', 'netAddr')
+
+			if device_uri.startswith('/modbus/link'):
+				# Modbus links do not contain much information
+				continue
+
+			if re.match(r'^[0-9][0-9]\.[0-9][0-9]$', address_on_link):
+				# Match the short serial ID
+				mac = '00:00:00:00:' + address_on_link.replace('.', ':')
+			elif re.match(r'^[0-9]\.[a-fA-F0-9]{12}$', address_on_link):
+				# This is actually a MAC (kind of)
+				mac = address_on_link.split('.')[1]
+				mac = ':'.join(mac[i:i + 2] for i in range(0, len(mac), 2))
+			elif re.match(
+				r'^[a-fA-F0-9]{2}\.[a-fA-F0-9]{2}\.[a-fA-F0-9]{2}\.[a-fA-F0-9]{2}\.[a-fA-F0-9]{2}\.[a-fA-F0-9]{2}$',
+				address_on_link
+			):
+				# Another actual MAC address!
+				mac = address_on_link.replace('.', ':')
+
+			# Devices must have some form of MAC address to continue
+			if mac is None:
+				continue
+
 			link = dev.find('list', {'name': 'linkSpecific'})
 			if link:
 				link = link.find('obj', recursive=False)
@@ -298,37 +316,17 @@ class TraneTracerSCScanner(HTTPScanner):
 				# <bool name="remoteNetwork" val="false"/>
 				remote_network = self._get_tag_val(link_pretty, 'bool', 'remoteNetwork')
 				# <str name="datalinkName" val="BVLL"/>
-				data_link_name = self._get_tag_val(link_pretty, 'str', 'datalinkName')
+				# data_link_name = self._get_tag_val(link_pretty, 'str', 'datalinkName')
 				# <str name="macAddress" val="192.168.0.154:47810"/>
 				mac_address = self._get_tag_val(link_pretty, 'str', 'macAddress')
-			else:
-				network_number = None
-				remote_network = False
-				data_link_name = None
-				mac_address = None
 
-			if device_uri.startswith('/modbus/link'):
-				# Modbus links do not contain much information
-				continue
+				# Trane supports device visiblity across multiple controllers, but we just want devices on THIS device.
+				if remote_network:
+					continue
 
-			if mac_address is not None and re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$', mac_address):
-				# If the mac address looks like an IP address, use it as the IP
-				ip = mac_address.split(':')[0]
-				# Pull the MAC from the addressOnLink
-				mac = address_on_link.split('.')[1]
-				mac = ':'.join(mac[i:i + 2] for i in range(0, len(mac), 2))
-			elif device_uri.startswith('//bacnet!'):
-				ip = address_on_link
-				mac = net_addr
-			elif device_uri.startswith('/lon/nid/'):
-				mac = device_uri[9:-1]
-
-			if remote_network and network_number in self._remote_networks:
-				uplink_device = self._remote_networks[network_number][0]
-				uplink_port = self._remote_networks[network_number][1]
-			elif data_link_name != 'BVLL' and data_link_name is not None:
-				uplink_device = self.host.ip
-				uplink_port = data_link_name
+				if mac_address is not None and re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$', mac_address):
+					# If the mac address looks like an IP address, use it as the IP
+					ip = mac_address.split(':')[0]
 
 			if equipment_uri:
 				lookups.append('/evox' + equipment_uri + '/VendorName/value')
@@ -336,15 +334,20 @@ class TraneTracerSCScanner(HTTPScanner):
 				lookups.append('/evox' + equipment_uri + '/ModelName/value')
 				lookups.append('/evox' + equipment_uri + '/FirmwareRevision/value')
 
-			host = self.host.create_neighbor(ip)
-			counter += 1
+			host = self.host.create_neighbor(mac)
 			host.log('Discovered device from source host %s %s' % (self.host.hostname, self.host.ip))
+			counter += 1
 			host.hostname = display_name
-			host.mac = mac
 			host.include = True
-			host.uplink_port = uplink_port
-			host.uplink_device = uplink_device
 			host.type = HostType.ENVIRONMENTAL
+			if ip is not None:
+				host.ip = ip
+
+			if network_number is not None:
+				# Check if this device is physically attached to the host
+				host_interface = self.host.find_port_by_mac(f'00:00:00:00:{network_number:02}:00')
+				if host_interface:
+					host_interface.connections.append(mac)
 
 			equipment_uris[equipment_uri] = host
 
@@ -401,34 +404,43 @@ class TraneTracerSCScanner(HTTPScanner):
 			ip_interfaces = ip_configs.find('list', {'name': 'interfaces'})
 			for tag in ip_interfaces.find_all('obj', {'is': 'trane:SC/ipNetworkConfig/enetInterface_v1'}):
 				port = tag.find('str', {'name': 'name'}).get('val')
+				ip = tag.find('str', {'name': 'ipaddr'}).get('val')
 
 				ports[port] = HostPort()
 				ports[port].name = port
-				ports[port].ip = tag.find('str', {'name': 'ipaddr'}).get('val')
+				if ip:
+					ports[port].ips = [ip]
 				ports[port].mac = tag.find('str', {'name': 'macaddr'}).get('val')
-				ports[port].admin_status = 'UP' if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 'DOWN'
+				ports[port].admin_status = HostPortAdminStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
+				ports[port].user_status = HostPortUserStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
 
 			for tag in ip_interfaces.find_all('obj', {'is': 'trane:SC/ipNetworkConfig/wifiInterface_v1'}):
 				port = tag.find('str', {'name': 'name'}).get('val')
+				ip = tag.find('str', {'name': 'ipaddr'}).get('val')
 
 				ports[port] = HostPort()
 				ports[port].name = port
-				ports[port].ip = tag.find('str', {'name': 'ipaddr'}).get('val')
+				if ip:
+					ports[port].ips = [ip]
 				ports[port].mac = tag.find('str', {'name': 'macaddr'}).get('val')
-				ports[port].admin_status = 'UP' if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 'DOWN'
+				ports[port].admin_status = HostPortAdminStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
+				ports[port].user_status = HostPortUserStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
 
-		for link in bacnets:
-			tag = xml.find('obj', {'href': link})
-			# link0 should display as Link 1 / MSTP 1.
-			pretty_id = str(int(link[-2:-1]) + 1)
-			port = 'mstp' + pretty_id
+			for link in bacnets:
+				tag = xml.find('obj', {'href': link})
+				# link0 should display as Link 1 / MSTP 1.
+				pretty_id = str(int(link[-2:-1]) + 1)
+				port = 'mstp' + pretty_id
+				network_number = str(tag.find('int', {'name': 'networkNumber'}).get('val'))
 
-			ports[port] = HostPort()
-			ports[port].name = port
-			ports[port].label = 'BACnet MS/TP ' + pretty_id
-			ports[port].ip = tag.find('int', {'name': 'networkNumber'}).get('val')
-			ports[port].admin_status = 'UP' if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 'DOWN'
-			ports[port].speed = format_link_speed(tag.find('int', {'name': 'baudRate'}).get('val'))
+				ports[port] = HostPort()
+				ports[port].name = port
+				ports[port].label = 'BACnet MS/TP ' + pretty_id
+				ports[port].type = HostPortType.PROP_POINT_TO_POINT_SERIAL
+				ports[port].mac = f'00:00:00:00:{network_number}:00'
+				ports[port].speed = tag.find('int', {'name': 'baudRate'}).get('val')
+				ports[port].admin_status = HostPortAdminStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
+				ports[port].user_status = HostPortUserStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
 
 		return ports
 

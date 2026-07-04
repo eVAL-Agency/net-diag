@@ -97,11 +97,11 @@ Attempt to connect to devices using SNMPv2 to retrieve host and neighbor informa
 
 Performed by default, but can be omitted by not including 'snmp' in target scanners
 
-#### Trane Tracer HVAC controllers
+#### HTTP - Trane Tracer HVAC controllers
 
-Connects to the Trane Tracer SC+ API to retrieve information about HVAC controllers on the BACnet.
+Uses the HTTP scanner to connect to Trane Tracer SC+ controllers to retrieve information about HVAC controllers on the BACnet.
 
-Can be included with 'trane' in the target scanners, but is not performed by default.
+These store BACnet interfaces as type 22 - Prop Point-to-Point connections, so you'll need to enable them in GLPI.
 
 ### Formats / Targets
 

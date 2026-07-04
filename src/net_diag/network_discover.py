@@ -65,9 +65,21 @@ class Application:
 		Queue of results based on the threaded scan
 		"""
 
-		self.hosts = {}
+		self.hosts = []
 		"""
 		List of devices located and scanned (indexed by their IP address).
+		:param hosts: dict[str, Host]
+		"""
+
+		self.hosts_by_ip = {}
+		"""
+		List of devices located and scanned (indexed by their IP address).
+		:param hosts: dict[str, Host]
+		"""
+
+		self.hosts_by_mac = {}
+		"""
+		List of devices located and scanned (indexed by their MAC address).
 		:param hosts: dict[str, Host]
 		"""
 
@@ -380,16 +392,16 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		# This only works for devices on the same layer 2 network, (ie: same subnet)
 		local_arp = get_neighbors()
 		for data in local_arp:
-			if data['ip'] in self.hosts and self.hosts[data['ip']].mac is None:
-				self.hosts[data['ip']].mac = data['mac']
-				self.hosts[data['ip']].log('Resolved MAC from local ARP cache')
+			if data['ip'] in self.hosts_by_ip and self.hosts_by_ip[data['ip']].mac is None:
+				self.hosts_by_ip[data['ip']].mac = data['mac']
+				self.hosts_by_ip[data['ip']].log('Resolved MAC from local ARP cache')
 
 	def _resolve_hostnames(self):
 		"""
 		Attempt to resolve hostnames based on local socket data
 		:return:
 		"""
-		for host in self.hosts.values():
+		for host in self.hosts:
 			if host.hostname is None or host.hostname == '':
 				try:
 					host.log('Hostname resolved via local socket lookup')
@@ -404,7 +416,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		Attempt to resolve the manufacturer from the MAC address for devices
 		:return:
 		"""
-		for host in self.hosts.values():
+		for host in self.hosts:
 			if (host.manufacturer is None or host.manufacturer == '') and host.mac is not None:
 				try:
 					host.log('Manufacturer not set, trying a MAC lookup to resolve')
@@ -416,14 +428,14 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 	def finalize_results(self):
 		if self.config['format'] == 'json':
-			print(json.dumps([h.to_dict() for h in self.hosts.values()], indent=2))
+			print(json.dumps([h.to_dict() for h in self.hosts], indent=2))
 		elif self.config['format'] == 'csv':
 			# Grab a new host just to retrieve the dictionary keys on the object
 			generic = Host('test', self.config)
 			# Set the header (and fields)
 			writer = csv.DictWriter(sys.stdout, fieldnames=list(generic.to_dict().keys()))
 			writer.writeheader()
-			for h in self.hosts.values():
+			for h in self.hosts:
 				writer.writerow(h.to_dict())
 		elif self.config['format'] == 'grist':
 			self._sync_grist()
@@ -436,40 +448,21 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		if self.config['dry_run']:
 			print('Dry run enabled, skipping sync to Grist')
 			return
-		retries = 0
-		while retries <= 5:
-			retries += 1
-			done = True
 
-			for h in self.hosts.values():
-				if h.synced_id is not None:
-					# Skipped already synced hosts
-					continue
-
-				if retries == 5 or h.uplink_device is None or h.uplink_device in h.ip_to_synced_ids:
-					# No uplink device or parent device is already synced
-					# go ahead and sync this host!
-					# Also just sync the host if this is the last retry
-					try:
-						print('Syncing %s to Grist' % h.ip)
-						h.sync_to_grist()
-					except HTTPError as e:
-						h.synced_id = False
-						print('Failed to sync %s to Grist: %s' % (h.ip, e), file=sys.stderr)
-				else:
-					# Missing uplink device, skip for the next iteration.
-					done = False
-
-			if done:
-				# If there are no more hosts to sync, exit the loop
-				break
+		for h in self.hosts:
+			try:
+				print('Syncing %s to Grist' % h.ip)
+				h.sync_to_grist()
+			except HTTPError as e:
+				h.synced_id = False
+				print('Failed to sync %s to Grist: %s' % (h.ip, e), file=sys.stderr)
 
 	def _sync_glpi(self):
 		if self.config['dry_run']:
 			print('Dry run enabled, skipping sync to Grist')
 			return
 
-		for h in self.hosts.values():
+		for h in self.hosts:
 			print('Syncing %s to GLPI' % h.ip)
 			h.sync_to_glpi()
 
@@ -506,21 +499,35 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		# Move all hosts discovered from the host queue into a standard list
 		hosts = list(self.host_queue.queue)
 		for host in hosts:
-			if host.reachable and host.ip not in self.config['exclude']:
-				self.hosts[host.ip] = host
+			if not host.reachable:
+				# Skip hosts that are not reachable
+				continue
+
+			if host.ip and host.ip in self.config['exclude']:
+				# Skip hosts explictly set to be ignored.
+				continue
+
+			self.hosts.append(host)
+			if host.ip:
+				self.hosts_by_ip[host.ip] = host
+			if host.mac:
+				self.hosts_by_mac[host.mac] = host
 
 		# Iterate through the discovered neighbors from scanned hosts
 		# and add/merge them into the main host list.
 		# (Make a clone of the hosts to avoid modifying the queue while iterating)
-		hosts = list(self.hosts.values())
+		hosts = list(self.hosts)
 		for host in hosts:
 			for neighbor in host.neighbors.values():
-				if neighbor.ip in self.hosts:
+				if neighbor.ip and neighbor.ip in self.hosts_by_ip:
 					# Already exists, perform a merge instead
-					self.hosts[neighbor.ip].merge_from_host(neighbor)
-				elif neighbor.ip and neighbor.include:
+					self.hosts_by_ip[neighbor.ip].merge_from_host(neighbor)
+				elif neighbor.mac and neighbor.mac in self.hosts_by_mac:
+					# Already exists (by MAC)
+					self.hosts_by_mac[neighbor.mac].merge_from_host(neighbor)
+				elif neighbor.include:
 					# This is a new host, add it to the list
-					self.hosts[neighbor.ip] = neighbor
+					self.hosts.append(neighbor)
 
 
 def run():
