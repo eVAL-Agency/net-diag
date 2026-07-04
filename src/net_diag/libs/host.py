@@ -400,20 +400,22 @@ class Host:
 		self.ensure_hostname()
 
 		self.log('Pushing device data to GLPI')
+		item_type = 'NetworkEquipment'
 		dev_type = 'Networking'
 		if self.type == HostType.PRINTER:
 			# Special case for printers
+			item_type = 'Printer'
 			dev_type = 'Printer'
 
 		payload = {
 			'deviceid': self.get_identifier(),
-			'itemtype': 'NetworkEquipment',
+			'itemtype': item_type,
 			'action': 'inventory',
 			'content': {
 				'versionclient': 'NetworkDiagnostics-Discover',
 				'hardware': {
 					'name': self.hostname,
-					'type': self.type,
+					'chassis_type': str(self.type),
 				},
 				'network_ports': [],
 				'network_device': {
