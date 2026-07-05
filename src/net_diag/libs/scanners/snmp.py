@@ -113,7 +113,7 @@ class SNMPScanner(ScannerInterface):
 		# Some manufacturers don't set a meaningful sysObjectID, so we use the description instead.
 		for pattern, scanner in descrs.items():
 			if re.match(pattern, host.descr):
-				host.log('Using SNMP scanner %s due to DESCR match' % scanners[host.object_id].__name__)
+				host.log('Using SNMP scanner %s due to DESCR match' % scanner.__name__)
 				return scanner(host)
 
 		# No specific scanner found, use the default.
