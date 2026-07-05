@@ -26,6 +26,26 @@ class HTTPScanner(ScannerInterface):
 		self.auth: None | AuthBase = None
 
 	@classmethod
+	def discover(cls, host: Host):
+		"""
+		Initial discovery to detect if this host supports HTTP/HTTPS
+
+		:param host:
+		:return:
+		"""
+		ports = [80, 443]
+		for port in ports:
+			try:
+				# Attempts a TCP connection; raises an exception if it times out or is refused
+				with socket.create_connection((host.ip, port), timeout=1):
+					host.log('Port %s appears to be open!' % port)
+					host.scanners['http'] = port
+					return
+
+			except (socket.timeout, ConnectionRefusedError, OSError):
+				host.log('Port %s appears to be closed!' % port)
+
+	@classmethod
 	def scan(cls, host: Host):
 		"""
 		Perform an HTTP/S scan on the target.

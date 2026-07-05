@@ -121,16 +121,27 @@ class SNMPScanner(ScannerInterface):
 		return scanners['DEFAULT'](host)
 
 	@classmethod
-	def scan(cls, host: Host):
+	def discover(cls, host: Host):
 		if 'community' not in host.config:
 			# SNMP scans require a community string
 			return
 
+		community = str(host.config['community'])
+
+		ret = asyncio.run(snmp_lookup_single(host.ip, community, '1.3.6.1.2.1.1.2.0'))
+		if ret is not None:
+			host.scanners['snmp'] = True
+
+	@classmethod
+	def scan(cls, host: Host):
 		scanner = cls.get_scanner(host)
 		if not scanner:
-			# No scanner found, device is not reachable via SNMP
-			return
-		scanner.run_scan()
+			# No scanner found, device is not reachable via SNMP or no valid handlers
+			host.scanners.pop('snmp', None)
+		else:
+			# Store the scanning handler so scan_neighbors doesn't have to re-scan.
+			host.scanners['snmp'] = scanner
+			scanner.run_scan()
 
 	@classmethod
 	def scan_neighbors(cls, host: Host):
@@ -138,16 +149,11 @@ class SNMPScanner(ScannerInterface):
 		Perform a scan of the ARP table of the device to find neighbors.
 		:return:
 		"""
-
-		if 'community' not in host.config:
-			# SNMP scans require a community string
-			return
-
 		if not host.descr:
 			# A description could not be retrieved, assume this device is not reachable via SNMP.
 			return
 
-		scanner = cls.get_scanner(host)
+		scanner = host.scanners['snmp']
 		scanner.run_scan_neighbors()
 
 	def run_scan(self):

@@ -162,6 +162,15 @@ class Host:
 		:type hostname: str|None
 		"""
 
+		self.scanners = {}
+		"""
+		Dictionary of scanners and any parameters needed by each
+
+		If a scanner is present, it is assumed to be valid,
+		this is useful if HTTP and SNMP are both used, but only some devices actually support one or the other.
+		:type scanners: dict<str, *>
+		"""
+
 		self.gateway = None
 		"""
 		Default gateway IP of the device

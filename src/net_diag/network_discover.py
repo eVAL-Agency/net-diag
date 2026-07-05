@@ -128,7 +128,7 @@ class Application:
 
 		try:
 			# Initialize the process threads
-			thread_count = min(self.queue.qsize(), multiprocessing.cpu_count() * 2)
+			thread_count = min(self.queue.qsize(), multiprocessing.cpu_count() * 8)
 			print('Starting scan with %s threads' % thread_count, file=sys.stderr)
 			threads = []
 			for n in range(thread_count):
@@ -150,9 +150,18 @@ class Application:
 			exit(1)
 
 		# Perform all the local work for hosts, in the primary thread.
+		print('All discovery and scanning completed', file=sys.stderr)
+
+		print('Merging hosts...', file=sys.stderr)
 		self._merge_hosts()
+
+		print('Resolving MAC addresses...', file=sys.stderr)
 		self._resolve_macs()
+
+		print('Resolving hostnames...', file=sys.stderr)
 		self._resolve_hostnames()
+
+		print('Resolving manufacturers...', file=sys.stderr)
 		self._resolve_manufacturers()
 
 		self.finalize_results()
@@ -340,7 +349,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 						logging.error('GLPI format requires --glpi-url to be defined')
 						sys.exit(1)
 				h = Host(host_ip, config)
-				self.queue.put(('scan', h))
+				self.queue.put(('discover', h))
 
 	def worker(self):
 		"""
@@ -351,32 +360,48 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		while True:
 			try:
 				action, host = self.queue.get(False, 0.5)
-				if action == 'scan':
-					# Initial scan of the device
-					print('Scanning host %s' % (host.ip,), file=sys.stderr)
+				if action == 'discover':
+					# Initial discovery to generate a list of valid targets
+					# This first scan uses the configuration to determine if a scanner should be used.
+					# This discovery is meant to be very fast and just confirm if the target is accessible.
+					print('Discovering host %s' % (host.ip,), file=sys.stderr)
 					if 'icmp' in host.config['scanners']:
-						ICMPScanner.scan(host)
+						ICMPScanner.discover(host)
 
 					if 'snmp' in host.config['scanners']:
-						SNMPScanner.scan(host)
+						SNMPScanner.discover(host)
 
 					if 'http' in host.config['scanners']:
+						HTTPScanner.discover(host)
+
+					if len(host.scanners.keys()) > 0:
+						# Only perform a scan of a host if there is at least one valid scanner.
+						self.queue.put(('scan', host))
+				elif action == 'scan':
+					# Initial data scan of the device
+					print('Scanning host %s' % (host.ip,), file=sys.stderr)
+					if 'icmp' in host.scanners:
+						ICMPScanner.scan(host)
+
+					if 'snmp' in host.scanners:
+						SNMPScanner.scan(host)
+
+					if 'http' in host.scanners:
 						HTTPScanner.scan(host)
 					self.queue.put(('neighbors', host))
 				elif action == 'neighbors':
 					# Secondary scan, (now that the arp cache of the remote devices should be populated)
-					if 'snmp' in host.config['scanners']:
+					if 'snmp' in host.scanners:
 						print('Scanning host for neighbors %s' % (host.ip,), file=sys.stderr)
 						SNMPScanner.scan_neighbors(host)
 
-					if 'http' in host.config['scanners']:
+					if 'http' in host.scanners:
 						HTTPScanner.scan_neighbors(host)
 					self.host_queue.put(host)
 				else:
 					logging.error('Unsupported action %s' % action)
 			except Empty:
 				# No more tasks left in the queue
-				print('Scanning thread finished', file=sys.stderr)
 				return
 			except ValueError:
 				# Usually occurs because user hit CTRL+C
