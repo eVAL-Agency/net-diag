@@ -446,11 +446,15 @@ class Host:
 
 		self.log('Pushing device data to GLPI')
 		item_type = 'NetworkEquipment'
-		dev_type = 'Networking'
+		network_device = {
+			'mac': self.mac,
+			'name': self.hostname,
+			'type': 'Networking',
+		}
 		if self.type == HostType.PRINTER:
 			# Special case for printers
 			item_type = 'Printer'
-			dev_type = 'Printer'
+			network_device['type'] = 'Printer'
 
 		payload = {
 			'deviceid': self.get_identifier(),
@@ -463,25 +467,25 @@ class Host:
 					'name': self.hostname,
 					'chassis_type': str(self.type),
 				},
-				'network_ports': [],
-				'network_device': {
-					'mac': self.mac,
-					'name': self.hostname,
-					'type': dev_type,
-				}
 			},
 		}
 
 		if self.descr is not None:
 			payload['content']['hardware']['description'] = self.descr
-			payload['content']['network_device']['description'] = self.descr
+			if network_device:
+				network_device['description'] = self.descr
 
-		if self.contact is not None:
-			payload['content']['network_device']['contact'] = self.contact
+		if self.contact is not None and network_device:
+			network_device['contact'] = self.contact
 
-		if self.object_id is not None and self.descr is not None and 'glpi_credentials' in self.config:
+		if (
+			self.object_id is not None
+			and self.descr is not None
+			and 'glpi_credentials' in self.config
+			and network_device
+		):
 			# Add the SNMP credentials, mostly for reference.
-			payload['content']['network_device']['credentials'] = self.config['glpi_credentials']
+			network_device['credentials'] = self.config['glpi_credentials']
 
 		if self.gateway is not None:
 			payload['content']['hardware']['defaultgateway'] = self.gateway
@@ -502,34 +506,44 @@ class Host:
 			payload['content']['firmwares'] = [firmware]
 
 		if self.serial is not None:
-			payload['content']['network_device']['serial'] = self.serial
+			payload['content']['hardware']['serial'] = self.serial
+			if network_device:
+				network_device['serial'] = self.serial
 		else:
 			# GLPI really wants a serial
-			payload['content']['network_device']['serial'] = self.get_identifier()
+			payload['content']['hardware']['serial'] = self.get_identifier()
+			if network_device:
+				network_device['serial'] = self.get_identifier()
 
 		if self.model is not None:
-			payload['content']['network_device']['model'] = self.model
+			payload['content']['hardware']['model'] = self.model
+			if network_device:
+				network_device['model'] = self.model
 
 		if self.manufacturer is not None:
-			payload['content']['network_device']['manufacturer'] = self.manufacturer
+			payload['content']['hardware']['manufacturer'] = self.manufacturer
+			if network_device:
+				network_device['manufacturer'] = self.manufacturer
 
-		if self.uptime is not None:
-			payload['content']['network_device']['uptime'] = self.format_timeticks(self.uptime)
+		if len(self.ports) > 0:
+			payload['content']['network_ports'] = []
+			counter = 0
+			for port in self.ports.values():
+				port_data = port.to_glpi()
+				if 'ifnumber' not in port_data:
+					port_data['ifnumber'] = counter
+				payload['content']['network_ports'].append(port_data)
 
-		counter = 0
-		for port in self.ports.values():
-			port_data = port.to_glpi()
-			if 'ifnumber' not in port_data:
-				port_data['ifnumber'] = counter
-			payload['content']['network_ports'].append(port_data)
-
-			counter = max(port_data['ifnumber'], counter) + 1
+				counter = max(port_data['ifnumber'], counter) + 1
 
 		if self.type == HostType.PRINTER and len(self.consumables) > 0:
 			consumables = {}
 			for consumable in self.consumables:
 				consumables |= consumable.to_glpi_cartridge()
 			payload['content']['cartridges'] = [consumables]
+
+		if network_device:
+			payload['content']['network_device'] = network_device
 
 		self.log(json.dumps(payload))
 

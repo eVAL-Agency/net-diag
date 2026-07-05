@@ -53,7 +53,7 @@ class HTTPScanner(ScannerInterface):
 		:param port:
 		:return:
 		"""
-		ports = [443, 80]
+		ports = [80, 443]
 		for port in ports:
 			try:
 				# Attempts a TCP connection; raises an exception if it times out or is refused
@@ -66,17 +66,19 @@ class HTTPScanner(ScannerInterface):
 				# verify=False ignores self-signed SSL cert errors typical on local subnets
 				# timeout ensures the script doesn't hang on slow responses
 				response = requests.get(url, timeout=2.0, verify=False)
-				server_header = response.headers.get('Server', '').lower()
+				server_header = response.headers.get('Server', '')
 				host.log('HTTP Server: %s' % (server_header,))
 				# Parse the HTML content
 				soup = BeautifulSoup(response.text, 'html.parser')
-				page_title = soup.title.string.lower() if soup.title else ""
+				page_title = soup.title.string if soup.title else ""
 				host.log('HTTP Page Title: %s' % (page_title,))
 
 				# Try the different HTTP scanners
 				if TraneTracerSCScanner.matches(response):
 					# Matches a Trane Tracer SC
 					return TraneTracerSCScanner(host, port)
+				elif GrandstreamPhoneScanner.matches(response):
+					return GrandstreamPhoneScanner(host, port)
 				else:
 					# No matches available, default to the baseline HTTP scanner
 					return HTTPScanner(host, port)
@@ -111,9 +113,12 @@ class HTTPScanner(ScannerInterface):
 		"""
 		pass
 
-	def _post(self, url: str, data, headers: dict | None = None) -> Response | None:
+	def _resolve_url(self, url: str = '') -> str:
 		protocol = "https" if self.port == 443 else "http"
-		url = f"{protocol}://{self.host.ip}:{self.port}{url}"
+		return f"{protocol}://{self.host.ip}:{self.port}{url}"
+
+	def _post(self, url: str, data, headers: dict | None = None) -> Response | None:
+		url = self._resolve_url(url)
 
 		try:
 			return requests.post(
@@ -499,3 +504,74 @@ class TraneTracerSCScanner(HTTPScanner):
 			return BeautifulSoup('', 'xml')
 		else:
 			return BeautifulSoup(res.text, 'xml')
+
+
+class GrandstreamPhoneScanner(HTTPScanner):
+	"""
+	For Grandstream phones which do not support SNMP
+	"""
+
+	def __init__(self, host: Host, port: int):
+		super().__init__(host, port)
+
+	@classmethod
+	def matches(cls, response: Response) -> bool:
+		server_header = response.headers.get('Server', '')
+		# Parse the HTML content
+		soup = BeautifulSoup(response.text, 'html.parser')
+		page_title = soup.title.string if soup.title else ""
+
+		# Assumed to be a Grandstream device
+		content = '<iframe src="javascript:\'\'" id="__gwt_historyFrame" tabIndex=\'-1\' style="position:absolute;width:0;height:0;border:0"></iframe>'  # NOQA E501
+		if not (
+			server_header.startswith('lighttpd')
+			and page_title == 'Loading Web Application'
+			and content in response.text
+		):
+			return False
+
+		# Check for the presense of a specific URL
+		page_response = requests.get(response.url + 'cgi-bin/api.values.get', timeout=2.0, verify=False)
+		return page_response.status_code == 200
+
+	def _scan(self):
+		fields = {
+			'vendor_fullname': 'manufacturer',
+			'phone_model': 'model',
+			#  'PAccountRegistered1', 'PAccountRegistered2', 'PAccountRegistered3', 'PAccountRegistered4',
+			'68': 'os_version',
+			'P67': 'mac',
+			'Pipv4': 'ip',
+			#  'Psubnet_web',  # Subnet - 255.255.255.0
+			'Pgateway_web': 'gateway',
+			#  'Pdns1_web',  # DNS 1
+			#  'Pdns2_web',  # DNS 2
+		}
+
+		'''
+		other fields, but these require authentication
+		'P3',  # Custom display name / label
+		'P35',  # Line 1 extension
+		'P47',  # SIP account server
+		'''
+
+		payload = {"request": ':'.join(fields.keys())}
+		ret = self._post('/cgi-bin/api.values.get', payload)
+		data = ret.json()
+
+		self.host.type = HostType.PHONE
+		for source_key, target_key in fields.items():
+			val = data['body'].get(source_key, None)
+			if val is not None:
+				setattr(self.host, target_key, val)
+				if target_key == 'mac':
+					# This is also the serial number.
+					self.host.serial = val.replace(':', '')
+
+		# Create a basic port to track the IP
+		if self.host.mac and self.host.ip:
+			port = HostPort()
+			port.label = 'network'
+			port.mac = self.host.mac
+			port.ips = [self.host.ip]
+			self.host.ports['network'] = port
