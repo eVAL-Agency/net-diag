@@ -4,7 +4,8 @@ import asyncio
 
 from net_diag.libs.scanners import ScannerInterface
 from net_diag.libs.snmputils import snmp_lookup_single, snmp_lookup_bulk
-from net_diag.libs.host import Host, HostPort, HostPortUserStatus, HostPortAdminStatus, HostPortType, HostType
+from net_diag.libs.host import Host, HostPort, HostPortUserStatus, HostPortAdminStatus, HostPortType, HostType, \
+	HostConsumable, HostConsumableType
 
 
 class SNMPScanner(ScannerInterface):
@@ -15,13 +16,31 @@ class SNMPScanner(ScannerInterface):
 	def __init__(self, host: Host):
 		super().__init__(host)
 		self.basic_lookups = {
-			'contact': '1.3.6.1.2.1.1.4.0',
-			'hostname': '1.3.6.1.2.1.1.5.0',
-			'location': '1.3.6.1.2.1.1.6.0',
-			'os_version': '1.3.6.1.2.1.16.19.2',
-			'model': '1.3.6.1.2.1.16.19.3.0',
-			'gateway': '1.3.6.1.2.1.4.21.1.7.0.0.0.0',
-			'uptime': '1.3.6.1.2.1.1.3.0'
+			'contact': [
+				'1.3.6.1.2.1.1.4.0',
+			],
+			'hostname': [
+				'1.3.6.1.2.1.1.5.0',
+			],
+			'location': [
+				'1.3.6.1.2.1.1.6.0',
+			],
+			'os_version': [
+				'1.3.6.1.2.1.16.19.2',
+			],
+			'model': [
+				'1.3.6.1.2.1.16.19.3.0',  # Standard Definition for Model
+				'1.3.6.1.2.1.43.5.1.1.16.1'  # Printer Name
+			],
+			'gateway': [
+				'1.3.6.1.2.1.4.21.1.7.0.0.0.0',
+			],
+			'serial': [
+				'1.3.6.1.2.1.43.5.1.1.17.1'  # Printer Serial
+			],
+			'uptime': [
+				'1.3.6.1.2.1.1.3.0',
+			]
 		}
 		self.descr_parses = (
 			(
@@ -88,14 +107,17 @@ class SNMPScanner(ScannerInterface):
 
 		# Default is to use the sysObjectID to determine the scanner.
 		if host.object_id in scanners:
+			host.log('Using SNMP scanner %s due to OID match' % scanners[host.object_id].__name__)
 			return scanners[host.object_id](host)
 
 		# Some manufacturers don't set a meaningful sysObjectID, so we use the description instead.
 		for pattern, scanner in descrs.items():
 			if re.match(pattern, host.descr):
+				host.log('Using SNMP scanner %s due to DESCR match' % scanners[host.object_id].__name__)
 				return scanner(host)
 
 		# No specific scanner found, use the default.
+		host.log('Falling back to default SNMP scanner')
 		return scanners['DEFAULT'](host)
 
 	@classmethod
@@ -158,8 +180,10 @@ class SNMPScanner(ScannerInterface):
 			if match:
 				for key, val in check[1].items():
 					# Set hardcoded overrides from the definition
+					self.host.log('Mapping %s to %s via DESCR match (static)' % (key, val))
 					setattr(self.host, key, val)
 				for key, val in match.groupdict().items():
+					self.host.log('Mapping %s to %s via DESCR match (regex)' % (key, val))
 					setattr(self.host, key, val)
 
 		# Set all the basic keys
@@ -176,6 +200,7 @@ class SNMPScanner(ScannerInterface):
 			self.host.mac = mac
 
 		self.host.ports = self.get_ports()
+		self.host.consumables = self.get_consumables()
 
 	def run_scan_neighbors(self):
 		"""
@@ -238,13 +263,16 @@ class SNMPScanner(ScannerInterface):
 		:return:
 		"""
 		ret = {}
-		for key, oid in self.basic_lookups.items():
-			if not oid:
-				continue
-
-			val = self._lookup_single(key, oid)
-			if val is not None:
-				ret[key] = val
+		for key, oids in self.basic_lookups.items():
+			if getattr(self.host, key) is not None:
+				# Value already set on the host
+				ret[key] = getattr(self.host, key)
+			else:
+				for oid in oids:
+					val = self._lookup_single(key, oid)
+					if val is not None:
+						ret[key] = val
+						break
 
 		return ret
 
@@ -389,6 +417,60 @@ class SNMPScanner(ScannerInterface):
 
 		return ret
 
+	def get_consumables(self) -> list:
+		"""
+		Get any consumables for this device; these are generally toner cartridges for printers.
+		:return:
+		"""
+
+		# First step is to poll everything from the consumables data and
+		# put them into generic objects for sorting later
+		raw = {}
+		consumables_lookup = '1.3.6.1.2.1.43.11.1.1'
+		records = self._lookup_bulk('Consumables Scan', consumables_lookup)
+		for key, val in records.items():
+			'''
+			1.3.6.1.2.1.43.11.1.1.5.1.1 = INTEGER: 3 - type of resource
+			1.3.6.1.2.1.43.11.1.1.6.1.1 = STRING: "Black Cartridge HP CF410X" - Description
+			1.3.6.1.2.1.43.11.1.1.8.1.1 = INTEGER: 100 - max capacity
+			1.3.6.1.2.1.43.11.1.1.9.1.1 = INTEGER: 80 - current level
+			'''
+			parts = key[len(consumables_lookup) + 1:].split('.')
+			record_type = int(parts[0])
+			ret_idx = parts[2]
+
+			if ret_idx not in raw:
+				raw[ret_idx] = HostConsumable()
+
+			if record_type == 5:
+				val = int(val)
+				if val < 1 or val > 36:
+					val = 2
+				raw[ret_idx].type = HostConsumableType(val)
+			elif record_type == 6:
+				raw[ret_idx].description = val
+			elif record_type == 7:
+				raw[ret_idx].unit = int(val)
+			elif record_type == 8:
+				raw[ret_idx].max = int(val)
+			elif record_type == 9:
+				raw[ret_idx].current = int(val)
+
+		colorant_lookup = '1.3.6.1.2.1.43.12.1.1.4.1'
+		records = self._lookup_bulk('Color Support Scan', colorant_lookup)
+		for key, val in records.items():
+			'''
+			iso.3.6.1.2.1.43.12.1.1.4.1.1 = STRING: "black"
+			iso.3.6.1.2.1.43.12.1.1.4.1.2 = STRING: "cyan"
+			iso.3.6.1.2.1.43.12.1.1.4.1.3 = STRING: "magenta"
+			iso.3.6.1.2.1.43.12.1.1.4.1.4 = STRING: "yellow"
+			'''
+			ret_idx = key[len(colorant_lookup) + 1:]
+			if ret_idx in raw:
+				raw[ret_idx].color = val
+
+		return list(raw.values())
+
 	def _lookup_single(self, name: str, oid: str) -> Union[str, None]:
 		"""
 		Perform a basic SNMP get to retrieve some value
@@ -461,6 +543,11 @@ class HPScan(SNMPScanner):
 				r'^HP ETHERNET MULTI-ENVIRONMENT$',
 				{'manufacturer': 'Hewlett Packard', 'type': HostType.PRINTER}
 			),
+			(
+				# HP ETHERNET MULTI-ENVIRONMENT,ROM none,JETDIRECT,JD153,EEPROM JSI23900036,CIDATE 01/15/2019
+				r'^HP ETHERNET MULTI-ENVIRONMENT.*JETDIRECT.*$',
+				{'manufacturer': 'Hewlett Packard', 'type': HostType.PRINTER}
+			)
 		)
 
 
@@ -471,8 +558,8 @@ class MikrotikScan(SNMPScanner):
 
 	def __init__(self, host):
 		super().__init__(host)
-		self.basic_lookups['serial'] = '1.3.6.1.4.1.14988.1.1.7.3.0'
-		self.basic_lookups['os_version'] = None
+		self.basic_lookups['serial'] = ['1.3.6.1.4.1.14988.1.1.7.3.0']
+		self.basic_lookups['os_version'] = []
 		self.descr_parses = (
 			(
 				# RouterOS RB3011UiAS
@@ -537,7 +624,7 @@ class UbiquitiScan(SNMPScanner):
 			self.vlans_reversed = True
 
 		if 'US-8-60W' in self.host.descr:
-			self.basic_lookups['serial'] = '1.3.6.1.2.1.47.1.1.1.1.11.1'
+			self.basic_lookups['serial'] = ['1.3.6.1.2.1.47.1.1.1.1.11.1']
 
 	def run_scan(self):
 		super().run_scan()

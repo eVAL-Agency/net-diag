@@ -9,6 +9,30 @@ from pysnmp.hlapi.v3arch.asyncio import ContextData
 from pysnmp.proto import rfc1905
 from typing import Union
 import logging
+from pysnmp.proto.rfc1902 import OctetString
+
+
+def _cleanup_value(var_bind):
+	if var_bind[1].tagSet in (
+		rfc1905.NoSuchObject.tagSet,
+		rfc1905.NoSuchInstance.tagSet,
+	):
+		# Key doesn't exist
+		return None
+	if isinstance(var_bind[1], ObjectIdentity):
+		val = '.'.join(map(str, var_bind[1].asTuple()))
+	elif isinstance(var_bind[1], OctetString):
+		# Ensure pysnmp doesn't trip up with NULL bytes at the end of strings.
+		val_bytes = var_bind[1].asOctets()
+		val_bytes = val_bytes.rstrip(b'\x00')
+		try:
+			val = val_bytes.decode('utf-8')
+		except UnicodeDecodeError:
+			val = var_bind[1].prettyPrint()
+	else:
+		val = var_bind[1].prettyPrint()
+
+	return val
 
 
 async def snmp_lookup_single(hostname: str, community: str, oid: str) -> Union[str, None]:
@@ -47,15 +71,8 @@ async def snmp_lookup_single(hostname: str, community: str, oid: str) -> Union[s
 		return None
 	else:
 		for var_bind in var_binds:  # SNMP response contents
-			if var_bind[1].tagSet in (
-				rfc1905.NoSuchObject.tagSet,
-				rfc1905.NoSuchInstance.tagSet,
-			):
-				# Key doesn't exist
-				return None
+			val = _cleanup_value(var_bind)
 			key = var_bind[0].getOid().__str__()
-			val = var_bind[1].prettyPrint()
-
 			logging.debug('[snmp_lookup] %s = %s' % (key, val))
 			return val
 
@@ -102,15 +119,12 @@ async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
 			run = False
 		else:
 			for var_bind in var_binds:  # SNMP response contents
-				if var_bind[1].tagSet in (
-					rfc1905.NoSuchObject.tagSet,
-					rfc1905.NoSuchInstance.tagSet,
-				):
+				val = _cleanup_value(var_bind)
+				if val is None:
 					# Key doesn't exist
 					run = False
 					break
 				key = var_bind[0].getOid().__str__()
-				val = var_bind[1].prettyPrint()
 
 				if key[0:len(oid)] != oid:
 					# New OID entered, stop the lookup

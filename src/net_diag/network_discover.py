@@ -336,8 +336,8 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 						logging.error('Grist format requires --grist-url and --grist-account to be defined')
 						sys.exit(1)
 				elif config['format'] == 'glpi':
-					if 'glpi_url' not in config or 'glpi_token' not in config:
-						logging.error('GLPI format requires --glpi-url and --glpi-token to be defined')
+					if 'glpi_url' not in config:
+						logging.error('GLPI format requires --glpi-url to be defined')
 						sys.exit(1)
 				h = Host(host_ip, config)
 				self.queue.put(('scan', h))

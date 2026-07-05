@@ -86,6 +86,45 @@ class HostType(StrEnum):
 	WORKSTATION = 'Workstation'
 
 
+class HostConsumableType(IntEnum):
+	OTHER = 1
+	UNKNOWN = 2
+	TONER = 3
+	WASTE_TONER = 4
+	INK = 5
+	INK_CARTRIDGE = 6
+	INK_RIBBON = 7
+	WASTE_INK = 8
+	OPC = 9
+	DEVELOPER = 10
+	FUSER_OIL = 11
+	SOLID_WAX = 12
+	RIBBON_WAX = 13
+	WASTE_WAX = 14
+	FUSER = 15
+	CORONA_WIRE = 16
+	FUSER_OIL_WICK = 17
+	CLEANER_UNIT = 18
+	FUSER_CLEANING_PAD = 19
+	TRANSFER_UNIT = 20
+	TONER_CARTRIDGE = 21
+	FUSER_OILER = 22
+	WATER = 23
+	WASTE_WATER = 24
+	GLUE_WATER_ADDITIVE = 25
+	WASTE_PAPER = 26
+	BINDING_SUPPLY = 27
+	BANDING_SUPPLY = 28
+	STITCHING_WIRE = 29
+	SHRINK_WRAP = 30
+	PAPER_WRAP = 31
+	STAPLES = 32
+	INSERTS = 33
+	COVERS = 34
+	MATTE_TONNER = 35
+	MATTE_INK = 36
+
+
 class Host:
 	"""
 	Represents a single host on the network.
@@ -272,6 +311,12 @@ class Host:
 		:type uptime: int|None
 		"""
 
+		self.consumables = []
+		"""
+		Consumables, usually for printers
+		:type consumables: list[HostConsumable]
+		"""
+
 		# Set override defaults
 		if 'address' in config:
 			self.address = config['address']
@@ -409,10 +454,11 @@ class Host:
 
 		payload = {
 			'deviceid': self.get_identifier(),
+			# Item type defines the type of incoming object, but the schema restricts this severely.
 			'itemtype': item_type,
 			'action': 'inventory',
 			'content': {
-				'versionclient': 'NetworkDiagnostics-Discover',
+				'versionclient': 'GLPI-Agent_v1.18-1_NetworkDiagnostics-Discover',
 				'hardware': {
 					'name': self.hostname,
 					'chassis_type': str(self.type),
@@ -479,19 +525,30 @@ class Host:
 
 			counter = max(port_data['ifnumber'], counter) + 1
 
+		if self.type == HostType.PRINTER and len(self.consumables) > 0:
+			consumables = {}
+			for consumable in self.consumables:
+				consumables |= consumable.to_glpi_cartridge()
+			payload['content']['cartridges'] = [consumables]
+
 		self.log(json.dumps(payload))
 
 		headers = {
 			'Content-Type': 'application/json',
-			'User-Agent': 'NetworkDiagnostics-Discover',
-			'Authorization': 'GLPI-Token ' + self.config['glpi_token']
+			'User-Agent': 'GLPI-Agent/1.18 (NetworkDiagnostics-Discover)',
 		}
+
+		# As long as GLPI-Agent/... is set as the User Agent, a token isn't required by default.
+		if 'glpi_token' in self.config:
+			headers['Authorization'] = 'GLPI-Token ' + self.config['glpi_token']
+
 		req = request.Request(
 			self.config['glpi_url'] + '/front/inventory.php',
 			method='POST',
 			headers=headers,
 			data=json.dumps(payload).encode('utf-8')
 		)
+
 		try:
 			result = request.urlopen(req)
 			response = json.loads(result.read())
@@ -609,6 +666,11 @@ class Host:
 			'ping': self.ping,
 		}
 
+		if len(self.consumables) > 0:
+			data['consumables'] = []
+			for consumable in self.consumables:
+				data['consumables'].append(consumable.to_dict())
+
 		if 'fields' in self.config and self.config['fields'] is not None:
 			# Only include the fields specified in the list
 			data = {k: v for k, v in data.items() if k in self.config['fields']}
@@ -698,3 +760,48 @@ class HostPort:
 				link_data['connections'].append({'mac': connection})
 
 		return link_data
+
+
+class HostConsumable:
+	def __init__(self):
+		self.description: str | None = None
+		self.type: HostConsumableType | None = None
+		self.color: str | None = None
+		self.current: int | None = None
+		self.unit: int | None = None
+		self.max: int | None = None
+
+	def to_dict(self) -> dict:
+		"""
+		Convert this interface to a dictionary representation
+		:return: dict
+		"""
+		data = {}
+
+		# Only include keys that are not None or empty lists
+		# This is because many scanners will only populate a subset of these fields
+		keys = [
+			'description', 'type', 'color', 'current', 'unit', 'max'
+		]
+		for key in keys:
+			value = getattr(self, key)
+			if value is None:
+				continue
+			if isinstance(value, list) and len(value) == 0:
+				continue
+
+			data[key] = value
+		return data
+
+	def to_glpi_cartridge(self) -> dict:
+		"""
+		GLPI has a weird format for cartridges; all values are expected to be merged into a single object.
+
+		:return:
+		"""
+		key_name = self.description
+
+		if self.max <= 0 or self.current <= 0:
+			return {key_name: "0"}
+		else:
+			return {key_name: str(self.current / self.max * 100)}
