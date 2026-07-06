@@ -515,7 +515,13 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 			return
 
 		for h in self.hosts:
-			print('Syncing %s to GLPI' % h.ip)
+			if h.ip:
+				ident = h.ip
+			elif h.mac:
+				ident = h.mac
+			else:
+				ident = 'device'
+			print('Syncing %s to GLPI' % ident)
 			h.sync_to_glpi()
 
 	def get_local_ips(self) -> list:
