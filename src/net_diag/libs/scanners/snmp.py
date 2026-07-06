@@ -121,16 +121,19 @@ class SNMPScanner(ScannerInterface):
 		return scanners['DEFAULT'](host)
 
 	@classmethod
-	def discover(cls, host: Host):
+	def discover(cls, host: Host) -> bool:
 		if 'community' not in host.config:
 			# SNMP scans require a community string
-			return
+			return False
 
 		community = str(host.config['community'])
 
 		ret = asyncio.run(snmp_lookup_single(host.ip, community, '1.3.6.1.2.1.1.2.0'))
 		if ret is not None:
 			host.scanners['snmp'] = True
+			return True
+		else:
+			return False
 
 	@classmethod
 	def scan(cls, host: Host):

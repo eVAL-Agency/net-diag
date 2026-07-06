@@ -14,7 +14,7 @@ class ScannerInterface:
 		"""
 
 	@classmethod
-	def discover(cls, host: Host):
+	def discover(cls, host: Host) -> bool:
 		"""
 		Perform a fast discovery for the host to verify if it supports this scanner
 

@@ -361,6 +361,12 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 		:return:
 		"""
+
+		SKIP = "\033[2m"
+		GREEN = "\033[92m"
+		RED = "\033[91m"
+		RESET = "\033[0m"
+
 		while True:
 			try:
 				action, host = self.queue.get(False, 0.5)
@@ -368,15 +374,32 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 					# Initial discovery to generate a list of valid targets
 					# This first scan uses the configuration to determine if a scanner should be used.
 					# This discovery is meant to be very fast and just confirm if the target is accessible.
-					print('Discovering host %s' % (host.ip,), file=sys.stderr)
+					results = []
 					if 'icmp' in host.config['scanners']:
-						ICMPScanner.discover(host)
+						if ICMPScanner.discover(host):
+							results.append(f'[ {GREEN}✓ ICMP{RESET} ]')
+						else:
+							results.append(f'[ {RED}✗ ICMP{RESET} ]')
+					else:
+						results.append(f'[ {SKIP}- ICMP{RESET} ]')
 
 					if 'snmp' in host.config['scanners']:
-						SNMPScanner.discover(host)
+						if SNMPScanner.discover(host):
+							results.append(f'[ {GREEN}✓ SNMP{RESET} ]')
+						else:
+							results.append(f'[ {RED}✗ SNMP{RESET} ]')
+					else:
+						results.append(f'[ {SKIP}- SNMP{RESET} ]')
 
 					if 'http' in host.config['scanners']:
-						HTTPScanner.discover(host)
+						if HTTPScanner.discover(host):
+							results.append(f'[ {GREEN}✓ HTTP{RESET} ]')
+						else:
+							results.append(f'[ {RED}✗ HTTP{RESET} ]')
+					else:
+						results.append(f'[ {SKIP}- HTTP{RESET} ]')
+
+					print('Discovery on host %s: %s' % (host.ip, ' '.join(results)), file=sys.stderr)
 
 					if len(host.scanners.keys()) > 0:
 						# Only perform a scan of a host if there is at least one valid scanner.

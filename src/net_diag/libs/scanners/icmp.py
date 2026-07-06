@@ -15,7 +15,7 @@ class ICMPScanner(ScannerInterface):
 		super().__init__(host)
 
 	@classmethod
-	def discover(cls, host: Host):
+	def discover(cls, host: Host) -> bool:
 		"""
 		Perform an ICMP ping scan on the target.
 		"""
@@ -23,10 +23,12 @@ class ICMPScanner(ScannerInterface):
 		host.ping = ping(host.ip, return_latency=True, formatted=True)
 		if not host.ping:
 			host.log('Not reachable via ICMP ping')
+			return False
 		else:
 			host.reachable = True
 			host.scanners['icmp'] = True
 			host.log('Reachable via ICMP ping')
+			return True
 
 	@classmethod
 	def scan(cls, host: Host):
