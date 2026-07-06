@@ -479,8 +479,8 @@ class Host:
 			},
 		}
 
-		if 'tag' in self.config and self.config['tag']:
-			payload['tag'] = self.config['tag']
+		if 'glpi_tag' in self.config and self.config['glpi_tag']:
+			payload['tag'] = self.config['glpi_tag']
 
 		if self.descr is not None:
 			payload['content']['hardware']['description'] = self.descr
