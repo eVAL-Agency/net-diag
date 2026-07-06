@@ -479,6 +479,9 @@ class Host:
 			},
 		}
 
+		if 'tag' in self.config and self.config['tag']:
+			payload['tag'] = self.config['tag']
+
 		if self.descr is not None:
 			payload['content']['hardware']['description'] = self.descr
 			if network_device:

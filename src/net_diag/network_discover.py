@@ -195,6 +195,7 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 		parser.add_argument('--grist-account', help='Account token for discovered devices')
 		parser.add_argument('--glpi-url', help='URL of GLPI instance to push results to')
 		parser.add_argument('--glpi-token', help='Token for the user in GLPI to authenticate with')
+		parser.add_argument('--glpi-tag', help='Set a specific tag for scan results')
 		parser.add_argument('--address', help='Optional address for this scan (for reporting)')
 		parser.add_argument('--city', help='Optional city for this scan (for reporting)')
 		parser.add_argument('--state', help='Optional state for this scan (for reporting)')
@@ -259,6 +260,9 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 
 		if cli_args.glpi_token:
 			self.globals['glpi_token'] = cli_args.glpi_token
+
+		if cli_args.glpi_tag:
+			self.globals['glpi_tag'] = cli_args.glpi_tag
 
 		if cli_args.dry_run:
 			logging.info('Dry run, no output will be written')

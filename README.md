@@ -166,6 +166,8 @@ Requires a user with permission to POST data and an authorization token generate
 network_discover --net=192.168.0.0/24 --format=glpi --glpi-url=glpi.yourdomain.tld --glpi-token=123456789abcdef --community public
 ```
 
+**glpi_credentials**
+
 Optionally, you can include the default **SNMP Credentials** by adding the following to your configuration:
 
 ```yaml
@@ -177,6 +179,16 @@ override:
 
 This is the ID of the SNMP credentials to link, as available from {glip_url}/front/snmpcredential.php.
 Does not look up the credentials and still needs the community setting.
+
+**glpi_tag**
+
+You can also specify a tag to attribute each individual host or network.
+
+```yaml
+override:
+  - net: 10.200.0.0/24
+    glpi_tag: Some Client Name
+```
 
 #### Exclude specific IP addresses from report
 
