@@ -16,6 +16,12 @@ class SNMPScanner(ScannerInterface):
 	def __init__(self, host: Host):
 		super().__init__(host)
 		self.basic_lookups = {
+			'descr': [
+				'1.3.6.1.2.1.1.1.0'
+			],
+			'object_id': [
+				'1.3.6.1.2.1.1.2.0'
+			],
 			'contact': [
 				'1.3.6.1.2.1.1.4.0',
 			],
@@ -172,20 +178,19 @@ class SNMPScanner(ScannerInterface):
 			# SNMP scans require a community string
 			return
 
-		val = self.get_descr()
-		if val is None:
+		# Perform a single multi lookup to get all basic values we may need.
+		# This performs a single scan vs multiple little lookups.
+		values = self._lookup_multiple(self.basic_lookups)
+
+		if 'descr' not in values:
 			# Initial lookup of DESCR failed; do not try to continue.
 			return
-		self.host.descr = val
-		self.host.reachable = True
 
-		object_id = self.get_object_id()
-		if object_id is not None:
-			self.host.object_id = object_id
+		self.host.reachable = True
 
 		# Parse the Descr value for common data
 		for check in self.descr_parses:
-			match = re.match(check[0], self.host.descr)
+			match = re.match(check[0], values['descr'])
 			if match:
 				for key, val in check[1].items():
 					# Set hardcoded overrides from the definition
@@ -196,7 +201,7 @@ class SNMPScanner(ScannerInterface):
 					setattr(self.host, key, val)
 
 		# Set all the basic keys
-		for key, val in self.get_basic_keys().items():
+		for key, val in values.items():
 			if key == 'location':
 				self.host.set_location(val)
 			else:
@@ -495,6 +500,47 @@ class SNMPScanner(ScannerInterface):
 			self.host.log('Raw response: [%s]' % val)
 		return val
 
+	def _lookup_multiple(self, oids_with_map: dict[str, list[str]]) -> dict:
+		"""
+		Perform a basic SNMP to retrieve multiple values.
+
+		Each value is mapped to its respective key in the lookup table
+
+		Example:
+
+		_lookup_multiple({
+			'my_key': ['1.2.3.4'],
+			'another_thing': ['2.3.2.3', '2.3.2.5']
+		})
+
+		Will do a lookup against all OIDs present in the values, mapping each back to the original key.
+		:param oids:
+		:return:
+		"""
+		lookups = []
+		ret = {}
+
+		for lookup in oids_with_map.values():
+			lookups += lookup
+		values = asyncio.run(snmp_lookup_single(self.host.ip, str(self.host.config['community']), lookups))
+
+		# Map all the located values back to the original keys
+		for oid, val in values.items():
+			# Grab the OID and SNMP value from the lookup
+
+			for map_key, map_oids in oids_with_map.items():
+				# Grab the map key and list of OIDs for that key from the dictionary provided
+
+				if oid in map_oids:
+					# The found OID is within the list of OIDs of this dictionary...
+
+					if map_key not in ret:
+						# Only add if not already added; allows the first in the list to take priority.
+						ret[map_key] = val
+					break
+
+		return ret
+
 	def _lookup_bulk(self, name: str, oid: str) -> dict:
 		"""
 		Perform a bulk SNMP get to retrieve some values in a given parent
@@ -568,7 +614,10 @@ class MikrotikScan(SNMPScanner):
 	def __init__(self, host):
 		super().__init__(host)
 		self.basic_lookups['serial'] = ['1.3.6.1.4.1.14988.1.1.7.3.0']
-		self.basic_lookups['os_version'] = []
+		self.basic_lookups['os_version'] = [
+			'1.3.6.1.4.1.14988.1.1.7.7.0',
+			'1.3.6.1.4.1.14988.1.1.7.4'
+		]
 		self.descr_parses = (
 			(
 				# RouterOS RB3011UiAS
@@ -586,15 +635,6 @@ class MikrotikScan(SNMPScanner):
 		super().run_scan()
 
 		self.host.manufacturer = 'Mikrotik'
-
-		# Check firmware from one of two locations
-		val = self._lookup_single('os_version', '1.3.6.1.4.1.14988.1.1.7.7.0')
-		if val:
-			self.host.os_version = val
-		else:
-			val = self._lookup_single('os_version', '1.3.6.1.4.1.14988.1.1.7.4')
-			if val:
-				self.host.os_version = val
 
 
 class UbiquitiScan(SNMPScanner):

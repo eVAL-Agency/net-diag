@@ -7,7 +7,6 @@ from pysnmp.hlapi.v3arch.asyncio import CommunityData
 from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget
 from pysnmp.hlapi.v3arch.asyncio import ContextData
 from pysnmp.proto import rfc1905
-from typing import Union
 import logging
 from pysnmp.proto.rfc1902 import OctetString
 
@@ -35,17 +34,24 @@ def _cleanup_value(var_bind):
 	return val
 
 
-async def snmp_lookup_single(hostname: str, community: str, oid: str) -> Union[str, None]:
+async def snmp_lookup_single(hostname: str, community: str, oids: str | list[str]) -> str | None | dict:
 	"""
 	Lookup an OID value on a given host.
 
 	:param hostname:
 	:param community:
-	:param oid:
+	:param oids:
 	:return:
 	"""
 
-	lookups = ObjectType(ObjectIdentity(oid))
+	if isinstance(oids, list):
+		lookups = []
+		count = len(oids)
+		for oid in oids:
+			lookups.append(ObjectType(ObjectIdentity(oid)))
+	else:
+		count = 1
+		lookups = [ObjectType(ObjectIdentity(oids))]
 	snmpEngine = SnmpEngine()
 	auth = CommunityData(community, mpModel=1)
 	channel = await UdpTransportTarget.create((hostname, 161), timeout=2, retries=0)
@@ -54,7 +60,7 @@ async def snmp_lookup_single(hostname: str, community: str, oid: str) -> Union[s
 		auth,
 		channel,
 		ContextData(),
-		lookups
+		*lookups
 	)
 
 	if error_indication:
@@ -70,13 +76,20 @@ async def snmp_lookup_single(hostname: str, community: str, oid: str) -> Union[s
 		)
 		return None
 	else:
+		ret = {}
+
 		for var_bind in var_binds:  # SNMP response contents
 			val = _cleanup_value(var_bind)
 			key = var_bind[0].getOid().__str__()
 			logging.debug('[snmp_lookup] %s = %s' % (key, val))
-			return val
+			if count == 1:
+				# Single OID was requested.
+				return val
+			else:
+				if val is not None:
+					ret[key] = val
 
-	return None
+		return ret
 
 
 async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:
