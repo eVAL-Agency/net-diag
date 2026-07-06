@@ -52,64 +52,48 @@ class HTTPScanner(ScannerInterface):
 		"""
 		Perform an HTTP/S scan on the target.
 		"""
-		scanner = cls._perform_discovery(host)
-		if scanner is not None:
-			return scanner._scan()
+		if 'http' not in host.scanners:
+			return
+
+		scanner = cls._get_scanner(host)
+		scanner.run_scan()
+		scanner.run_scan_neighbors()
 
 	@classmethod
-	def scan_neighbors(cls, host: Host):
-		scanner = cls._perform_discovery(host)
-		if scanner is not None:
-			return scanner._scan_neighbors()
-
-	@classmethod
-	def matches(cls, response: Response) -> bool:
-		return True
-
-	@classmethod
-	def _perform_discovery(cls, host: Host) -> ScannerInterface | None:
+	def _get_scanner(cls, host: Host) -> ScannerInterface:
 		"""
-		Initial discovery to detect the type of scanning to perform, or retrieve a standard scanner instead
+		Try to determine the correct scanner to use for this HTTP target.
 
+		Will issue a full connection to the homepage to allow the various modules to check if it matches what they want
 		:param host:
 		:param port:
 		:return:
 		"""
-		ports = [80, 443]
-		for port in ports:
-			try:
-				# Attempts a TCP connection; raises an exception if it times out or is refused
-				with socket.create_connection((host.ip, port), timeout=1):
-					host.log('Port %s appears to be open!' % port)
+		port = host.scanners['http']
+		protocol = "https" if port == 443 else "http"
+		url = f"{protocol}://{host.ip}:{port}"
 
-				protocol = "https" if port == 443 else "http"
-				url = f"{protocol}://{host.ip}:{port}"
+		response = requests.get(url, timeout=2.0, verify=False)
+		server_header = response.headers.get('Server', '')
+		host.log('HTTP Server: %s' % (server_header,))
+		# Parse the HTML content
+		soup = BeautifulSoup(response.text, 'html.parser')
+		page_title = soup.title.string if soup.title else ""
+		host.log('HTTP Page Title: %s' % (page_title,))
 
-				# verify=False ignores self-signed SSL cert errors typical on local subnets
-				# timeout ensures the script doesn't hang on slow responses
-				response = requests.get(url, timeout=2.0, verify=False)
-				server_header = response.headers.get('Server', '')
-				host.log('HTTP Server: %s' % (server_header,))
-				# Parse the HTML content
-				soup = BeautifulSoup(response.text, 'html.parser')
-				page_title = soup.title.string if soup.title else ""
-				host.log('HTTP Page Title: %s' % (page_title,))
+		# Try the different HTTP scanners
+		if TraneTracerSCScanner.matches(response):
+			# Matches a Trane Tracer SC
+			return TraneTracerSCScanner(host, port)
+		elif GrandstreamPhoneScanner.matches(response):
+			return GrandstreamPhoneScanner(host, port)
+		else:
+			# No matches available, default to the baseline HTTP scanner
+			return HTTPScanner(host, port)
 
-				# Try the different HTTP scanners
-				if TraneTracerSCScanner.matches(response):
-					# Matches a Trane Tracer SC
-					return TraneTracerSCScanner(host, port)
-				elif GrandstreamPhoneScanner.matches(response):
-					return GrandstreamPhoneScanner(host, port)
-				else:
-					# No matches available, default to the baseline HTTP scanner
-					return HTTPScanner(host, port)
-			except (socket.timeout, ConnectionRefusedError, OSError):
-				host.log('Port %s appears to be closed!' % port)
-
-		# No ports available / open on this host.
-		host.log('No HTTP or HTTPS ports appear to be available for this host')
-		return None
+	@classmethod
+	def matches(cls, response: Response) -> bool:
+		return True
 
 	def _ready(self) -> bool:
 		"""
@@ -119,20 +103,22 @@ class HTTPScanner(ScannerInterface):
 		"""
 		return True
 
-	def _scan(self):
+	def run_scan(self):
 		"""
 		Perform a device scan
 
 		:return:
 		"""
+		# The base HTTP scanner doesn't do anything
 		pass
 
-	def _scan_neighbors(self):
+	def run_scan_neighbors(self):
 		"""
 		Perform a neighbor scan, usually of children under this device
 
 		:return:
 		"""
+		# The base HTTP scanner doesn't do anything
 		pass
 
 	def _resolve_url(self, url: str = '') -> str:
@@ -188,7 +174,7 @@ class TraneTracerSCScanner(HTTPScanner):
 
 		return True
 
-	def _scan(self):
+	def run_scan(self):
 		if not self._ready():
 			return
 
@@ -223,7 +209,7 @@ class TraneTracerSCScanner(HTTPScanner):
 				self.host.mac = iface.mac
 				break
 
-	def _scan_neighbors(self):
+	def run_scan_neighbors(self):
 		if not self._ready():
 			return
 
@@ -556,7 +542,7 @@ class GrandstreamPhoneScanner(HTTPScanner):
 		page_response = requests.get(response.url + 'cgi-bin/api.values.get', timeout=2.0, verify=False)
 		return page_response.status_code == 200
 
-	def _scan(self):
+	def run_scan(self):
 		fields = {
 			'vendor_fullname': 'manufacturer',
 			'phone_model': 'model',

@@ -144,26 +144,9 @@ class SNMPScanner(ScannerInterface):
 	@classmethod
 	def scan(cls, host: Host):
 		scanner = cls.get_scanner(host)
-		if not scanner:
-			# No scanner found, device is not reachable via SNMP or no valid handlers
-			host.scanners.pop('snmp', None)
-		else:
-			# Store the scanning handler so scan_neighbors doesn't have to re-scan.
-			host.scanners['snmp'] = scanner
+		if scanner:
 			scanner.run_scan()
-
-	@classmethod
-	def scan_neighbors(cls, host: Host):
-		"""
-		Perform a scan of the ARP table of the device to find neighbors.
-		:return:
-		"""
-		if not host.descr:
-			# A description could not be retrieved, assume this device is not reachable via SNMP.
-			return
-
-		scanner = host.scanners['snmp']
-		scanner.run_scan_neighbors()
+			scanner.run_scan_neighbors()
 
 	def run_scan(self):
 		"""

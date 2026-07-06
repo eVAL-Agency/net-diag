@@ -30,9 +30,16 @@ class ScannerInterface:
 		"""
 		raise NotImplementedError("Subclasses must implement this method.")
 
-	@classmethod
-	def scan_neighbors(cls, host: Host):
+	def run_scan(self):
 		"""
-		Perform a scan on the target.
+		Perform a full scan of the host associated with this scanner
+		:return:
+		"""
+		raise NotImplementedError("Subclasses must implement this method.")
+
+	def run_scan_neighbors(self):
+		"""
+		Perform a full neighbor / child scan of devices available within this host scanner
+		:return:
 		"""
 		raise NotImplementedError("Subclasses must implement this method.")

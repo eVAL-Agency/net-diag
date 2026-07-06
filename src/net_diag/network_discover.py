@@ -128,7 +128,7 @@ class Application:
 
 		try:
 			# Initialize the process threads
-			thread_count = min(self.queue.qsize(), multiprocessing.cpu_count() * 8)
+			thread_count = multiprocessing.cpu_count() * 12
 			print('Starting scan with %s threads' % thread_count, file=sys.stderr)
 			threads = []
 			for n in range(thread_count):
@@ -406,24 +406,15 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 						self.queue.put(('scan', host))
 				elif action == 'scan':
 					# Initial data scan of the device
-					print('Scanning host %s' % (host.ip,), file=sys.stderr)
-					if 'icmp' in host.scanners:
-						ICMPScanner.scan(host)
 
 					if 'snmp' in host.scanners:
+						print('Scanning host %s (SNMP)' % (host.ip,), file=sys.stderr)
 						SNMPScanner.scan(host)
 
 					if 'http' in host.scanners:
+						print('Scanning host %s (HTTP)' % (host.ip,), file=sys.stderr)
 						HTTPScanner.scan(host)
-					self.queue.put(('neighbors', host))
-				elif action == 'neighbors':
-					# Secondary scan, (now that the arp cache of the remote devices should be populated)
-					if 'snmp' in host.scanners:
-						print('Scanning host for neighbors %s' % (host.ip,), file=sys.stderr)
-						SNMPScanner.scan_neighbors(host)
 
-					if 'http' in host.scanners:
-						HTTPScanner.scan_neighbors(host)
 					self.host_queue.put(host)
 				else:
 					logging.error('Unsupported action %s' % action)
