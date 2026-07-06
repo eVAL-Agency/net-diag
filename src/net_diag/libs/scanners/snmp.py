@@ -1,5 +1,4 @@
 import re
-from typing import Union
 import asyncio
 
 from net_diag.libs.scanners import ScannerInterface
@@ -15,6 +14,7 @@ class SNMPScanner(ScannerInterface):
 
 	def __init__(self, host: Host):
 		super().__init__(host)
+
 		self.basic_lookups = {
 			'descr': [
 				'1.3.6.1.2.1.1.1.0'
@@ -48,6 +48,37 @@ class SNMPScanner(ScannerInterface):
 				'1.3.6.1.2.1.1.3.0',
 			]
 		}
+		"""
+		All basic lookups; each key should map directly to a property on Host.
+		"""
+
+		self.port_lookups = {
+			'name': '1.3.6.1.2.1.31.1.1.1.1',
+			'type': '1.3.6.1.2.1.2.2.1.3',
+			'mtu': '1.3.6.1.2.1.2.2.1.4',
+			'speed': '1.3.6.1.2.1.31.1.1.1.15',
+			'mac': '1.3.6.1.2.1.2.2.1.6',
+			'admin': '1.3.6.1.2.1.2.2.1.7',
+			'status': '1.3.6.1.2.1.2.2.1.8',
+			'bytes_rx': '1.3.6.1.2.1.31.1.1.1.6',
+			'errors_rx': '1.3.6.1.2.1.2.2.1.14',
+			'bytes_tx': '1.3.6.1.2.1.31.1.1.1.10',
+			'errors_tx': '1.3.6.1.2.1.2.2.1.20',
+			'ips': '1.3.6.1.2.1.4.20.1.2',
+			'vlan_pid': '1.3.6.1.2.1.17.7.1.4.5.1.1',
+			'vlan_egress': '1.3.6.1.2.1.17.7.1.4.2.1.4',
+			'label': '1.3.6.1.2.1.31.1.1.1.18',
+		}
+		"""
+		All lookups for various port information
+		"""
+
+		self.speed_multiplier = 1000000
+		"""
+		For ifHighSpeed, set this to 1000000 (as 1 means 1Mbps)
+		for regular lookup, set this to 1 for direct bps retrieval
+		"""
+
 		self.descr_parses = (
 			(
 				#  ; AXIS 212 PTZ; Network Camera; 4.49; Jun 18 2009 13:28; 14D; 1;
@@ -192,11 +223,14 @@ class SNMPScanner(ScannerInterface):
 					val = int(val)
 				setattr(self.host, key, val)
 
-		mac = self.get_mac()
-		if mac is not None:
-			self.host.mac = mac
-
 		self.host.ports = self.get_ports()
+
+		if self.host.ports is not None:
+			# Grab the MAC from the ports, just grab the first valid one.
+			for port in self.host.ports.values():
+				if port.mac is not None:
+					self.host.mac = port.mac
+					break
 		self.host.consumables = self.get_consumables()
 
 	def run_scan_neighbors(self):
@@ -238,14 +272,14 @@ class SNMPScanner(ScannerInterface):
 
 		self.host.log('Found %s devices' % found)
 
-	def get_descr(self) -> Union[str, None]:
+	def get_descr(self) -> str | None:
 		"""
 		Perform a basic SNMP scan to get the description of the device.
 		:return:
 		"""
 		return self._lookup_single('DESCR', '1.3.6.1.2.1.1.1.0')
 
-	def get_object_id(self) -> Union[str, None]:
+	def get_object_id(self) -> str | None:
 		"""
 		Grab the sysObjectID of the device, which may be a unique identifier for the device type.
 		:return:
@@ -273,12 +307,12 @@ class SNMPScanner(ScannerInterface):
 
 		return ret
 
-	def get_mac(self) -> Union[str, None]:
+	def get_mac(self) -> str | None:
 		"""
 		Perform a basic SNMP scan to get the MAC Address of the device.
 		:return:
 		"""
-		addresses = self._lookup_bulk('MAC', '1.3.6.1.2.1.2.2.1.6')
+		addresses = self._lookup_bulk('MAC', self.port_lookups['mac'])
 		for key, val in addresses.items():
 			val = self._format_snmp_mac(val)
 			if val is None:
@@ -290,111 +324,95 @@ class SNMPScanner(ScannerInterface):
 
 		return None
 
-	def get_ports(self) -> Union[dict, None]:
+	def get_ports(self) -> dict[str, HostPort] | None:
 		"""
 		Get port details for this device, (usually just switches)
 		:return:
 		"""
 
-		name_lookup = '1.3.6.1.2.1.2.2.1.2'
-		type_lookup = '1.3.6.1.2.1.2.2.1.3'
-		mtu_lookup = '1.3.6.1.2.1.2.2.1.4'
-		speed_lookup = '1.3.6.1.2.1.2.2.1.5'
-		mac_lookup = '1.3.6.1.2.1.2.2.1.6'
-		admin_lookup = '1.3.6.1.2.1.2.2.1.7'
-		status_lookup = '1.3.6.1.2.1.2.2.1.8'
-		bytes_rx_lookup = '1.3.6.1.2.1.2.2.1.10'
-		errors_rx_lookup = '1.3.6.1.2.1.2.2.1.14'
-		bytes_tx_lookup = '1.3.6.1.2.1.2.2.1.16'
-		errors_tx_lookup = '1.3.6.1.2.1.2.2.1.20'
-		ips_lookup = '1.3.6.1.2.1.4.20.1.2'
-		vlan_pid_lookup = '1.3.6.1.2.1.17.7.1.4.5.1.1'
-		vlan_egress_lookup = '1.3.6.1.2.1.17.7.1.4.2.1.4'
-		label_lookup = '1.3.6.1.2.1.31.1.1.1.18'
-
 		ret = {}
 
-		names = self._lookup_bulk('Port Names', name_lookup)
+		names = self._lookup_bulk('Port Names', self.port_lookups['name'])
 		if len(names) == 0:
 			self.host.log('Device does not contain any port information, skipping')
 			return None
 
 		for key, val in names.items():
-			port_id = key[len(name_lookup) + 1:]
+			port_id = key[len(self.port_lookups['name']) + 1:]
 			ret[port_id] = HostPort()
 			ret[port_id].name = val
 			ret[port_id].number = int(port_id)
 
-		labels = self._lookup_bulk('Port Labels', label_lookup)
+		labels = self._lookup_bulk('Port Labels', self.port_lookups['label'])
 		for key, val in labels.items():
-			port_id = key[len(label_lookup) + 1:]
+			port_id = key[len(self.port_lookups['label']) + 1:]
 			ret[port_id].label = val
 
-		types = self._lookup_bulk('Port Types', type_lookup)
+		types = self._lookup_bulk('Port Types', self.port_lookups['type'])
 		for key, val in types.items():
-			port_id = key[len(type_lookup) + 1:]
+			port_id = key[len(self.port_lookups['type']) + 1:]
 			ret[port_id].type = HostPortType(int(val))
 
-		mtus = self._lookup_bulk('Port MTUs', mtu_lookup)
+		mtus = self._lookup_bulk('Port MTUs', self.port_lookups['mtu'])
 		for key, val in mtus.items():
-			port_id = key[len(mtu_lookup) + 1:]
+			port_id = key[len(self.port_lookups['mtu']) + 1:]
 			ret[port_id].mtu = int(val)
 
-		speeds = self._lookup_bulk('Port Speeds', speed_lookup)
+		speeds = self._lookup_bulk('Port Speeds', self.port_lookups['speed'])
 		for key, val in speeds.items():
-			port_id = key[len(speed_lookup) + 1:]
-			ret[port_id].speed = int(val)
+			port_id = key[len(self.port_lookups['speed']) + 1:]
+			ret[port_id].speed = int(val) * self.speed_multiplier
 
-		macs = self._lookup_bulk('Port MACs', mac_lookup)
+		macs = self._lookup_bulk('Port MACs', self.port_lookups['mac'])
 		for key, val in macs.items():
-			port_id = key[len(mac_lookup) + 1:]
+			port_id = key[len(self.port_lookups['mac']) + 1:]
 			ret[port_id].mac = self._format_snmp_mac(val)
 
-		admin_statuses = self._lookup_bulk('Admin Status', admin_lookup)
+		admin_statuses = self._lookup_bulk('Admin Status', self.port_lookups['admin'])
 		for key, val in admin_statuses.items():
-			port_id = key[len(admin_lookup) + 1:]
+			port_id = key[len(self.port_lookups['admin']) + 1:]
 			ret[port_id].admin_status = HostPortAdminStatus(int(val))
 
-		user_statuses = self._lookup_bulk('User Status', status_lookup)
+		user_statuses = self._lookup_bulk('User Status', self.port_lookups['status'])
 		for key, val in user_statuses.items():
-			port_id = key[len(status_lookup) + 1:]
+			port_id = key[len(self.port_lookups['status']) + 1:]
 			ret[port_id].user_status = HostPortUserStatus(int(val))
 
-		bytes_received = self._lookup_bulk('Bytes Received', bytes_rx_lookup)
+		bytes_received = self._lookup_bulk('Bytes Received', self.port_lookups['bytes_rx'])
 		for key, val in bytes_received.items():
-			port_id = key[len(bytes_rx_lookup) + 1:]
+			port_id = key[len(self.port_lookups['bytes_rx']) + 1:]
 			ret[port_id].bytes_rx = int(val)
 
-		errors_received = self._lookup_bulk('Errors Received', errors_rx_lookup)
+		errors_received = self._lookup_bulk('Errors Received', self.port_lookups['errors_rx'])
 		for key, val in errors_received.items():
-			port_id = key[len(errors_rx_lookup) + 1:]
+			port_id = key[len(self.port_lookups['errors_rx']) + 1:]
 			ret[port_id].errors_rx = int(val)
 
-		bytes_sent = self._lookup_bulk('Bytes Sent', bytes_tx_lookup)
+		bytes_sent = self._lookup_bulk('Bytes Sent', self.port_lookups['bytes_tx'])
 		for key, val in bytes_sent.items():
-			port_id = key[len(bytes_tx_lookup) + 1:]
+			port_id = key[len(self.port_lookups['bytes_tx']) + 1:]
 			ret[port_id].bytes_tx = int(val)
 
-		errors_sent = self._lookup_bulk('Errors Sent', errors_tx_lookup)
+		errors_sent = self._lookup_bulk('Errors Sent', self.port_lookups['errors_tx'])
 		for key, val in errors_sent.items():
-			port_id = key[len(errors_tx_lookup) + 1:]
+			port_id = key[len(self.port_lookups['errors_tx']) + 1:]
 			ret[port_id].errors_tx = int(val)
 
-		interface_ips = self._lookup_bulk('IP Addresses', ips_lookup)
+		interface_ips = self._lookup_bulk('IP Addresses', self.port_lookups['ips'])
 		for key, val in interface_ips.items():
-			ip_address = key[len(ips_lookup) + 1:]
+			ip_address = key[len(self.port_lookups['ips']) + 1:]
 			port_id = str(val)
 			if port_id in ret:
 				ret[port_id].ips.append(ip_address)
 
-		vlan_pids = self._lookup_bulk('Native VLAN', vlan_pid_lookup)
+		vlan_pids = self._lookup_bulk('Native VLAN', self.port_lookups['vlan_pid'])
 		for key, val in vlan_pids.items():
-			port_id = key[len(vlan_pid_lookup) + 1:]
+			port_id = key[len(self.port_lookups['vlan_pid']) + 1:]
 			ret[port_id].vlan = val
 
-		vlan_egresses = self._lookup_bulk('VLAN Egress', vlan_egress_lookup)
+		vlan_egresses = self._lookup_bulk('VLAN Egress', self.port_lookups['vlan_egress'])
 		for key, val in vlan_egresses.items():
-			vlan_id = key[len(vlan_egress_lookup) + 3:]
+			vlan_id = key[len(self.port_lookups['vlan_egress']) + 3:]
 			# Convert 0xf400040000000000 to an integer so we can check each bit
 			# This translates to 0b11110100000000000000010000000000
 			# where each port (left to right) is 1 or 0 if that VLAN is enabled on that port.
@@ -468,7 +486,7 @@ class SNMPScanner(ScannerInterface):
 
 		return list(raw.values())
 
-	def _lookup_single(self, name: str, oid: str) -> Union[str, None]:
+	def _lookup_single(self, name: str, oid: str) -> str | None:
 		"""
 		Perform a basic SNMP get to retrieve some value
 		:param name: string Name of this scan for the logs
@@ -539,7 +557,7 @@ class SNMPScanner(ScannerInterface):
 			self.host.log('Found %s items' % len(val))
 		return val
 
-	def _format_snmp_mac(self, val: str) -> Union[str, None]:
+	def _format_snmp_mac(self, val: str) -> str | None:
 		"""
 		Format a MAC address from SNMP data to a more human-readable format
 
@@ -663,3 +681,38 @@ class UbiquitiScan(SNMPScanner):
 
 		self.host.manufacturer = 'Ubiquiti Networks Inc.'
 		self.host.os_name = 'UniFi OS'
+
+		if self.host.type is None and len(self.host.ports) >= 12:
+			# Maybe a switch?
+			self.host.type = HostType.SWITCH
+
+	def get_ports(self):
+		ports = super().get_ports()
+
+		if self.host.model == 'UDM-Pro':
+			# The UDM Pro doesn't support port names, so we'll spoof them.
+			for port in ports.values():
+				if port.label == 'eth0':
+					port.label = 'Port 1'
+				if port.label == 'eth1':
+					port.label = 'Port 2'
+				if port.label == 'eth2':
+					port.label = 'Port 3'
+				if port.label == 'eth3':
+					port.label = 'Port 4'
+				if port.label == 'eth4':
+					port.label = 'Port 5'
+				if port.label == 'eth5':
+					port.label = 'Port 6'
+				if port.label == 'eth6':
+					port.label = 'Port 7'
+				if port.label == 'eth7':
+					port.label = 'Port 8'
+				if port.label == 'eth8':
+					port.label = 'Port 9'
+				if port.label == 'eth9':
+					port.label = 'SPF+ 1'
+				if port.label == 'eth10':
+					port.label = 'SPF+ 2'
+
+		return ports
