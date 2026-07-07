@@ -1,6 +1,5 @@
 import json
 import logging
-import re
 from datetime import datetime
 from urllib import request
 import uuid
@@ -33,7 +32,11 @@ class HostPortType(IntEnum):
 	ISO88023_CSMACD = 7
 	ISO88024_TOKENBUS = 8
 	ISO88025_TOKENRING = 9
+	ISO88022_LLC = 10
 	STAR_LAN = 11
+	G703_AT_64K = 12
+	G703_AT_2MB = 13
+	RESERVED_14 = 14
 	FDDI = 15
 	LAP_B = 16
 	SDLC = 17
@@ -55,17 +58,136 @@ class HostPortType(IntEnum):
 	RS232 = 33
 	PARA = 34
 	ARCNET = 35
+	ATM_SUB_INTERFACE = 36
 	ATM = 37
+	X25_HUNT_GROUP = 38
 	SONET = 39
 	X25_PLE = 40
 	ISO88026_MAN = 41
 	SMDS_DXI = 42
 	FR_FORWARD = 43
 	CENTRONICS = 44
+	MAC_LAYER_FILTER_PSEUDO = 45
+	REPEATER_PSEUDO_INTERFACE = 46
+	HIPPI = 47
+	MODEM = 48
+	AAL5 = 49
+	SONET_PATH = 50
+	SONET_VT = 51
+	SMDS_ICIP = 52
+	PROPRIETARY_VIRTUAL = 53
+	PROPRIETARY_MULTIPLEX = 54
+	FAST_100_BASE_VG = 55
+	FIBRE_CHANNEL = 56
+	HIPPI_INTERFACE = 57
+	FRAME_RELAY_INTERCONNECT = 58
+	ATM_FUNI = 59
+	ATM_IMA = 60
+	PPP_MULTILINK_BUNDLE = 61
+	IP_OVER_CDLM = 62
+	ARAP = 63
+	PROP_CN_S_S_LINK = 64
+	IP_OVER_ATM = 65
+	DIGITAL_SIGNAL_0 = 66
+	DIGITAL_SIGNAL_1 = 67
+	PROPRIETARY_P2P_STRUCTURE = 68
+	SR_PDS = 69
+	ASYNC = 70
 	IEEE80211 = 71          # Wireless LAN / Wi-Fi
+	INTERLEAVE = 72
+	FAST = 73
+	IP_IN_IP = 74
+	DIGITAL_SIGNAL_3 = 75
+	RADSL = 76
+	SDSL = 77
+	VDSL = 78
+	ISO88025_CR_FP = 79
+	MYRINET = 80
+	VOICE_EM = 81
+	VOICE_FXO = 82
+	VOICE_FXS = 83
+	VOICE_ENCAP = 84
+	VOICE_OVER_IP = 85
+	ATM_DXI = 86
+	ATM_PASSTHROUGH = 87
+	L3_IP_TUNNEL = 88
+	COFFEE = 89                 # Yes, actual RFC 2325 hyper text coffee pot control
+	CES = 90
+	ATM_SUB_LOGICAL = 91
+	V35 = 92
+	HSSI = 93
+	X25_ASYNCH = 94
+	X25_OVER_TCP = 95
+	X25_B_CHANNEL = 96
+	MIL_STD_188_154 = 97
+	SNA_B_CHANNEL = 98
+	SNA_OVER_LLC = 99
+	IP_OVER_FRAME_RELAY = 100
+	TOKEN_RING_P2P = 101
+	RAC = 102
+	ATM_LOGICAL = 103
+	MPEG = 104
+	PROP_WIRELESS_P2P = 105
+	FR_DLCI_SUB_INTERFACE = 106
+	G703_AT_2MB_STRUCTURED = 107
+	G703_AT_64K_STRUCTURED = 108
+	DIGITAL_SIGNAL_1_DATA = 109
+	ISDN_U_INTERFACE = 110
+	LAP_D = 111
+	IP_SWITCH = 112
+	RSRB = 113
+	DLSW = 114
+	TI_IN_IN = 115
+	DIGITAL_SIGNAL_2 = 116
+	G703_AT_8MB = 117
+	G703_AT_34MB = 118
+	G703_AT_140MB = 119
+	PROP_MULTIPLEX_SUB_INTERFACE = 120
+	HL_SERIAL = 121
+	MPLS = 122
+	MULTI_PROTO_INTERNAL_SUPPORT = 123
+	L2_VLAN_FAST_ETHERNET = 124
+	L3_VLAN_FAST_ETHERNET = 125
+	MPOA_CLIENT = 126
+	MPOA_SERVER = 127
+	STACK_TO_STACK = 128
+	VIRTUAL_IP_ADDRESS = 129
+	MPLS_TUNNEL = 130
 	TUNNEL = 131            # Encapsulated tunnel interfaces (GRE, IPsec, etc.)
+	RESERVED_132 = 132
+	RESERVED_133 = 133
+	IP_OVER_TR = 134
+	L3_VLAN = 136
+	L2_VLAN = 137
+	WIRELESS_MAC = 138
+	WIRELESS_PHY = 139
+	VOICE_OVER_ATM = 140
+	VOICE_OVER_FRAME_RELAY = 141
+	IDSL = 142
+	BOND_INTERFACE = 143
+	FRAME_RELAY_UNI = 144
+	MFR_UNI = 145
+	CESOPSN = 146
+	LAP_F = 147
+	VIRTUAL_PPPOE = 148
+	VIRTUAL_PPPOA = 149
+	TE_LINK = 150
+	ETHERNET_MAC_LAYER = 151
+	PROP_ATM = 152
+	G709_ODU = 153
+	G709_OTU = 154
 	IEEE8023AD_LAG = 161    # Link Aggregation / Port Channel / LACP Bond
 	VLAN = 135              # Layer 2 Virtual LAN Interface (SVI)
+	BRIDGE = 209                # Transparent bridge interface (e.g. MikroTik Bridge)
+	WWAN = 243                  # Wireless WAN / LTE / 5G Cellular Interfaces
+	XDSL = 251                  # Generic xDSL Interface
+
+	@classmethod
+	def from_int(cls, value: int) -> 'HostPortType':
+		try:
+			return cls(value)
+		except ValueError:
+			return cls.OTHER
 
 
 class HostType(StrEnum):
@@ -183,12 +305,6 @@ class Host:
 		:type contact: str|None
 		"""
 
-		self.floor = None
-		"""
-		Floor where the device is located, (if applicable)
-		:type floor: str|None
-		"""
-
 		self.location = None
 		"""
 		Location where the device is located, (if applicable)
@@ -232,6 +348,12 @@ class Host:
 		:type os_date: str|None
 		"""
 
+		self.os_vendor = None
+		"""
+		Name of the OS vendor
+		:type os_vendor: str|None
+		"""
+
 		self.serial = None
 		"""
 		Serial number of the device, (if available)
@@ -248,24 +370,6 @@ class Host:
 		"""
 		SNMP object ID of the device, (if available)
 		:type object_id: str|None
-		"""
-
-		self.address = None
-		"""
-		Physical address of the device, (if available)
-		:type address: str|None
-		"""
-
-		self.city = None
-		"""
-		City where the device is located, (if available)
-		:type city: str|None
-		"""
-
-		self.state = None
-		"""
-		State/Province where the device is located, (if available)
-		:type state: str|None
 		"""
 
 		self.log_lines = ''
@@ -320,21 +424,11 @@ class Host:
 		:type uptime: int|None
 		"""
 
-		self.consumables = []
+		self.consumables = {}
 		"""
 		Consumables, usually for printers
-		:type consumables: list[HostConsumable]
+		:type consumables: dict[str, HostConsumable]
 		"""
-
-		# Set override defaults
-		if 'address' in config:
-			self.address = config['address']
-
-		if 'city' in config:
-			self.city = config['city']
-
-		if 'state' in config:
-			self.state = config['state']
 
 	def log(self, msg: str):
 		"""
@@ -510,8 +604,12 @@ class Host:
 
 			if self.os_name is not None:
 				firmware['name'] = self.os_name
-			if self.manufacturer is not None:
+
+			if self.os_vendor is not None:
+				firmware['manufacturer'] = self.os_vendor
+			elif self.manufacturer is not None:
 				firmware['manufacturer'] = self.manufacturer
+
 			if self.os_date is not None:
 				firmware['date'] = self.os_date
 
@@ -550,7 +648,7 @@ class Host:
 
 		if self.type == HostType.PRINTER and len(self.consumables) > 0:
 			consumables = {}
-			for consumable in self.consumables:
+			for consumable in self.consumables.values():
 				consumables |= consumable.to_glpi_cartridge()
 			payload['content']['cartridges'] = [consumables]
 
@@ -646,49 +744,24 @@ class Host:
 		if self.hostname is None or self.hostname == '':
 			self.hostname = self.ip
 
-	def set_location(self, val: str):
-		"""
-		Check if there is a floor indication ("FL...") in the location and separate that as the floor attribute
-		:param val:
-		:return:
-		"""
-		if val is None:
-			return
-
-		floor_match = re.match(r'^FL([0-9A-Z]+) ', val)
-		if floor_match:
-			self.floor = floor_match.group(1)
-			self.location = val[len(self.floor) + 2:].strip()
-		else:
-			self.location = val
-
 	def __repr__(self) -> str:
 		return f'<Host ip:{self.ip} mac:{self.mac} hostname:{self.hostname} descr:{self.descr}>'
 
 	def to_dict(self) -> dict:
-		ports = {}
-		for name, iface in self.ports.items():
-			ports[name] = iface.to_dict()
-
 		data = {
 			'ip': self.ip,
 			'mac': self.mac,
 			'hostname': self.hostname,
 			'gateway': self.gateway,
 			'contact': self.contact,
-			'floor': self.floor,
 			'location': self.location,
 			'type': self.type,
 			'manufacturer': self.manufacturer,
 			'model': self.model,
 			'serial': self.serial,
-			'ports': ports,
 			'os_name': self.os_name,
 			'os_version': self.os_version,
 			'descr': self.descr,
-			'address': self.address,
-			'city': self.city,
-			'state': self.state,
 			'ping': self.ping,
 		}
 
@@ -696,6 +769,11 @@ class Host:
 			data['consumables'] = []
 			for consumable in self.consumables:
 				data['consumables'].append(consumable.to_dict())
+
+		if len(self.ports) > 0:
+			data['ports'] = []
+			for port in self.ports.values():
+				data['ports'].append(port.to_dict())
 
 		if 'fields' in self.config and self.config['fields'] is not None:
 			# Only include the fields specified in the list

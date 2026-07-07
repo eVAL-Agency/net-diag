@@ -8,7 +8,7 @@ from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget
 from pysnmp.hlapi.v3arch.asyncio import ContextData
 from pysnmp.proto import rfc1905
 import logging
-from pysnmp.proto.rfc1902 import OctetString
+from pysnmp.proto.rfc1902 import OctetString, IpAddress
 
 
 def _cleanup_value(var_bind):
@@ -20,6 +20,11 @@ def _cleanup_value(var_bind):
 		return None
 	if isinstance(var_bind[1], ObjectIdentity):
 		val = '.'.join(map(str, var_bind[1].asTuple()))
+	elif isinstance(var_bind[1], IpAddress):
+		# prettyPrint handles these just fine, but do a little extra logic to handle '0.0.0.0' as None.
+		val = var_bind[1].prettyPrint()
+		if val == '0.0.0.0':
+			val = None
 	elif isinstance(var_bind[1], OctetString):
 		# Ensure pysnmp doesn't trip up with NULL bytes at the end of strings.
 		val_bytes = var_bind[1].asOctets()
@@ -50,7 +55,7 @@ async def snmp_lookup_single(hostname: str, community: str, oids: str | list[str
 		for oid in oids:
 			lookups.append(ObjectType(ObjectIdentity(oid)))
 	else:
-		count = 1
+		count = None
 		lookups = [ObjectType(ObjectIdentity(oids))]
 	snmpEngine = SnmpEngine()
 	auth = CommunityData(community, mpModel=1)
@@ -82,14 +87,14 @@ async def snmp_lookup_single(hostname: str, community: str, oids: str | list[str
 			val = _cleanup_value(var_bind)
 			key = var_bind[0].getOid().__str__()
 			logging.debug('[snmp_lookup] %s = %s' % (key, val))
-			if count == 1:
+			if count is None:
 				# Single OID was requested.
 				return val
 			else:
 				if val is not None:
 					ret[key] = val
 
-		return ret
+		return None if count is None else ret
 
 
 async def snmp_lookup_bulk(hostname: str, community: str, oid: str) -> dict:

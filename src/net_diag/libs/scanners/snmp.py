@@ -33,10 +33,13 @@ class SNMPScanner(ScannerInterface):
 			],
 			'os_version': [
 				'1.3.6.1.2.1.16.19.2',
+				'1.3.6.1.2.1.16.19.2.0',
+				'1.0.8802.1.1.2.1.5.4795.1.2.4.0',  # LLDP-MED
 			],
 			'model': [
 				'1.3.6.1.2.1.16.19.3.0',  # Standard Definition for Model
-				'1.3.6.1.2.1.43.5.1.1.16.1'  # Printer Name
+				'1.3.6.1.2.1.43.5.1.1.16.1',  # Printer Name
+				'1.0.8802.1.1.2.1.5.4795.1.2.2.0',  # LLDP-MED
 			],
 			'gateway': [
 				'1.3.6.1.2.1.4.21.1.7.0.0.0.0',
@@ -53,54 +56,73 @@ class SNMPScanner(ScannerInterface):
 		"""
 
 		self.port_lookups = {
-			'name': '1.3.6.1.2.1.31.1.1.1.1',
-			'type': '1.3.6.1.2.1.2.2.1.3',
-			'mtu': '1.3.6.1.2.1.2.2.1.4',
-			'speed': '1.3.6.1.2.1.31.1.1.1.15',
-			'mac': '1.3.6.1.2.1.2.2.1.6',
-			'admin': '1.3.6.1.2.1.2.2.1.7',
-			'status': '1.3.6.1.2.1.2.2.1.8',
-			'bytes_rx': '1.3.6.1.2.1.31.1.1.1.6',
-			'errors_rx': '1.3.6.1.2.1.2.2.1.14',
-			'bytes_tx': '1.3.6.1.2.1.31.1.1.1.10',
-			'errors_tx': '1.3.6.1.2.1.2.2.1.20',
-			'ips': '1.3.6.1.2.1.4.20.1.2',
-			'vlan_pid': '1.3.6.1.2.1.17.7.1.4.5.1.1',
-			'vlan_egress': '1.3.6.1.2.1.17.7.1.4.2.1.4',
-			'label': '1.3.6.1.2.1.31.1.1.1.18',
+			'name': [
+				'1.3.6.1.2.1.31.1.1.1.1',  # New 64-bit ifXTable lookup
+				'1.3.6.1.2.1.2.2.1.2'  # Legacy 32-bit ifTable lookup
+			],
+			'type': [
+				'1.3.6.1.2.1.2.2.1.3'
+			],
+			'mtu': [
+				'1.3.6.1.2.1.2.2.1.4'
+			],
+			'speed_mbps': [
+				'1.3.6.1.2.1.31.1.1.1.15',  # New 64-bit ifXTable lookup
+			],
+			'speed': [
+				'1.3.6.1.2.1.2.2.1.5'  # Legacy 32-bit ifTable lookup
+			],
+			'mac': [
+				'1.3.6.1.2.1.2.2.1.6'
+			],
+			'admin': [
+				'1.3.6.1.2.1.2.2.1.7'
+			],
+			'status': [
+				'1.3.6.1.2.1.2.2.1.8'
+			],
+			'bytes_rx': [
+				'1.3.6.1.2.1.31.1.1.1.6',  # New 64-bit ifXTable lookup
+				'1.3.6.1.2.1.2.2.1.10'  # Legacy 32-bit ifTable lookup
+			],
+			'errors_rx': [
+				'1.3.6.1.2.1.2.2.1.14'
+			],
+			'bytes_tx': [
+				'1.3.6.1.2.1.31.1.1.1.10',  # New 64-bit ifXTable lookup
+				'1.3.6.1.2.1.2.2.1.16'  # Legacy 32-bit ifTable lookup
+			],
+			'errors_tx': [
+				'1.3.6.1.2.1.2.2.1.20'
+			],
+			'ips': [
+				'1.3.6.1.2.1.4.20.1.2'
+			],
+			'vlan_pid': [
+				'1.3.6.1.2.1.17.7.1.4.5.1.1'
+			],
+			'vlan_egress': [
+				'1.3.6.1.2.1.17.7.1.4.2.1.4'
+			],
+			'label': [
+				'1.3.6.1.2.1.31.1.1.1.18'
+			],
 		}
 		"""
 		All lookups for various port information
 		"""
 
-		self.speed_multiplier = 1000000
-		"""
-		For ifHighSpeed, set this to 1000000 (as 1 means 1Mbps)
-		for regular lookup, set this to 1 for direct bps retrieval
-		"""
-
 		self.descr_parses = (
-			(
-				#  ; AXIS 212 PTZ; Network Camera; 4.49; Jun 18 2009 13:28; 14D; 1;
-				r'^ ; AXIS (?P<model>[^;]*); Network Camera; (?P<os_version>[^;]*); [ADFJMNOS][aceopu][bcglnprtvy] [0-9]{1,2} [0-9]{4} [0-9]{1,2}:[0-9]{2};.*',  # noqa: E501
-				{'manufacturer': 'Axis Communications AB.', 'type': HostType.CAMERA}
-			),
-			(
-				# 24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots
-				r'^24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots$',
-				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': HostType.SWITCH}
-			),
 			(
 				# H.264 Mega-Pixel Network Camera
 				r'^H.264 Mega-Pixel Network Camera$',
 				{'type': HostType.CAMERA}
 			),
-			(
-				# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
-				r'^JetStream 24-Port Gigabit Smart PoE\+ Switch with 4 SFP Slots$',
-				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': HostType.SWITCH}
-			)
 		)
+		"""
+		List of Descr extraction fields
+		"""
+
 		self.vlans_reversed = False
 		"""
 		Some devices, such as Ubiquiti, have their VLANs reversed.
@@ -118,17 +140,29 @@ class SNMPScanner(ScannerInterface):
 		scanners = {
 			# 1.3.6.1.4.1.8072.3.2.10 - Linux
 			# 1.3.6.1.4.1.4413 - Broadcom
-			'1.3.6.1.4.1.11.2.3.9.1': HPScan,
-			'1.3.6.1.4.1.14988.1': MikrotikScan,
-			'1.3.6.1.4.1.14988.2': MikrotikScan,
-			'1.3.6.1.4.1.41112': UbiquitiScan,
-			'DEFAULT': SNMPScanner,
+			'1.3.6.1.4.1.9': CiscoScanner,
+			'1.3.6.1.4.1.11': HPScanner,
+			'1.3.6.1.4.1.253': XeroxScanner,
+			'1.3.6.1.4.1.318': APCScanner,
+			'1.3.6.1.4.1.367': RicohScanner,
+			'1.3.6.1.4.1.368': AxisScanner,
+			'1.3.6.1.4.1.1347': KyoceraScanner,
+			'1.3.6.1.4.1.1602': CanonScanner,
+			'1.3.6.1.4.1.2435': BrotherScanner,
+			'1.3.6.1.4.1.2636': JuniperScanner,
+			'1.3.6.1.4.1.6574': SynologyScanner,
+			'1.3.6.1.4.1.11863': TPLinkScanner,
+			'1.3.6.1.4.1.12356': FortinetScanner,
+			'1.3.6.1.4.1.14988': MikrotikScanner,
+			'1.3.6.1.4.1.18536': AxisScanner,
+			'1.3.6.1.4.1.41112': UbiquitiScanner,
+			'1.3.6.1.4.1.47196': ArubaScanner,
 		}
 
 		descrs = {
-			r'^Linux UBNT .*': UbiquitiScan,  # Linux UBNT 3.18.24 #0 Thu Aug 30 12:10:54 2018 mips
-			r'^Ubiquiti UniFi .*': UbiquitiScan,  # Ubiquiti UniFi UDM-Pro 4.1.13 Linux 4.19.152 al324
-			r'^US-8-60W, .* Linux .*': UbiquitiScan,  # US-8-60W, 4.0.20.10893, Linux 3.6.5
+			r'^Linux UBNT .*': UbiquitiScanner,  # Linux UBNT 3.18.24 #0 Thu Aug 30 12:10:54 2018 mips
+			r'^Ubiquiti UniFi .*': UbiquitiScanner,  # Ubiquiti UniFi UDM-Pro 4.1.13 Linux 4.19.152 al324
+			r'^US-8-60W, .* Linux .*': UbiquitiScanner,  # US-8-60W, 4.0.20.10893, Linux 3.6.5
 		}
 
 		if not host.descr:
@@ -143,9 +177,10 @@ class SNMPScanner(ScannerInterface):
 			return None
 
 		# Default is to use the sysObjectID to determine the scanner.
-		if host.object_id in scanners:
-			host.log('Using SNMP scanner %s due to OID match' % scanners[host.object_id].__name__)
-			return scanners[host.object_id](host)
+		for oid, scanner in scanners.items():
+			if host.object_id == oid or host.object_id.startswith(oid + '.'):
+				host.log('Using SNMP scanner %s due to OID match' % scanner.__name__)
+				return scanner(host)
 
 		# Some manufacturers don't set a meaningful sysObjectID, so we use the description instead.
 		for pattern, scanner in descrs.items():
@@ -216,11 +251,7 @@ class SNMPScanner(ScannerInterface):
 
 		# Set all the basic keys
 		for key, val in values.items():
-			if key == 'location':
-				self.host.set_location(val)
-			else:
-				if key == 'uptime' and val is not None:
-					val = int(val)
+			if val != '':
 				setattr(self.host, key, val)
 
 		self.host.ports = self.get_ports()
@@ -286,44 +317,6 @@ class SNMPScanner(ScannerInterface):
 		"""
 		return self._lookup_single('sysObjectID', '1.3.6.1.2.1.1.2.0')
 
-	def get_basic_keys(self) -> dict:
-		"""
-		Get the basic keys for this device.
-
-		Basic keys are single SNMP values which do not require any additional processing.
-		:return:
-		"""
-		ret = {}
-		for key, oids in self.basic_lookups.items():
-			if getattr(self.host, key) is not None:
-				# Value already set on the host
-				ret[key] = getattr(self.host, key)
-			else:
-				for oid in oids:
-					val = self._lookup_single(key, oid)
-					if val is not None:
-						ret[key] = val
-						break
-
-		return ret
-
-	def get_mac(self) -> str | None:
-		"""
-		Perform a basic SNMP scan to get the MAC Address of the device.
-		:return:
-		"""
-		addresses = self._lookup_bulk('MAC', self.port_lookups['mac'])
-		for key, val in addresses.items():
-			val = self._format_snmp_mac(val)
-			if val is None:
-				# Skip invalid MAC addresses
-				continue
-
-			self.host.log('Found MAC address of %s' % val)
-			return val
-
-		return None
-
 	def get_ports(self) -> dict[str, HostPort] | None:
 		"""
 		Get port details for this device, (usually just switches)
@@ -337,82 +330,79 @@ class SNMPScanner(ScannerInterface):
 			self.host.log('Device does not contain any port information, skipping')
 			return None
 
-		for key, val in names.items():
-			port_id = key[len(self.port_lookups['name']) + 1:]
+		for port_id, val in names.items():
 			ret[port_id] = HostPort()
+			if val == '':
+				# Some devices don't provide a name for the port
+				val = f'Port{port_id}'
 			ret[port_id].name = val
 			ret[port_id].number = int(port_id)
 
 		labels = self._lookup_bulk('Port Labels', self.port_lookups['label'])
-		for key, val in labels.items():
-			port_id = key[len(self.port_lookups['label']) + 1:]
-			ret[port_id].label = val
+		for port_id, val in labels.items():
+			if val != '':
+				# Some devices just return a blank string if the alias isn't set.
+				# This can cause issues downstream as a dependent system may set that to all ports.
+				ret[port_id].label = val
 
 		types = self._lookup_bulk('Port Types', self.port_lookups['type'])
-		for key, val in types.items():
-			port_id = key[len(self.port_lookups['type']) + 1:]
-			ret[port_id].type = HostPortType(int(val))
+		for port_id, val in types.items():
+			ret[port_id].type = HostPortType.from_int(int(val))
 
 		mtus = self._lookup_bulk('Port MTUs', self.port_lookups['mtu'])
-		for key, val in mtus.items():
-			port_id = key[len(self.port_lookups['mtu']) + 1:]
+		for port_id, val in mtus.items():
 			ret[port_id].mtu = int(val)
 
-		speeds = self._lookup_bulk('Port Speeds', self.port_lookups['speed'])
-		for key, val in speeds.items():
-			port_id = key[len(self.port_lookups['speed']) + 1:]
-			ret[port_id].speed = int(val) * self.speed_multiplier
+		speeds = self._lookup_bulk('Port Speeds', self.port_lookups['speed_mbps'])
+		if len(speeds) > 0:
+			multiplier = 1000000
+		else:
+			# ifXTable lookup failed; this is probably an older device.
+			speeds = self._lookup_bulk('Port Speeds', self.port_lookups['speed'])
+			multiplier = 1
+		for port_id, val in speeds.items():
+			ret[port_id].speed = int(val) * multiplier
 
 		macs = self._lookup_bulk('Port MACs', self.port_lookups['mac'])
-		for key, val in macs.items():
-			port_id = key[len(self.port_lookups['mac']) + 1:]
+		for port_id, val in macs.items():
 			ret[port_id].mac = self._format_snmp_mac(val)
 
 		admin_statuses = self._lookup_bulk('Admin Status', self.port_lookups['admin'])
-		for key, val in admin_statuses.items():
-			port_id = key[len(self.port_lookups['admin']) + 1:]
+		for port_id, val in admin_statuses.items():
 			ret[port_id].admin_status = HostPortAdminStatus(int(val))
 
 		user_statuses = self._lookup_bulk('User Status', self.port_lookups['status'])
-		for key, val in user_statuses.items():
-			port_id = key[len(self.port_lookups['status']) + 1:]
+		for port_id, val in user_statuses.items():
 			ret[port_id].user_status = HostPortUserStatus(int(val))
 
 		bytes_received = self._lookup_bulk('Bytes Received', self.port_lookups['bytes_rx'])
-		for key, val in bytes_received.items():
-			port_id = key[len(self.port_lookups['bytes_rx']) + 1:]
+		for port_id, val in bytes_received.items():
 			ret[port_id].bytes_rx = int(val)
 
 		errors_received = self._lookup_bulk('Errors Received', self.port_lookups['errors_rx'])
-		for key, val in errors_received.items():
-			port_id = key[len(self.port_lookups['errors_rx']) + 1:]
+		for port_id, val in errors_received.items():
 			ret[port_id].errors_rx = int(val)
 
 		bytes_sent = self._lookup_bulk('Bytes Sent', self.port_lookups['bytes_tx'])
-		for key, val in bytes_sent.items():
-			port_id = key[len(self.port_lookups['bytes_tx']) + 1:]
+		for port_id, val in bytes_sent.items():
 			ret[port_id].bytes_tx = int(val)
 
 		errors_sent = self._lookup_bulk('Errors Sent', self.port_lookups['errors_tx'])
-		for key, val in errors_sent.items():
-			port_id = key[len(self.port_lookups['errors_tx']) + 1:]
+		for port_id, val in errors_sent.items():
 			ret[port_id].errors_tx = int(val)
 
 		interface_ips = self._lookup_bulk('IP Addresses', self.port_lookups['ips'])
-		for key, val in interface_ips.items():
-			ip_address = key[len(self.port_lookups['ips']) + 1:]
+		for ip_address, val in interface_ips.items():
 			port_id = str(val)
 			if port_id in ret:
 				ret[port_id].ips.append(ip_address)
 
 		vlan_pids = self._lookup_bulk('Native VLAN', self.port_lookups['vlan_pid'])
-		for key, val in vlan_pids.items():
-			port_id = key[len(self.port_lookups['vlan_pid']) + 1:]
+		for port_id, val in vlan_pids.items():
 			ret[port_id].vlan = val
 
 		vlan_egresses = self._lookup_bulk('VLAN Egress', self.port_lookups['vlan_egress'])
-		for key, val in vlan_egresses.items():
-			vlan_id = key[len(self.port_lookups['vlan_egress']) + 3:]
+		for vlan_id, val in vlan_egresses.items():
 			# Convert 0xf400040000000000 to an integer so we can check each bit
 			# This translates to 0b11110100000000000000010000000000
 			# where each port (left to right) is 1 or 0 if that VLAN is enabled on that port.
@@ -450,7 +440,7 @@ class SNMPScanner(ScannerInterface):
 			1.3.6.1.2.1.43.11.1.1.8.1.1 = INTEGER: 100 - max capacity
 			1.3.6.1.2.1.43.11.1.1.9.1.1 = INTEGER: 80 - current level
 			'''
-			parts = key[len(consumables_lookup) + 1:].split('.')
+			parts = key.split('.')
 			record_type = int(parts[0])
 			ret_idx = parts[2]
 
@@ -473,18 +463,17 @@ class SNMPScanner(ScannerInterface):
 
 		colorant_lookup = '1.3.6.1.2.1.43.12.1.1.4.1'
 		records = self._lookup_bulk('Color Support Scan', colorant_lookup)
-		for key, val in records.items():
+		for ret_idx, val in records.items():
 			'''
 			iso.3.6.1.2.1.43.12.1.1.4.1.1 = STRING: "black"
 			iso.3.6.1.2.1.43.12.1.1.4.1.2 = STRING: "cyan"
 			iso.3.6.1.2.1.43.12.1.1.4.1.3 = STRING: "magenta"
 			iso.3.6.1.2.1.43.12.1.1.4.1.4 = STRING: "yellow"
 			'''
-			ret_idx = key[len(colorant_lookup) + 1:]
 			if ret_idx in raw:
 				raw[ret_idx].color = val
 
-		return list(raw.values())
+		return raw
 
 	def _lookup_single(self, name: str, oid: str) -> str | None:
 		"""
@@ -542,20 +531,40 @@ class SNMPScanner(ScannerInterface):
 
 		return ret
 
-	def _lookup_bulk(self, name: str, oid: str) -> dict:
+	def _lookup_bulk(self, name: str, oids: str | list[str]) -> dict:
 		"""
 		Perform a bulk SNMP get to retrieve some values in a given parent
+
+		If a list of OIDs are provided, each one is checked (in order) until a valid OID is found.
+		This allows for specialized lookups with fallback support natively.
+
 		:param name: string Name of this scan for the logs
-		:param oid: string SNMP OID to scan
+		:param oids: string SNMP OID to scan
 		:return:
 		"""
-		self.host.log('Scanning for %s - OID:%s' % (name, oid))
-		val = asyncio.run(snmp_lookup_bulk(self.host.ip, str(self.host.config['community']), oid))
-		if len(val) == 0:
-			self.host.log('OID does not exist or value was NULL')
-		else:
-			self.host.log('Found %s items' % len(val))
-		return val
+
+		if not isinstance(oids, list):
+			oids = [oids]
+
+		for oid in oids:
+			self.host.log('Scanning for %s - OID:%s' % (name, oid))
+			val = asyncio.run(snmp_lookup_bulk(self.host.ip, str(self.host.config['community']), oid))
+			if len(val) > 0:
+				self.host.log('Found %s items' % len(val))
+				# Map these to just the individual suffix key,
+				# so the calling script doesn't have to worry about the actual OID used for the lookup.
+				# Example, if [1.2.3.4, 1.2.90.23.112] are used for lookups and both contain
+				# .0, .1, .2, the resulting dictionary will just contain 0, 1, and 2 regardless of the table
+				ret = {}
+				lookup_len = len(oid)
+				for k, v in val.items():
+					ret[k[lookup_len + 1:]] = v
+				return ret
+			else:
+				self.host.log('OID does not exist or value was NULL')
+
+		# No OID found, just return an empty dictionary.
+		return {}
 
 	def _format_snmp_mac(self, val: str) -> str | None:
 		"""
@@ -581,9 +590,111 @@ class SNMPScanner(ScannerInterface):
 		return val
 
 
-class HPScan(SNMPScanner):
+class APCScanner(SNMPScanner):
+	pass
+
+
+class ArubaScanner(SNMPScanner):
+	pass
+
+
+class AxisScanner(SNMPScanner):
 	"""
-	HP-specific scan function.
+	Axis-specific scan functionality
+	"""
+	def __init__(self, host):
+		super().__init__(host)
+		self.descr_parses = (
+			(
+				#  ; AXIS 212 PTZ; Network Camera; 4.49; Jun 18 2009 13:28; 14D; 1;
+				#  ; AXIS M3005; Network Camera; 5.51.6; Aug 15 2019 12:52; 1A7; 1;
+				r'^ ; AXIS (?P<model>[^;]*); Network Camera; (?P<os_version>[^;]*); [ADFJMNOS][aceopu][bcglnprtvy] [0-9]{1,2} [0-9]{4} [0-9]{1,2}:[0-9]{2};.*',  # noqa: E501
+				{'manufacturer': 'Axis Communications AB.', 'type': HostType.CAMERA}
+			),
+		)
+
+
+class BrotherScanner(SNMPScanner):
+	"""
+	Brother-specific scan functionality
+	"""
+
+	def __init__(self, host):
+		super().__init__(host)
+		self.descr_parses = (
+			(
+				# Brother NC-8500h, Firmware Ver.1.00  (12.12.07),MID 8CE-415,FID 2
+				r'^Brother [^,]+, Firmware Ver.[0-9\.]+.*$',
+				{'manufacturer': 'Brother Industries, Ltd.', 'type': HostType.PRINTER}
+			),
+		)
+
+	def run_scan(self):
+		super().run_scan()
+
+		'''
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.1 = STRING: "MODEL=\"MFC-9330CDW\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.2 = STRING: "CTYPE = \"MFC\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.3 = STRING: "SERIAL=\"U63480C3J120117\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.4 = STRING: "SPEC=\"0401\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.5 = STRING: "FIRMID=\"MAIN\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.6 = STRING: "FIRMVER=\"C1302050813:0A26\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.7 = STRING: "FIRMID=\"SUB1\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.8 = STRING: "FIRMVER=\"1.01\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.9 = STRING: "FIRMID=\"SUB2\""
+		1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2.10 = STRING: "FIRMVER=\"B1301281100\""
+		'''
+
+		if self.host.model is None or self.host.serial is None or self.host.os_version is None:
+			# These values are provided by a brother-specific lookup.
+			lookup = self._lookup_bulk('Brother Inventory', '1.3.6.1.4.1.2435.2.4.3.99.3.1.6.1.2')
+			last = ('', '')
+			version_id = None
+			version_build = None
+			for key, val in lookup.items():
+				match = re.match(r'^\s*(?P<key>\w+)\s*=\s*\\?"(?P<val>[^"\\]+)\\?"', val)
+				if match:
+					line_key = match.group('key')
+					line_val = match.group('val')
+
+					if line_key == 'MODEL':
+						self.host.model = line_val
+					elif line_key == 'SERIAL':
+						self.host.serial = line_val
+					elif line_key == 'FIRMVER' and last[0] == 'FIRMID' and last[1] == 'MAIN':
+						# C1302050813:0A26
+						version_build = line_val
+						sub_match = re.match(r'^[A-Z]*([0-9]{2})([0-9]{2})([0-9]{2}).*', line_val)
+						if sub_match:
+							self.host.os_date = f'20{sub_match.group(1)}-{sub_match.group(2)}-{sub_match.group(3)}'
+					elif line_key == 'FIRMVER' and last[0] == 'FIRMID' and last[1] == 'SUB1':
+						version_id = line_val
+
+					last = (line_key, line_val)
+				else:
+					last = ('', '')
+
+			if version_build and version_id:
+				self.host.os_version = f'{version_id} ({version_build})'
+			elif version_id:
+				self.host.os_version = version_id
+
+
+class CanonScanner(SNMPScanner):
+	pass
+
+
+class CiscoScanner(SNMPScanner):
+	pass
+
+
+class FortinetScanner(SNMPScanner):
+	pass
+
+
+class HPScanner(SNMPScanner):
+	"""
+	HP-specific scan functionality
 	"""
 
 	def __init__(self, host):
@@ -607,7 +718,15 @@ class HPScan(SNMPScanner):
 		)
 
 
-class MikrotikScan(SNMPScanner):
+class JuniperScanner(SNMPScanner):
+	pass
+
+
+class KyoceraScanner(SNMPScanner):
+	pass
+
+
+class MikrotikScanner(SNMPScanner):
 	"""
 	Mikrotik-specific scan function.
 	"""
@@ -627,7 +746,7 @@ class MikrotikScan(SNMPScanner):
 			),
 			(
 				# CSS326-24G-2S+ SwOS v2.17
-				r'^(?P<model>.*) SwOS v(?P<os_version>[^ ]+)$',
+				r'^(?P<model>.*) (?P<os_name>SwOS) v(?P<os_version>[^ ]+)$',
 				{'type': HostType.SWITCH}
 			)
 		)
@@ -638,7 +757,32 @@ class MikrotikScan(SNMPScanner):
 		self.host.manufacturer = 'Mikrotik'
 
 
-class UbiquitiScan(SNMPScanner):
+class RicohScanner(SNMPScanner):
+	pass
+
+
+class SynologyScanner(SNMPScanner):
+	pass
+
+
+class TPLinkScanner(SNMPScanner):
+	def __init__(self, host):
+		super().__init__(host)
+		self.descr_parses = (
+			(
+				# 24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots
+				r'^24-Port Gigabit Smart PoE Switch with 4 Combo SFP Slots$',
+				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': HostType.SWITCH}
+			),
+			(
+				# JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots
+				r'^JetStream 24-Port Gigabit Smart PoE\+ Switch with 4 SFP Slots$',
+				{'manufacturer': 'TP-Link Technologies Co., LTD.', 'type': HostType.SWITCH}
+			)
+		)
+
+
+class UbiquitiScanner(SNMPScanner):
 	"""
 	Ubiquiti-specific scan function.
 	"""
@@ -716,3 +860,7 @@ class UbiquitiScan(SNMPScanner):
 					port.label = 'SPF+ 2'
 
 		return ports
+
+
+class XeroxScanner(SNMPScanner):
+	pass
