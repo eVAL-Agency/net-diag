@@ -190,7 +190,7 @@ class TraneTracerSCScanner(HTTPScanner):
 
 		self.host.type = HostType.ENVIRONMENTAL
 		self.host.hostname = bacnet_global.find('str', {'name': 'name'}).get('val')
-		self.host.set_location(bacnet_global.find('str', {'name': 'location'}).get('val'))
+		self.host.location = bacnet_global.find('str', {'name': 'location'}).get('val')
 		self.host.manufacturer = about.find('str', {'name': 'vendorName'}).get('val')
 		self.host.model = about.find('str', {'name': 'hardwareType'}).get('val')
 		self.host.serial = about.find('str', {'name': 'hardwareSerialNumber'}).get('val')
