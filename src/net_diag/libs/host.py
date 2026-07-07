@@ -539,6 +539,7 @@ class Host:
 
 		if self.type is None:
 			logging.warning('No type found for GLPI sync on %s' % self.ip)
+			return
 
 		if self.type in [HostType.SERVER, HostType.WORKSTATION]:
 			logging.info('Skipping GLPI sync for computers')
