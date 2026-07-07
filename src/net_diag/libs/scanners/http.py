@@ -361,7 +361,7 @@ class TraneTracerSCScanner(HTTPScanner):
 				host_interface = self.host.find_port_by_mac(f'00:00:00:00:{network_number:02}:00')
 				if host_interface:
 					host_interface.connections.append(mac)
-					host.children_count += 1
+					self.host.children_count += 1
 
 			equipment_uris[equipment_uri] = host
 
