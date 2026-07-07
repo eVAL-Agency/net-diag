@@ -412,6 +412,16 @@ class Host:
 		:type neighbors: dict[str, Host]
 		"""
 
+		self.children_count = 0
+		"""
+		Number of children directly under this device
+
+		A child is generally a network device which is physically connected to this device
+		such as an external serially-connected sensor
+
+		:type children_count: int
+		"""
+
 		self.include = False
 		"""
 		Set to True to force include this device in the scan results,

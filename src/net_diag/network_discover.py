@@ -68,7 +68,7 @@ class Application:
 		self.hosts = []
 		"""
 		List of devices located and scanned (indexed by their IP address).
-		:param hosts: dict[str, Host]
+		:param hosts: list[Host]
 		"""
 
 		self.hosts_by_ip = {}
@@ -501,7 +501,23 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				print('Failed to sync %s to Grist: %s' % (h.ip, e), file=sys.stderr)
 
 	def _sync_glpi(self):
+		# First iteration, save devices which do not have any child associations.
 		for h in self.hosts:
+			if h.children_count > 0:
+				continue
+			if h.ip:
+				ident = h.ip
+			elif h.mac:
+				ident = h.mac
+			else:
+				ident = 'device'
+			print('Syncing %s to GLPI' % ident)
+			h.sync_to_glpi()
+
+		# Next iteration, save devices which DO have child associations.
+		for h in self.hosts:
+			if h.children_count == 0:
+				continue
 			if h.ip:
 				ident = h.ip
 			elif h.mac:
