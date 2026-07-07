@@ -112,13 +112,7 @@ class SNMPScanner(ScannerInterface):
 		All lookups for various port information
 		"""
 
-		self.descr_parses = (
-			(
-				# H.264 Mega-Pixel Network Camera
-				r'^H.264 Mega-Pixel Network Camera$',
-				{'type': HostType.CAMERA}
-			),
-		)
+		self.descr_parses = ()
 		"""
 		List of Descr extraction fields
 		"""
@@ -155,6 +149,7 @@ class SNMPScanner(ScannerInterface):
 			'1.3.6.1.4.1.12356': FortinetScanner,
 			'1.3.6.1.4.1.14988': MikrotikScanner,
 			'1.3.6.1.4.1.18536': AxisScanner,
+			'1.3.6.1.4.1.23465': VivotekScanner,
 			'1.3.6.1.4.1.41112': UbiquitiScanner,
 			'1.3.6.1.4.1.47196': ArubaScanner,
 		}
@@ -190,7 +185,7 @@ class SNMPScanner(ScannerInterface):
 
 		# No specific scanner found, use the default.
 		host.log('Falling back to default SNMP scanner')
-		return scanners['DEFAULT'](host)
+		return SNMPScanner(host)
 
 	@classmethod
 	def discover(cls, host: Host) -> bool:
@@ -860,6 +855,23 @@ class UbiquitiScanner(SNMPScanner):
 					port.label = 'SPF+ 2'
 
 		return ports
+
+
+class VivotekScanner(SNMPScanner):
+	def __init__(self, host: Host):
+		super().__init__(host)
+		self.descr_parses = (
+			(
+				# H.264 Mega-Pixel Network Camera
+				r'^H.264 Mega-Pixel Network Camera$',
+				{'type': HostType.CAMERA}
+			),
+		)
+
+	def run_scan(self):
+		super().run_scan()
+
+		self.host.manufacturer = 'Vivotek Inc.'
 
 
 class XeroxScanner(SNMPScanner):
