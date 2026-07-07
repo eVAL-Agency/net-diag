@@ -501,10 +501,6 @@ Refer to https://github.com/cdp1337/net-diag for sourcecode and full documentati
 				print('Failed to sync %s to Grist: %s' % (h.ip, e), file=sys.stderr)
 
 	def _sync_glpi(self):
-		if self.config['dry_run']:
-			print('Dry run enabled, skipping sync to Grist')
-			return
-
 		for h in self.hosts:
 			if h.ip:
 				ident = h.ip

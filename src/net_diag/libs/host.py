@@ -657,6 +657,10 @@ class Host:
 
 		self.log(json.dumps(payload))
 
+		if 'dry_run' in self.config and self.config['dry_run']:
+			print(json.dumps(payload))
+			return
+
 		headers = {
 			'Content-Type': 'application/json',
 			'User-Agent': 'GLPI-Agent/1.18 (NetworkDiagnostics-Discover)',
