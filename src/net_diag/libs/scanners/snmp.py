@@ -509,6 +509,8 @@ class SNMPScanner(ScannerInterface):
 			lookups += lookup
 		values = asyncio.run(snmp_lookup_single(self.host.ip, str(self.host.config['community']), lookups))
 
+		if values is None:
+			return {}
 		# Map all the located values back to the original keys
 		for oid, val in values.items():
 			# Grab the OID and SNMP value from the lookup
