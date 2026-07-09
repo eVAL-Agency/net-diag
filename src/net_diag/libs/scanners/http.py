@@ -247,7 +247,7 @@ class TraneTracerSCScanner(HTTPScanner):
 		self.get_ports()
 
 		# Find the mac address from the interfaces
-		for iface in self.host.ports.values():
+		for iface in self.host.ports:
 			if self.host.ip in iface.ips:
 				self.host.mac = iface.mac
 				break
@@ -315,15 +315,14 @@ class TraneTracerSCScanner(HTTPScanner):
 				bridge.type = HostType.ENVIRONMENTAL
 
 				# Create the actual network interface for this bridge device
-				bridge_nic = bridge.create_port(0, mac)
+				bridge_nic = bridge.create_port(mac)
 				bridge_nic.ips = [ip]
-				bridge_nic.name = 'network'
 				# Assume that it's connected.
 				bridge_nic.admin_status = HostPortAdminStatus.UP
 				bridge_nic.user_status = HostPortUserStatus.UP
 
 				# Create the MSTP network for this bridge device; this is where the bridged sensors will be linked.
-				bridge_sensor_port = bridge.create_port(network, network_mac)
+				bridge_sensor_port = bridge.create_port(network_mac)
 				bridge_sensor_port.name = network_name
 				bridge_sensor_port.label = f'BACnet {pretty_name} ({network})'
 				bridge_sensor_port.admin_status = HostPortAdminStatus.UP
@@ -426,9 +425,8 @@ class TraneTracerSCScanner(HTTPScanner):
 				child.ip = ip
 
 				# This child has an actual IP address, so ensure it has a network port too.
-				child_port = child.create_port(0, mac)
+				child_port = child.create_port(mac)
 				child_port.ips = [ip]
-				child_port.name = 'network'
 				child_port.admin_status = HostPortAdminStatus.UP
 				child_port.user_status = HostPortUserStatus.UP
 
@@ -440,16 +438,13 @@ class TraneTracerSCScanner(HTTPScanner):
 					self.host.children_count += 1
 
 					# Register a network connection on the child device; this will clone many properties from the parent.
-					child_interface = HostPort()
+					child_interface = child.create_port(mac)
 					child_interface.admin_status = HostPortAdminStatus.UP
 					child_interface.user_status = HostPortUserStatus.UP
-					child_interface.name = 'network'
 					if ip is not None:
 						child_interface.ips = [ip]
-					child_interface.mac = mac
 					child_interface.speed = host_interface.speed
 					child_interface.type = host_interface.type
-					child.ports['network'] = child_interface
 				elif network_number in self._remote_networks:
 					# This device is not on THIS controller, but a bridged controller.
 					# These are still valid and should be tracked on that device as appropriate.
@@ -461,16 +456,13 @@ class TraneTracerSCScanner(HTTPScanner):
 						bridge_interface.connections.append(mac)
 
 						# Register a network connection on the child device; this will clone many properties from the parent.
-						child_interface = HostPort()
+						child_interface = child.create_port(mac)
 						child_interface.admin_status = HostPortAdminStatus.UP
 						child_interface.user_status = HostPortUserStatus.UP
-						child_interface.name = 'network'
 						if ip is not None:
 							child_interface.ips = [ip]
-						child_interface.mac = mac
 						child_interface.speed = bridge_interface.speed
 						child_interface.type = bridge_interface.type
-						child.ports['network'] = child_interface
 
 		# Load the device details, (manufacturer, model, etc)
 		child_data = self._scan_device_details(lookups, equipment_uris)
@@ -535,7 +527,7 @@ class TraneTracerSCScanner(HTTPScanner):
 				ip = self._get_tag_val(tag, 'str', 'ipaddr')
 				mac = self._get_tag_val(tag, 'str', 'macaddr')
 
-				port = self.host.create_port(port_name, mac)
+				port = self.host.create_port(mac)
 				port.name = port_name
 				if ip:
 					port.ips = [ip]
@@ -547,7 +539,7 @@ class TraneTracerSCScanner(HTTPScanner):
 				ip = self._get_tag_val(tag, 'str', 'ipaddr')
 				mac = self._get_tag_val(tag, 'str', 'macaddr')
 
-				port = self.host.create_port(port_name, mac)
+				port = self.host.create_port(mac)
 				port.name = port_name
 				if ip:
 					port.ips = [ip]
@@ -566,7 +558,7 @@ class TraneTracerSCScanner(HTTPScanner):
 			# keep with their logic here.
 			mac = f'00:00:00:00:{network_number:02}:00'
 
-			port = self.host.create_port(port_name, mac)
+			port = self.host.create_port(mac)
 			port.name = port_name
 			port.label = f'BACnet MS/TP {pretty_id} ({network_number})'
 			port.type = HostPortType.PROP_POINT_TO_POINT_SERIAL

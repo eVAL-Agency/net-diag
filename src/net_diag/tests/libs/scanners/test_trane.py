@@ -86,24 +86,24 @@ class TestTraneTracerSCScanner(TestCase):
 
 		self.assertEqual(6, len(host.ports))
 
-		self.assertEqual('172.0.0.1', host.ports['eth0'].ips[0])
-		self.assertEqual('00:11:22:33:44:55', host.ports['eth0'].mac)
-		self.assertEqual('eth0', host.ports['eth0'].name)
-		self.assertEqual(1, host.ports['eth0'].admin_status)
-		self.assertEqual(1, host.ports['eth0'].user_status)
+		self.assertEqual('172.0.0.1', host.ports[0].ips[0])
+		self.assertEqual('00:11:22:33:44:55', host.ports[0].mac)
+		self.assertEqual('eth0', host.ports[0].name)
+		self.assertEqual(1, host.ports[0].admin_status)
+		self.assertEqual(1, host.ports[0].user_status)
 
-		self.assertEqual('192.168.1.10', host.ports['eth1'].ips[0])
-		self.assertEqual('11:11:22:33:44:55', host.ports['eth1'].mac)
-		self.assertEqual('eth1', host.ports['eth1'].name)
-		self.assertEqual(2, host.ports['eth1'].admin_status)
-		self.assertEqual(2, host.ports['eth1'].user_status)
+		self.assertEqual('192.168.1.10', host.ports[1].ips[0])
+		self.assertEqual('11:11:22:33:44:55', host.ports[1].mac)
+		self.assertEqual('eth1', host.ports[1].name)
+		self.assertEqual(2, host.ports[1].admin_status)
+		self.assertEqual(2, host.ports[1].user_status)
 
-		self.assertEqual('00:00:00:00:21:00', host.ports['mstp1'].mac)
-		self.assertEqual(38400, host.ports['mstp1'].speed)
-		self.assertEqual('mstp1', host.ports['mstp1'].name)
-		self.assertEqual('BACnet MS/TP 1 (21)', host.ports['mstp1'].label)
-		self.assertEqual(1, host.ports['mstp1'].admin_status)
-		self.assertEqual(1, host.ports['mstp1'].user_status)
+		self.assertEqual('00:00:00:00:21:00', host.ports[3].mac)
+		self.assertEqual(38400, host.ports[3].speed)
+		self.assertEqual('mstp1', host.ports[3].name)
+		self.assertEqual('BACnet MS/TP 1 (21)', host.ports[3].label)
+		self.assertEqual(1, host.ports[3].admin_status)
+		self.assertEqual(1, host.ports[3].user_status)
 
 		self.assertEqual(4, len(host.neighbors))
 
@@ -134,16 +134,16 @@ class TestTraneTracerSCScanner(TestCase):
 
 		self.assertEqual(2, len(host.ports))
 
-		self.assertEqual(38400, host.ports['mstp1'].speed)
-		self.assertEqual('mstp1', host.ports['mstp1'].name)
-		self.assertEqual('BACnet MS/TP 1 (41)', host.ports['mstp1'].label)
-		self.assertEqual(2, host.ports['mstp1'].admin_status)
+		self.assertEqual(38400, host.ports[0].speed)
+		self.assertEqual('mstp1', host.ports[0].name)
+		self.assertEqual('BACnet MS/TP 1 (41)', host.ports[0].label)
+		self.assertEqual(2, host.ports[0].admin_status)
 
-		self.assertEqual(38400, host.ports['mstp2'].speed)
-		self.assertEqual('mstp2', host.ports['mstp2'].name)
-		self.assertEqual('BACnet MS/TP 2 (42)', host.ports['mstp2'].label)
-		self.assertEqual(1, host.ports['mstp2'].admin_status)
-		self.assertEqual(1, host.ports['mstp2'].user_status)
+		self.assertEqual(38400, host.ports[1].speed)
+		self.assertEqual('mstp2', host.ports[1].name)
+		self.assertEqual('BACnet MS/TP 2 (42)', host.ports[1].label)
+		self.assertEqual(1, host.ports[1].admin_status)
+		self.assertEqual(1, host.ports[1].user_status)
 
 		self.assertEqual(4, len(host.neighbors))
 
@@ -164,7 +164,7 @@ class TestTraneTracerSCScanner(TestCase):
 		self.assertEqual(HostType.ENVIRONMENTAL, neighbor.type)
 		self.assertTrue(neighbor.include)
 		self.assertEqual(1, neighbor.children_count)
-		self.assertIn('00:00:00:00:32:0D', neighbor.ports['32'].connections)
+		self.assertIn('00:00:00:00:32:0D', neighbor.ports[2].connections)
 
 		neighbor = host.neighbors['C0:A8:33:99:44:55']
 		self.assertEqual('PS3037 Building Electric Meter', neighbor.hostname)

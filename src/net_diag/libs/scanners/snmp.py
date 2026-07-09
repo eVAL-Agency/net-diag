@@ -253,7 +253,7 @@ class SNMPScanner(ScannerInterface):
 
 		if self.host.ports is not None:
 			# Grab the MAC from the ports, just grab the first valid one.
-			for port in self.host.ports.values():
+			for port in self.host.ports:
 				if port.mac is not None:
 					self.host.mac = port.mac
 					break
@@ -312,7 +312,7 @@ class SNMPScanner(ScannerInterface):
 		"""
 		return self._lookup_single('sysObjectID', '1.3.6.1.2.1.1.2.0')
 
-	def get_ports(self) -> dict[str, HostPort] | None:
+	def get_ports(self) -> list[HostPort] | None:
 		"""
 		Get port details for this device, (usually just switches)
 		:return:
@@ -415,7 +415,7 @@ class SNMPScanner(ScannerInterface):
 					port_data.vlan_allow.append(vlan_id)
 					self.host.log('Port %s allows VLAN %s' % (port, vlan_id))
 
-		return ret
+		return list(ret.values())
 
 	def get_consumables(self) -> list:
 		"""
@@ -468,7 +468,7 @@ class SNMPScanner(ScannerInterface):
 			if ret_idx in raw:
 				raw[ret_idx].color = val
 
-		return raw
+		return list(raw.values())
 
 	def _lookup_single(self, name: str, oid: str) -> str | None:
 		"""
@@ -832,7 +832,7 @@ class UbiquitiScanner(SNMPScanner):
 
 		if self.host.model == 'UDM-Pro':
 			# The UDM Pro doesn't support port names, so we'll spoof them.
-			for port in ports.values():
+			for port in ports:
 				if port.label == 'eth0':
 					port.label = 'Port 1'
 				if port.label == 'eth1':

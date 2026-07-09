@@ -31,7 +31,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 3,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'lo',
 				'label': None,
 				'admin_status': 1,
@@ -44,7 +44,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['127.0.0.1'],
 			},
-			'2': {
+			1: {
 				'name': 'eth0',
 				'label': None,
 				'admin_status': 1,
@@ -57,7 +57,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 6,
 				'ips': ['169.254.238.74', '192.168.14.31'],
 			},
-			'3': {
+			2: {
 				'name': 'sit0',
 				'label': None,
 				'admin_status': 2,
@@ -93,7 +93,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 3,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'lo',
 				'label': None,
 				'admin_status': 1,
@@ -106,7 +106,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['127.0.0.1'],
 			},
-			'2': {
+			1: {
 				'name': 'eth0',
 				'label': None,
 				'admin_status': 1,
@@ -119,7 +119,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['169.254.72.24', '192.168.14.41'],
 			},
-			'3': {
+			2: {
 				'name': 'sit0',
 				'label': None,
 				'admin_status': 2,
@@ -155,7 +155,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 3,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'lo',
 				'label': None,
 				'admin_status': 1,
@@ -168,7 +168,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['127.0.0.1'],
 			},
-			'2': {
+			1: {
 				'name': 'eth0',
 				'label': None,
 				'admin_status': 1,
@@ -181,7 +181,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['169.254.73.133', '192.168.14.10'],
 			},
-			'3': {
+			2: {
 				'name': 'sit0',
 				'label': None,
 				'admin_status': 2,
@@ -217,7 +217,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 4,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'NC-8500h',
 				'label': None,
 				'admin_status': 1,
@@ -230,7 +230,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['10.200.0.201'],
 			},
-			'2': {
+			1: {
 				'name': 'NC-8100w',
 				'label': None,
 				'admin_status': 2,
@@ -243,7 +243,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'3': {
+			2: {
 				'name': 'NC-8100w',
 				'label': None,
 				'admin_status': 2,
@@ -256,7 +256,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'4': {
+			3: {
 				'name': 'SoftwareLoopBack',
 				'label': None,
 				'admin_status': 1,
@@ -272,7 +272,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_consumables': 10,
 		'consumables': {
-			'1': {
+			0: {
 				'description': 'Black Toner Cartridge',
 				'type': 3,
 				'color': 'black',
@@ -280,7 +280,7 @@ TEST_DEVICE_PROFILES = {
 				'unit': 13,
 				'max': -2
 			},
-			'2': {
+			1: {
 				'description': 'Cyan Toner Cartridge',
 				'type': 3,
 				'color': 'cyan',
@@ -288,7 +288,7 @@ TEST_DEVICE_PROFILES = {
 				'unit': 13,
 				'max': -2
 			},
-			'5': {
+			4: {
 				'description': 'Waste Toner Box',
 				'type': 4,
 				'color': None,
@@ -296,7 +296,7 @@ TEST_DEVICE_PROFILES = {
 				'unit': 13,
 				'max': -2
 			},
-			'6': {
+			5: {
 				'description': 'Belt Unit',
 				'type': 1,
 				'color': None,
@@ -304,7 +304,7 @@ TEST_DEVICE_PROFILES = {
 				'unit': 7,
 				'max': 50000
 			},
-			'9': {
+			8: {
 				'description': 'Magenta Drum Unit',
 				'type': 9,
 				'color': None,
@@ -312,7 +312,7 @@ TEST_DEVICE_PROFILES = {
 				'unit': 7,
 				'max': 15000
 			},
-			'10': {
+			9: {
 				'description': 'Yellow Drum Unit',
 				'type': 9,
 				'color': None,
@@ -343,7 +343,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 12,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'ether1',
 				'label': None,
 				'admin_status': 1,
@@ -356,7 +356,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['172.172.156.202'],
 			},
-			'6': {
+			5: {
 				'name': 'sfp1',
 				'label': None,
 				'admin_status': 1,
@@ -386,7 +386,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 26,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'Porch',
 				'label': None,
 				'admin_status': 1,
@@ -399,7 +399,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'5': {
+			4: {
 				'name': 'Port5',
 				'label': None,
 				'admin_status': 1,
@@ -412,7 +412,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'24': {
+			23: {
 				'name': 'router',
 				'label': None,
 				'admin_status': 1,
@@ -448,7 +448,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 27,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'port 1: Gigabit Copper',
 				'label': None,
 				'admin_status': 1,
@@ -461,7 +461,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'5': {
+			4: {
 				'name': 'port 5: Gigabit Copper',
 				'label': None,
 				'admin_status': 1,
@@ -474,7 +474,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'24': {
+			23: {
 				'name': 'port 24: Gigabit Copper',
 				'label': None,
 				'admin_status': 1,
@@ -510,7 +510,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 31,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'Vlan-interface1',
 				'label': None,
 				'admin_status': 1,
@@ -523,7 +523,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['192.168.253.14'],
 			},
-			'49154': {
+			4: {
 				'name': 'gigabitEthernet 1/0/2 : copper',
 				'label': None,
 				'admin_status': 1,
@@ -536,7 +536,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'49178': {
+			28: {
 				'name': 'gigabitEthernet 1/0/26 : fiber',
 				'label': None,
 				'admin_status': 2,
@@ -572,7 +572,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 28,
 		'ports': {
-			'1': {
+			0: {
 				'name': 'lo',
 				'label': None,
 				'admin_status': 1,
@@ -585,7 +585,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': ['127.0.0.1'],
 			},
-			'5': {
+			4: {
 				'name': 'wifi1',
 				'label': None,
 				'admin_status': 1,
@@ -598,7 +598,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'10': {
+			8: {
 				'name': 'ath1',
 				'label': None,
 				'admin_status': 1,
@@ -634,7 +634,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 24,
 		'ports': {
-			'2': {
+			1: {
 				'name': 'eth0',
 				'label': None,
 				'admin_status': 1,
@@ -647,7 +647,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'3': {
+			2: {
 				'name': 'teql0',
 				'label': None,
 				'admin_status': 2,
@@ -660,7 +660,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'24': {
+			23: {
 				'name': 'br0.10',
 				'label': None,
 				'admin_status': 1,
@@ -696,7 +696,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 50,
 		'ports': {
-			'20': {
+			19: {
 				'name': 'eth4',
 				'label': None,
 				'admin_status': 1,
@@ -709,7 +709,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'26': {
+			25: {
 				'name': 'eth10.13',
 				'label': None,
 				'admin_status': 1,
@@ -722,7 +722,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'40': {
+			39: {
 				'name': 'switch0.14',
 				'label': None,
 				'admin_status': 1,
@@ -758,7 +758,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 35,
 		'ports': {
-			'1': {
+			0: {
 				'name': '0/1',
 				'label': 'Port 1 - uplink',
 				'admin_status': 1,
@@ -771,7 +771,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'5': {
+			4: {
 				'name': '0/5',
 				'label': 'Port 5',
 				'admin_status': 1,
@@ -807,7 +807,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 26,
 		'ports': {
-			'1': {
+			0: {
 				'name': '0/1',
 				'label': 'Port 1',
 				'admin_status': 1,
@@ -843,7 +843,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 15,
 		'ports': {
-			'10': {
+			9: {
 				'name': 'eth0',
 				'label': None,
 				'admin_status': 1,
@@ -856,7 +856,7 @@ TEST_DEVICE_PROFILES = {
 				'errors_tx': 0,
 				'ips': [],
 			},
-			'12': {
+			11: {
 				'name': 'ifb0',
 				'label': None,
 				'admin_status': 2,
@@ -892,7 +892,7 @@ TEST_DEVICE_PROFILES = {
 		},
 		'total_ports': 4,
 		'ports': {
-			'2': {
+			1: {
 				'name': 'eth0',
 				'label': None,
 				'admin_status': 1,
@@ -1074,11 +1074,6 @@ class TestSNMPScanner(TestCase):
 
 			# Assert Individual Port Key/Values dynamically
 			for port_idx, expected_port_data in profile['ports'].items():
-				self.assertIn(
-					port_idx,
-					host.ports,
-					f'Failed to find port: {filename}/port {port_idx}'
-				)
 				port = host.ports[port_idx]
 				for port_attr, expected_port_value in expected_port_data.items():
 					self.assertEqual(

@@ -389,10 +389,10 @@ class Host:
 		:type ping: str|None
 		"""
 
-		self.ports = {}
+		self.ports = []
 		"""
 		List of network/data ports on the device
-		:type ports: dict[str,HostPort]
+		:type ports: list[HostPort]
 		"""
 
 		self.config = config
@@ -434,10 +434,10 @@ class Host:
 		:type uptime: int|None
 		"""
 
-		self.consumables = {}
+		self.consumables = []
 		"""
 		Consumables, usually for printers
-		:type consumables: dict[str, HostConsumable]
+		:type consumables: list[HostConsumable]
 		"""
 
 	@property
@@ -487,30 +487,25 @@ class Host:
 		self.neighbors[mac] = new_host
 		return new_host
 
-	def create_port(self, port_index: int | str, mac: str | None = None):
+	def create_port(self, mac: str):
 		"""
-		Create a network port on this device by its MAC address or port index
+		Create a network port on this device by its MAC address
 
 		Will return an existing port if one is found which matches the MAC.
-		:param port_index:
 		:param mac:
 		:return: HostPort
 		"""
-		if port_index is not None:
-			# Find by port index
-			if port_index in self.ports:
-				return self.ports[port_index]
 
 		if mac is not None:
 			# Find by MAC address
-			for port in self.ports.values():
+			for port in self.ports:
 				if port.mac == mac.strip().upper():
 					return port
 
 		# Port doesn't exist yet
 		port = HostPort()
 		port.mac = mac
-		self.ports[str(port_index)] = port
+		self.ports.append(port)
 		return port
 
 	def find_port_by_mac(self, mac: str):
@@ -519,7 +514,7 @@ class Host:
 		:param mac:
 		:return: HostPort or None
 		"""
-		for port in self.ports.values():
+		for port in self.ports:
 			if port.mac == mac.strip().upper():
 				return port
 		return None
@@ -529,14 +524,35 @@ class Host:
 		Merge data from another Host into this one.
 		This is useful for merging data from child devices into a parent device.
 
-		(currently just supports MAC address)
-
 		:param other: Host to merge data from
 		:return:
 		"""
-		if self.mac is None and other.mac is not None:
-			self.mac = other.mac
-			self.log('Resolved MAC from neighbor')
+		keys = [
+			'mac', 'contact', 'descr', 'gateway', 'hostname',
+			'include', 'ip', 'location', 'manufacturer', 'model',
+			'object_id', 'os_date', 'os_version', 'os_vendor', 'os_name',
+			'ping', 'reachable', 'serial', 'type', 'uptime'
+		]
+		for key in keys:
+			v1 = getattr(self, key)
+			if v1 is not None:
+				# This host already has a value for this key; skip.
+				continue
+			v2 = getattr(other, key)
+			if v2 is not None:
+				setattr(self, key, v2)
+
+		# Merge the host ports from the incoming host.
+		for other_port in other.ports:
+			if other_port.mac is None:
+				# A MAC is required for mapping
+				continue
+			port = self.create_port(other_port.mac)
+			port.merge_from_port(other_port)
+
+		# Merge consumables; this is usually just an all or nothing.
+		if len(self.consumables) < len(other.consumables):
+			self.consumables = other.consumables
 
 	def sync_to_grist(self):
 		"""
@@ -687,7 +703,7 @@ class Host:
 		if len(self.ports) > 0:
 			payload['content']['network_ports'] = []
 			counter = 0
-			for port in self.ports.values():
+			for port in self.ports:
 				port_data = port.to_glpi()
 				if 'ifnumber' not in port_data:
 					port_data['ifnumber'] = counter
@@ -697,7 +713,7 @@ class Host:
 
 		if self.type == HostType.PRINTER and len(self.consumables) > 0:
 			consumables = {}
-			for consumable in self.consumables.values():
+			for consumable in self.consumables:
 				consumables |= consumable.to_glpi_cartridge()
 			payload['content']['cartridges'] = [consumables]
 
@@ -821,11 +837,11 @@ class Host:
 		}
 
 		if len(self.consumables) > 0:
-			for consumable in self.consumables.values():
+			for consumable in self.consumables:
 				data['consumables'].append(consumable.to_dict())
 
 		if len(self.ports) > 0:
-			for port in self.ports.values():
+			for port in self.ports:
 				data['ports'].append(port.to_dict())
 
 		if 'fields' in self.config and self.config['fields'] is not None:
@@ -861,6 +877,35 @@ class HostPort:
 		self.errors_rx: int | None = None
 		self.errors_tx: int | None = None
 		self.connections: list[str] = []
+
+	def merge_from_port(self, other: 'HostPort'):
+		"""
+		Merge data from another HostPort into this one.
+		This is useful for merging data from child devices into a parent device.
+
+		:param other: HostPort to merge data from
+		:return:
+		"""
+		keys = [
+			'admin_status', 'user_status', 'bytes_rx', 'bytes_tx', 'errors_tx', 'errors_rx',
+			'label', 'mtu', 'name', 'number', 'speed', 'type', 'vlan', 'vlan_allow'
+		]
+		for key in keys:
+			v1 = getattr(self, key)
+			if v1 is not None:
+				# This port already has a value for this key; skip.
+				continue
+			v2 = getattr(other, key)
+			if v2 is not None:
+				setattr(self, key, v2)
+
+		for con in other.connections:
+			if con not in self.connections:
+				self.connections.append(con)
+
+		for ip in other.ips:
+			if ip not in self.ips:
+				self.ips.append(ip)
 
 	def to_dict(self) -> dict:
 		"""
@@ -909,6 +954,10 @@ class HostPort:
 
 		for attr, key in field_mapping.items():
 			val = getattr(self, attr)
+
+			if key == 'name' and val is None:
+				val = 'network'
+
 			if val is not None:
 				link_data[key] = val
 
