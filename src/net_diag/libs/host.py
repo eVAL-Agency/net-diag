@@ -272,7 +272,7 @@ class Host:
 		:type ip: str
 		"""
 
-		self.mac = None
+		self._mac = None
 		"""
 		MAC address of the device
 		:type mac: str|None
@@ -440,6 +440,17 @@ class Host:
 		:type consumables: dict[str, HostConsumable]
 		"""
 
+	@property
+	def mac(self) -> str | None:
+		return self._mac
+
+	@mac.setter
+	def mac(self, mac: str | None):
+		if mac is None:
+			self._mac = None
+		else:
+			self._mac = mac.strip().upper()
+
 	def log(self, msg: str):
 		"""
 		Log a debug message to the debugger logger and to this device's internal log
@@ -466,6 +477,8 @@ class Host:
 		:param mac:
 		:return Host:
 		"""
+		mac = mac.strip().upper()
+
 		if mac in self.neighbors:
 			# If the neighbor already exists, return it
 			return self.neighbors[mac]
@@ -474,6 +487,32 @@ class Host:
 		self.neighbors[mac] = new_host
 		return new_host
 
+	def create_port(self, port_index: int | str, mac: str | None = None):
+		"""
+		Create a network port on this device by its MAC address or port index
+
+		Will return an existing port if one is found which matches the MAC.
+		:param port_index:
+		:param mac:
+		:return: HostPort
+		"""
+		if port_index is not None:
+			# Find by port index
+			if port_index in self.ports:
+				return self.ports[port_index]
+
+		if mac is not None:
+			# Find by MAC address
+			for port in self.ports.values():
+				if port.mac == mac.strip().upper():
+					return port
+
+		# Port doesn't exist yet
+		port = HostPort()
+		port.mac = mac
+		self.ports[str(port_index)] = port
+		return port
+
 	def find_port_by_mac(self, mac: str):
 		"""
 		Find a host port by its MAC address, or None if not found
@@ -481,7 +520,7 @@ class Host:
 		:return: HostPort or None
 		"""
 		for port in self.ports.values():
-			if port.mac.lower() == mac.lower():
+			if port.mac == mac.strip().upper():
 				return port
 		return None
 
@@ -517,7 +556,6 @@ class Host:
 			'model': self.model,
 			'ip_primary': self.ip,
 			'mac_primary': self.mac,
-			'floor': self.floor,
 			'room': self.location,
 			'discover_log': self.log_lines,
 			'type': self.type,
@@ -778,15 +816,15 @@ class Host:
 			'os_version': self.os_version,
 			'descr': self.descr,
 			'ping': self.ping,
+			'consumables': [],
+			'ports': [],
 		}
 
 		if len(self.consumables) > 0:
-			data['consumables'] = []
-			for consumable in self.consumables:
+			for consumable in self.consumables.values():
 				data['consumables'].append(consumable.to_dict())
 
 		if len(self.ports) > 0:
-			data['ports'] = []
 			for port in self.ports.values():
 				data['ports'].append(port.to_dict())
 
@@ -870,8 +908,9 @@ class HostPort:
 		}
 
 		for attr, key in field_mapping.items():
-			if getattr(self, attr) is not None:
-				link_data[key] = getattr(self, attr)
+			val = getattr(self, attr)
+			if val is not None:
+				link_data[key] = val
 
 		if len(self.connections) > 0:
 			link_data['connections'] = []

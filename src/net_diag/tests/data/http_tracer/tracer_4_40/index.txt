@@ -1,0 +1,363 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- The preceding meta tag must be the first tag after the <head> tag -->
+        <!-- so that IE does not default to using compatibility mode when the  -->
+        <!-- SC uses a host name                                               -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" />
+        <title>Tracer SC</title>
+        <link href="start.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="1218/hui/bootstrap.js"> </script>
+
+        <script type="text/javascript">
+          var   g_iFailedCount = 0,
+                g_nlsURI = "1218/hui/base/nls/",
+                g_nlsLoc = "1218/hui/webui/nls/",
+                g_lang = "en";
+
+          function updateLabels(a_lang) {
+            var strings,
+                eulaNonEnLangUrl,
+                eulaLangUrl = "1218/hui/webui/apps/eula/nls/EULA.pdf";
+            g_lang = a_lang;
+            if(hui.langMaps[g_lang].huiStrings) {
+              if(g_lang != "en") {
+                eulaNonEnLangUrl = "1218/hui/webui/apps/eula/nls/" + g_lang + "/EULA.pdf";
+                if(hui.bootstrap.isLangEULAPresent(eulaNonEnLangUrl)){
+                  eulaLangUrl = eulaNonEnLangUrl;
+                }
+              }
+              document.getElementById("userid.label").innerHTML = hui.langMaps[g_lang].huiStrings.USER_ID;
+              document.getElementById("password.label").innerHTML = hui.langMaps[g_lang].huiStrings.PWD;
+              document.getElementById("eulalink").href = eulaLangUrl;
+              document.getElementById("eulaMsgFirst").innerHTML = hui.langMaps[g_lang].huiStrings.EULAMSG_PRE;
+              document.getElementById("eula").innerHTML = hui.langMaps[g_lang].huiStrings.EULAMSG;
+              document.getElementById("mobileApp").innerHTML = hui.langMaps[g_lang].huiStrings.MOBILE_APP;
+              document.getElementById('logon').value = hui.langMaps[g_lang].huiStrings.LOGIN;
+              document.getElementById('scTypeId').innerHTML = hui.langMaps[g_lang].huiStrings.DEMO;
+              resetAlignment();
+            }
+            // Verify the browser that is being used is supported by Tracer SC.
+            hui.bootstrap.ValidateBrowser(g_lang);
+          }
+
+          function resetAlignment() {
+            if(g_lang.match("ar") || g_lang.match("he")){
+              document.body.dir = "rtl";
+              if(navigator.appName === "Netscape") {
+                document.getElementById("HuiLogon").setAttribute("class", "LogonWindow_rtl borderReverse");
+              } else {
+                document.getElementById("HuiLogon").setAttribute("class", "LogonWindow_rtl");
+              }
+              document.getElementById("HuiEULA").setAttribute("class", "HuiEULADiv_rtl");
+              document.getElementById("HuiMobileApp").setAttribute("class", "HuiMobileAppLinks_rtl");
+              document.getElementById("HuiProductName").setAttribute("class", "HuiProductName_rtl");
+              document.getElementById("HuiProductName_Shadow").setAttribute("class", "HuiProductName_Shadow_rtl");
+              document.getElementById("HuiProductVersion").setAttribute("class", "HuiProductVersion_rtl");
+              document.getElementById("HuiSerialNumber").setAttribute("class", "HuiSerialNumber_rtl");
+            } else {
+              document.body.dir = "ltr";
+              document.getElementById("HuiLogon").setAttribute("class", 'LogonWindow');
+              document.getElementById("HuiEULA").setAttribute("class", "HuiEULADiv");
+              document.getElementById("HuiMobileApp").setAttribute("class", "HuiMobileAppLinks");
+              document.getElementById("HuiProductName").setAttribute("class", "HuiProductName");
+              document.getElementById("HuiProductName_Shadow").setAttribute("class", "HuiProductName_Shadow");
+              document.getElementById("HuiProductVersion").setAttribute("class", "HuiProductVersion");
+              document.getElementById("HuiSerialNumber").setAttribute("class", "HuiSerialNumber");
+            }
+          }
+
+          function init()
+          {
+            var   req,
+                  aFetchList = [  '1218/dojo/dojo/dojo.js',
+                                  'hui.html',
+                                  '1218/hui/hui.js',
+                                  '1218/hui/widget/Grid.js',
+                                  '1218/dojo/dijit/themes/hydraweb/hydraweb.css',
+                                  '1218/WebHelp/RoboHelp_CSH.js'
+                               ];
+            //clear the window.name property
+            window.name = '';
+            // Get version info
+            hui.bootstrap.GetAboutInfo( function(a_obj) {
+              // Did we get it?
+              if(a_obj                        &&
+                 a_obj.hardwareSerialNumber   &&
+                 a_obj.productVersion) {
+                // Yes, save it
+                document.getElementById("HuiSerialNumber").innerHTML = 'Serial# ' + a_obj.hardwareSerialNumber;
+                document.getElementById("HuiProductVersion").innerHTML = a_obj.productVersion + "&#x200E;";
+              }
+              //Did we use Demo License or not
+              if(a_obj.timeToDie) {
+                document.getElementById("HuiscTypeId").style.display='block';
+              }
+              else {
+                document.getElementById("HuiscTypeId").style.display='none';
+              }
+            });
+
+            //Get the supported language information
+            hui.bootstrap.GetSupportedLanguages(function(a_obj) {
+              var idx, langUri, langDetails, langNode, langCode, tr, td,
+                  // retrieve the user selected or browser's language code
+                  browserLang = (
+                        (window.navigator.language) ? window.navigator.language :
+                                                      window.navigator.userLanguage).toLowerCase();
+                // strip off the -** code in the language code
+                if(browserLang !== "fr-ca" && browserLang !== "zh-tw" &&
+                  browserLang.indexOf('-') !== -1) {
+                  browserLang = browserLang.replace(/\-\w*/g, '');
+                };
+                if(a_obj && a_obj.length > 0) {
+                  for(idx = 0; (idx < a_obj.length && idx < 4); idx++) {
+                    langDetails = a_obj[idx];
+                    langCode = langDetails.CODE;
+                    langUri = (langCode == "en") ? g_nlsLoc : g_nlsLoc + langCode;
+                    if(browserLang == langCode) {
+                      hui.bootstrap.GetLangStrings(langCode, langUri, updateLabels);
+                    } else {
+                      hui.bootstrap.GetLangStrings(langCode, langUri);
+                    }
+                    if(a_obj.length > 1) {
+                      if(langDetails) {
+                        langNode = document.createElement('a');
+                        langNode.setAttribute("href", "javascript:updateLabels('"+langCode+"')");
+                        langNode.setAttribute("class", "HuiLangSelector");
+                        langNode.innerHTML = langDetails.LANG;
+                        document.getElementById(("lang"+idx)).appendChild(langNode);
+                      }
+                    }
+                  }
+                }
+            });
+            // Pre-fetch the rest of the items
+            while(aFetchList.length) {
+              // Get the XMLHttpRequest object
+              // ...handle retarded browers as needed.
+              req = (window.XMLHttpRequest) ?
+                        new XMLHttpRequest() :          // Non-retarded.
+                        (window.ActiveXObject) ? new ActiveXObject('MSXML2.XMLHTTP.3.0') : null;
+
+              // Get one?
+              if(req) {
+                // Yes, launch the fetch
+                req.open("GET", aFetchList.pop());
+                req.send("");
+              }
+            }
+
+          }
+
+
+          function setOpacity(a_strNodeId, a_flOpacity)
+          {
+            var node = document.getElementById(a_strNodeId)
+
+            node.style.opacity = a_flOpacity;           // FF, etc.
+            node.style.filter = "progid:DXImageTransform.Microsoft.Alpha(Opacity = " + (a_flOpacity * 100) >> 0 + ")";    // IE
+          }
+
+          function fadeIn(a_strNodeId, a_onEnd)
+          {
+            var   i,
+                  flOpacity;
+
+            for(i = 0; i < 10; ++i) {
+              flOpacity = i * 0.10;
+              setTimeout("setOpacity('" + a_strNodeId + "', " + flOpacity + ")", i*20);
+            }
+            setTimeout("setOpacity('" + a_strNodeId + "', 1.0)", i*20);
+            if(a_onEnd) {
+              setTimeout(a_onEnd, (i + 1)*20);
+            }
+          }
+
+          function fadeOut(a_strNodeId, a_onEnd)
+          {
+            var   i,
+                  flOpacity;
+
+            for(i = 0; i < 10; ++i) {
+              flOpacity = 1.0 - (i * 0.10);
+              setTimeout("setOpacity('" + a_strNodeId + "', " + flOpacity + ")", i*20);
+            }
+            setTimeout("setOpacity('" + a_strNodeId + "', 0.0)", i*20);
+            if(a_onEnd) {
+              setTimeout(a_onEnd, (i + 1)*20);
+            }
+          }
+
+          function enableControls()
+          {
+            document.getElementById('userid').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('userid').disabled = false;
+            document.getElementById('password').disabled = false;
+            document.getElementById('logon').disabled = false;
+            document.body.style.cursor="default";
+            document.getElementById('userid').focus();
+          }
+
+
+          function submitCreds()
+          {
+            var user = document.getElementById('userid').value,
+                password = document.getElementById('password').value,
+                result, cookie;
+            // To check if the cookies are blocked, if so alert the user to unblock the cookies
+            hui.bootstrap.setCookie("cookiecheck", "TracerSC", 120);
+            cookie = hui.bootstrap.getCookie("cookiecheck")
+            if(!cookie){
+              alert(hui.langMaps[g_lang].huiStrings.DIS_COOKIE);
+              enableControls();
+              return false;
+            }
+            document.body.style.cursor="wait";
+            document.getElementById('userid').disabled = true;
+            document.getElementById('password').disabled = true;
+            document.getElementById('logon').disabled = true;
+            if(user === "" || password === "" )
+            {
+                alert(hui.langMaps[g_lang].huiStrings.REQUIRED);
+                enableControls();
+                return false;
+            }
+            try {
+              result = hui.bootstrap.logon(user,password);
+              //Is valid login?
+              if(result.success) {
+                //Set Cookie for logged in user to 15 minutes
+                hui.bootstrap.setCookie(user, hui.bootstrap.ENTRY_URL, 15*60);
+                //Add the user selected language
+                hui.bootstrap.setCookie(hui.bootstrap.USER_LOCALE, g_lang);
+                fadeOut( 'HuiEULA' );
+                fadeOut( 'HuiMobileApp' );
+                fadeOut( 'HuiLogon',
+                        "document.location = 'hui.html';" );
+              }
+              else {
+                // Is it one of the authentication error
+                if (result &&
+                    ((result.status >= 400) && (result.status < 500))
+                  ){
+                  // If yes, display invalid userid/passwd
+                  alert(hui.langMaps[g_lang].huiStrings.INVALID);
+                }
+                else {
+                  // If no, display comm loss
+                  commLossAlert();
+                }
+
+                g_iFailedCount += 1;
+
+                if(g_iFailedCount >= 5) {
+                  setTimeout("enableControls()", g_iFailedCount * 1000);
+                }
+                else {
+                  enableControls();
+                }
+              }
+            }
+            catch(e) {
+              commLossAlert();
+            }
+
+            return false;
+
+          }
+
+          function commLossAlert()
+          {
+            alert(hui.langMaps[g_lang].huiStrings.COMM_LOSS);
+            enableControls();
+          }
+
+          function CheckKey( event, val )
+          {
+            //Is enter Key pressed?
+            if( event.keyCode === '13' || event.keyCode === 13) {
+              //Enter key pressed in the USERID field, then focus the Password field
+              if( val === 1 ) {
+                document.getElementById('password').focus();
+              }
+              else {
+                //Enter Key pressed in the password field, authenticate user
+                submitCreds();
+                return false;
+              }
+              return true;
+            }
+          }
+
+        </script>
+    </head>
+
+    <body onload="init();">
+        <div id="HuiscTypeId" style="display:none" class="HuiDemo">
+            <svg height="110" width="110" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="0, 0, 110, 0, 110, 110" style="fill:#F0F0F0;stroke:gray;stroke-width:1;" > </polygon>
+                <text id="scTypeId" x="5" y="20" transform="rotate(45 20,65)" style="fill:black; font-size:2.5em; font-weight: bold;">Demo</text>
+            </svg>
+        </div>
+        <div id="HuiLogon" class="LogonWindow">
+            <div id="HuiProductName"
+                 class="HuiProductName"
+                 onmouseover="fadeIn('HuiSerialNumber'); fadeOut('HuiProductVersion');"
+                 onmouseout="fadeIn('HuiProductVersion'); fadeOut('HuiSerialNumber'); ">
+              Tracer SC
+            </div>
+            <div id="HuiProductName_Shadow" class="HuiProductName_Shadow"> Tracer SC </div>
+            <div id="HuiProductVersion" class="HuiProductVersion"> </div>
+            <div id="HuiSerialNumber" class="HuiSerialNumber"> </div>
+            <div id="HuiLogonForm">
+               <table>
+                 <tr>
+                   <td> <div class="logonLabel" id="userid.label" > User ID </div> </td>
+                   <td colspan="2" ><input name="userid" id="userid" autocorrect="off" autofocus="autofocus" autocomplete="off" onkeypress="return CheckKey(event,1)" type="text" style="width:185px;" maxlength="64"/></td>
+                 </tr>
+                 <tr>
+                   <td> <div id="password.label" class="logonLabel"> Password </div> </td>
+                   <td colspan="2" ><input name="password" id="password" type="password" style="width:185px;" onkeypress="return CheckKey(event,2)" maxlength="64" autocomplete="off"/></td>
+                 </tr>
+                 <tr>
+                   <td></td>
+                   <td align="right">
+                     <input name="logon" id="logon" class="btn" type="button" onClick="submitCreds();" value="Log In">
+                   </td>
+                 </tr>
+               </table>
+              <br />
+              <table id="idSupportedLanguagesTbl">
+                <tr id="idSupportedLanguages">
+                  <td id="lang0"></td>
+                  <td id="lang1"></td>
+                  <td id="lang2"></td>
+                  <td id="lang3"></td>
+              </table>
+              <br />
+            </div>
+        </div>
+        <div id="HuiEULA" class="HuiEULADiv">
+          <span class="HuiEULASpan">
+          <p>
+          <span id="eulaMsgFirst">By accessing Tracer SC+, you accept and agree to be bound by the </span>
+          <a href="1218/hui/webui/apps/eula/nls/EULA.pdf"
+             id="eulalink" target="_blank">
+            <span class="HuiEULASpanClick" id="eula">End-User License Agreement Terms and Conditions</span>
+          </a>
+          </p>
+          </span>
+        </div>
+        <div id="HuiMobileApp" class="HuiMobileAppLinks">
+          <a href="http://www.trane.com/BASoperatorsuite" target="_blank">
+            <span style="color:white" id="mobileApp">Download mobile app</span>
+            <img src="imgs/mobile_icon.png">
+          </a>
+        </div>
+        <div id="idHuiBrowserAlert" style="display:none" class="BrowserWarning"></div>
+      </body>
+</html>

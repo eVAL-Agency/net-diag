@@ -95,14 +95,6 @@ class HTTPScanner(ScannerInterface):
 	def matches(cls, response: Response) -> bool:
 		return True
 
-	def _ready(self) -> bool:
-		"""
-		Check if this scanner has everything it needs to scan
-
-		:return:
-		"""
-		return True
-
 	def run_scan(self):
 		"""
 		Perform a device scan
@@ -141,6 +133,21 @@ class HTTPScanner(ScannerInterface):
 			self.host.log('Failed to perform POST to %s: %s' % (url, e))
 			return None
 
+	def _get(self, url: str, headers: dict | None = None) -> Response | None:
+		url = self._resolve_url(url)
+
+		try:
+			return requests.get(
+				url,
+				auth=self.auth,
+				headers=headers,
+				timeout=10,
+				verify=False
+			)
+		except requests.exceptions.RequestException as e:
+			self.host.log('Failed to perform GET to %s: %s' % (url, e))
+			return None
+
 
 class TraneTracerSCScanner(HTTPScanner):
 	"""
@@ -159,25 +166,59 @@ class TraneTracerSCScanner(HTTPScanner):
 
 	@classmethod
 	def matches(cls, response: Response) -> bool:
-		server_header = response.headers.get('Server', '')
 		# Parse the HTML content
 		soup = BeautifulSoup(response.text, 'html.parser')
 		page_title = soup.title.string if soup.title else ""
 
 		# Assumed to be a Tracer SC if matches
-		return server_header == 'nginx' and page_title == 'Tracer Synchrony' and 'Trane U.S. Inc.' in response.text
+		if page_title == 'Tracer Synchrony' and 'Trane U.S. Inc.' in response.text:
+			# Version 6.10
+			return True
 
-	def _ready(self) -> bool:
-		if self.auth is None:
-			self.host.log('Cannot perform Tracer SC scan; http-username or http-password are not defined!')
-			return False
+		if page_title == 'Tracer SC' and 'Tracer SC+' in response.text:
+			# Version 4.0
+			return True
 
-		return True
+		return False
 
 	def run_scan(self):
-		if not self._ready():
+		if self.auth is None:
+			self._run_scan_unauthenticated()
+		else:
+			self._run_scan_authenticated()
+
+	def _run_scan_unauthenticated(self):
+		"""
+		Perform an unauthenticated scan
+		:return:
+		"""
+
+		try:
+			self.host.log('Retrieving Tracer SC configuration data')
+			res = self._get('/evox/about')
+			xml = BeautifulSoup(res.text, 'xml')
+			about = xml.find('obj', {'href': '/evox/about'})
+
+			self.host.type = HostType.ENVIRONMENTAL
+			self.host.manufacturer = self._get_tag_val(about, 'str', 'vendorName')
+			self.host.os_name = self._get_tag_val(about, 'str', 'productName')
+			self.host.os_version = self._get_tag_val(about, 'str', 'productVersion')
+			self.host.model = self._get_tag_val(about, 'str', 'hardwareType')
+			self.host.serial = self._get_tag_val(about, 'str', 'hardwareSerialNumber')
+			self.host.os_date = self._get_tag_val(about, 'date', 'softwareVersionDate')
+
+			if self.host.os_version is not None and self.host.os_version.startswith('v'):
+				# Trim off the leading 'v' version indicator if present
+				self.host.os_version = self.host.os_version[1:]
+		except RequestException as e:
+			self.host.log('Failed to retrieve Tracer SC configuration data.\n' + str(e))
 			return
 
+	def _run_scan_authenticated(self):
+		"""
+		Perform an authenticated scan
+		:return:
+		"""
 		try:
 			self.host.log('Retrieving Tracer SC configuration data')
 			xml = self._get_batch(['/evox/about', '/evox/config/bacnet_global'], 'general_info')
@@ -189,19 +230,21 @@ class TraneTracerSCScanner(HTTPScanner):
 		bacnet_global = xml.find('obj', {'href': '/evox/config/bacnet_global'})
 
 		self.host.type = HostType.ENVIRONMENTAL
-		self.host.hostname = bacnet_global.find('str', {'name': 'name'}).get('val')
-		self.host.location = bacnet_global.find('str', {'name': 'location'}).get('val')
-		self.host.manufacturer = about.find('str', {'name': 'vendorName'}).get('val')
-		self.host.model = about.find('str', {'name': 'hardwareType'}).get('val')
-		self.host.serial = about.find('str', {'name': 'hardwareSerialNumber'}).get('val')
-		self.host.os_name = about.find('str', {'name': 'productName'}).get('val')
-		self.host.os_version = about.find('str', {'name': 'productVersion'}).get('val')
-		self.host.os_date = about.find('date', {'name': 'softwareVersionDate'}).get('val')
-		if self.host.os_version.startswith('v'):
+		self.host.manufacturer = self._get_tag_val(about, 'str', 'vendorName')
+		self.host.os_name = self._get_tag_val(about, 'str', 'productName')
+		self.host.os_version = self._get_tag_val(about, 'str', 'productVersion')
+		self.host.model = self._get_tag_val(about, 'str', 'hardwareType')
+		self.host.serial = self._get_tag_val(about, 'str', 'hardwareSerialNumber')
+		self.host.os_date = self._get_tag_val(about, 'date', 'softwareVersionDate')
+
+		self.host.hostname = self._get_tag_val(bacnet_global, 'str', 'name')
+		self.host.location = self._get_tag_val(bacnet_global, 'str', 'location')
+
+		if self.host.os_version is not None and self.host.os_version.startswith('v'):
 			# Trim off the leading 'v' version indicator if present
 			self.host.os_version = self.host.os_version[1:]
 
-		self.host.ports = self.get_ports()
+		self.get_ports()
 
 		# Find the mac address from the interfaces
 		for iface in self.host.ports.values():
@@ -210,7 +253,8 @@ class TraneTracerSCScanner(HTTPScanner):
 				break
 
 	def run_scan_neighbors(self):
-		if not self._ready():
+		if self.auth is None:
+			# Neighbor scan is only available for authenticated scans
 			return
 
 		self._scan_bridges()
@@ -255,17 +299,41 @@ class TraneTracerSCScanner(HTTPScanner):
 				mac = ':'.join(mac[i:i + 2] for i in range(0, len(mac), 2))
 				# <int name="networkNumber" val="31"/>
 				network = self._get_tag_val(dev, 'int', 'networkNumber')
+				# There can be up to about 250 devices on a single bus, so convert the network to hex to fit
+				network_mac = f'00:00:00:00:{network:02}:00'
+				network_name = self._get_tag_val(dev, 'str', 'remoteDatalinkName')
+				if re.match(r'MSTP[0-9]', network_name):
+					pretty_name = 'MS/TP ' + network_name[-1:]
+				else:
+					pretty_name = network_name
 
-				host = self.host.create_neighbor(ip)
-				host.log('Discovered bridge device from source host %s %s' % (self.host.hostname, self.host.ip))
-				host.mac = mac
-				host.hostname = dev.find('str', {'name': 'routerName'}).get('val')
-				host.manufacturer = dev.find('str', {'name': 'routerVendorName'}).get('val')
-				host.type = HostType.ENVIRONMENTAL
+				bridge = self.host.create_neighbor(mac)
+				bridge.ip = ip
+				bridge.include = True
+				bridge.hostname = dev.find('str', {'name': 'routerName'}).get('val')
+				bridge.manufacturer = dev.find('str', {'name': 'routerVendorName'}).get('val')
+				bridge.type = HostType.ENVIRONMENTAL
 
+				# Create the actual network interface for this bridge device
+				bridge_nic = bridge.create_port(0, mac)
+				bridge_nic.ips = [ip]
+				bridge_nic.name = 'network'
+				# Assume that it's connected.
+				bridge_nic.admin_status = HostPortAdminStatus.UP
+				bridge_nic.user_status = HostPortUserStatus.UP
+
+				# Create the MSTP network for this bridge device; this is where the bridged sensors will be linked.
+				bridge_sensor_port = bridge.create_port(network, network_mac)
+				bridge_sensor_port.name = network_name
+				bridge_sensor_port.label = f'BACnet {pretty_name} ({network})'
+				bridge_sensor_port.admin_status = HostPortAdminStatus.UP
+				bridge_sensor_port.user_status = HostPortUserStatus.UP
+				bridge.log(
+					f'Discovered bridge device from source host {self.host.hostname} {self.host.ip}: {bridge.hostname} ({bridge.ip})'
+				)
 				self._remote_networks[network] = (
-					ip,
-					dev.find('str', {'name': 'remoteDatalinkName'}).get('val'),
+					bridge,
+					network_mac,
 				)
 
 			self.host.log('Discovered %d bridged devices' % counter)
@@ -298,11 +366,13 @@ class TraneTracerSCScanner(HTTPScanner):
 				# Modbus links do not contain much information
 				continue
 
-			if re.match(r'^[0-9][0-9]\.[0-9][0-9]$', address_on_link):
-				# Match the short serial ID
+			if re.match(r'^[a-fA-F0-9]{1,2}\.[a-fA-F0-9]{1,2}$', address_on_link):
+				# This is actually a MAC (kind of); it's a Device identifier with the network included
+				# Example: 31.3C
 				mac = '00:00:00:00:' + address_on_link.replace('.', ':')
-			elif re.match(r'^[0-9]\.[a-fA-F0-9]{12}$', address_on_link):
-				# This is actually a MAC (kind of)
+			elif re.match(r'[0-9]\.[a-fA-F0-9]{12}$', address_on_link):
+				# This is a remote device visible across the network.
+				# Here the address_on_link contains the ACTUAL MAC address of the remote device.
 				mac = address_on_link.split('.')[1]
 				mac = ':'.join(mac[i:i + 2] for i in range(0, len(mac), 2))
 			elif re.match(
@@ -326,35 +396,41 @@ class TraneTracerSCScanner(HTTPScanner):
 			if link_pretty:
 				# <int name="networkNumber" val="1"/>
 				network_number = self._get_tag_val(link_pretty, 'int', 'networkNumber')
-				# <bool name="remoteNetwork" val="false"/>
-				remote_network = self._get_tag_val(link_pretty, 'bool', 'remoteNetwork')
 				# <str name="datalinkName" val="BVLL"/>
 				# data_link_name = self._get_tag_val(link_pretty, 'str', 'datalinkName')
 				# <str name="macAddress" val="192.168.0.154:47810"/>
+				# For standard devices, this will be the base10 value of the device identifier
+				# on the serial network.  This maps to the base16 value in the MAC.
+				# Example, 124 in the "macAddress" field points to device 0x7C.
 				mac_address = self._get_tag_val(link_pretty, 'str', 'macAddress')
-
-				# Trane supports device visiblity across multiple controllers, but we just want devices on THIS device.
-				if remote_network:
-					continue
 
 				if mac_address is not None and re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}$', mac_address):
 					# If the mac address looks like an IP address, use it as the IP
 					ip = mac_address.split(':')[0]
+
+			child = self.host.create_neighbor(mac)
+			child.log('Discovered device from source host %s %s' % (self.host.hostname, self.host.ip))
+			counter += 1
 
 			if equipment_uri:
 				lookups.append('/evox' + equipment_uri + '/VendorName/value')
 				lookups.append('/evox' + equipment_uri + '/ControllerType/value')
 				lookups.append('/evox' + equipment_uri + '/ModelName/value')
 				lookups.append('/evox' + equipment_uri + '/FirmwareRevision/value')
+				equipment_uris[equipment_uri] = child.mac
 
-			host = self.host.create_neighbor(mac)
-			host.log('Discovered device from source host %s %s' % (self.host.hostname, self.host.ip))
-			counter += 1
-			host.hostname = display_name
-			host.include = True
-			host.type = HostType.ENVIRONMENTAL
+			child.hostname = display_name
+			child.include = True
+			child.type = HostType.ENVIRONMENTAL
 			if ip is not None:
-				host.ip = ip
+				child.ip = ip
+
+				# This child has an actual IP address, so ensure it has a network port too.
+				child_port = child.create_port(0, mac)
+				child_port.ips = [ip]
+				child_port.name = 'network'
+				child_port.admin_status = HostPortAdminStatus.UP
+				child_port.user_status = HostPortUserStatus.UP
 
 			if network_number is not None:
 				# Check if this device is physically attached to the host
@@ -363,14 +439,52 @@ class TraneTracerSCScanner(HTTPScanner):
 					host_interface.connections.append(mac)
 					self.host.children_count += 1
 
-			equipment_uris[equipment_uri] = host
+					# Register a network connection on the child device; this will clone many properties from the parent.
+					child_interface = HostPort()
+					child_interface.admin_status = HostPortAdminStatus.UP
+					child_interface.user_status = HostPortUserStatus.UP
+					child_interface.name = 'network'
+					if ip is not None:
+						child_interface.ips = [ip]
+					child_interface.mac = mac
+					child_interface.speed = host_interface.speed
+					child_interface.type = host_interface.type
+					child.ports['network'] = child_interface
+				elif network_number in self._remote_networks:
+					# This device is not on THIS controller, but a bridged controller.
+					# These are still valid and should be tracked on that device as appropriate.
+					bridge_host = self._remote_networks[network_number][0]
+					bridge_mac = self._remote_networks[network_number][1]
+					bridge_interface = bridge_host.find_port_by_mac(bridge_mac)
+					if bridge_interface:
+						bridge_host.children_count += 1
+						bridge_interface.connections.append(mac)
+
+						# Register a network connection on the child device; this will clone many properties from the parent.
+						child_interface = HostPort()
+						child_interface.admin_status = HostPortAdminStatus.UP
+						child_interface.user_status = HostPortUserStatus.UP
+						child_interface.name = 'network'
+						if ip is not None:
+							child_interface.ips = [ip]
+						child_interface.mac = mac
+						child_interface.speed = bridge_interface.speed
+						child_interface.type = bridge_interface.type
+						child.ports['network'] = child_interface
+
+		# Load the device details, (manufacturer, model, etc)
+		child_data = self._scan_device_details(lookups, equipment_uris)
+		for uri, child_mac in equipment_uris.items():
+			if uri in child_data:
+				child = self.host.neighbors[child_mac]
+				for k, v in child_data[uri].items():
+					setattr(child, k, v)
 
 		self.host.log('Discovered %d devices' % counter)
-		# Load the device details, (manufacturer, model, etc)
-		self._scan_device_details(lookups, equipment_uris)
 
 	def _scan_device_details(self, lookups: list, equipment_uris: dict):
 
+		ret = {}
 		chunks = [lookups[i:i + 100] for i in range(0, len(lookups), 100)]
 		# Evox allows for batch queries, but only up to a certain size.
 		# Chunk the lookups to avoid exceeding the limit.
@@ -395,8 +509,10 @@ class TraneTracerSCScanner(HTTPScanner):
 				if key is not None:
 					# Extract the equipment URI from the href
 					equipment_uri = href.rsplit('/', 2)[0]
-					if equipment_uri in equipment_uris:
-						setattr(equipment_uris[equipment_uri], key, val)
+					if equipment_uri not in ret:
+						ret[equipment_uri] = {}
+					ret[equipment_uri][key] = val
+		return ret
 
 	def get_ports(self):
 		data = ['/evox/ipNetworkConfig/']
@@ -411,52 +527,54 @@ class TraneTracerSCScanner(HTTPScanner):
 		# Get all the interface data
 		xml = self._get_batch(data, 'interfaces')
 
-		ports = {}
-
 		ip_configs = xml.find('obj', {'href': '/evox/ipNetworkConfig/'})
 		if ip_configs:
 			ip_interfaces = ip_configs.find('list', {'name': 'interfaces'})
 			for tag in ip_interfaces.find_all('obj', {'is': 'trane:SC/ipNetworkConfig/enetInterface_v1'}):
-				port = tag.find('str', {'name': 'name'}).get('val')
-				ip = tag.find('str', {'name': 'ipaddr'}).get('val')
+				port_name = self._get_tag_val(tag, 'str', 'name')
+				ip = self._get_tag_val(tag, 'str', 'ipaddr')
+				mac = self._get_tag_val(tag, 'str', 'macaddr')
 
-				ports[port] = HostPort()
-				ports[port].name = port
+				port = self.host.create_port(port_name, mac)
+				port.name = port_name
 				if ip:
-					ports[port].ips = [ip]
-				ports[port].mac = tag.find('str', {'name': 'macaddr'}).get('val')
-				ports[port].admin_status = HostPortAdminStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
-				ports[port].user_status = HostPortUserStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
+					port.ips = [ip]
+				port.admin_status = HostPortAdminStatus(1 if self._get_tag_val(tag, 'bool', 'enabled') else 2)
+				port.user_status = HostPortUserStatus(1 if self._get_tag_val(tag, 'bool', 'enabled') else 2)
 
 			for tag in ip_interfaces.find_all('obj', {'is': 'trane:SC/ipNetworkConfig/wifiInterface_v1'}):
-				port = tag.find('str', {'name': 'name'}).get('val')
-				ip = tag.find('str', {'name': 'ipaddr'}).get('val')
+				port_name = self._get_tag_val(tag, 'str', 'name')
+				ip = self._get_tag_val(tag, 'str', 'ipaddr')
+				mac = self._get_tag_val(tag, 'str', 'macaddr')
 
-				ports[port] = HostPort()
-				ports[port].name = port
+				port = self.host.create_port(port_name, mac)
+				port.name = port_name
 				if ip:
-					ports[port].ips = [ip]
-				ports[port].mac = tag.find('str', {'name': 'macaddr'}).get('val')
-				ports[port].admin_status = HostPortAdminStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
-				ports[port].user_status = HostPortUserStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
+					port.ips = [ip]
+				port.admin_status = HostPortAdminStatus(1 if self._get_tag_val(tag, 'bool', 'enabled') else 2)
+				port.user_status = HostPortUserStatus(1 if self._get_tag_val(tag, 'bool', 'enabled') else 2)
 
-			for link in bacnets:
-				tag = xml.find('obj', {'href': link})
-				# link0 should display as Link 1 / MSTP 1.
-				pretty_id = str(int(link[-2:-1]) + 1)
-				port = 'mstp' + pretty_id
-				network_number = str(tag.find('int', {'name': 'networkNumber'}).get('val'))
+		for link in bacnets:
+			tag = xml.find('obj', {'href': link})
+			# link0 should display as Link 1 / MSTP 1.
+			pretty_id = str(int(link[-2:-1]) + 1)
+			port_name = 'mstp' + pretty_id
+			network_number = self._get_tag_val(tag, 'int', 'networkNumber')
+			# Trane uses the base10 value as a literal in their MAC address schema.
+			# (even though 22 _SHOULD_ be 16 in the mac....)
+			# To preserve functionality with this fast-and-loose usage of bases,
+			# keep with their logic here.
+			mac = f'00:00:00:00:{network_number:02}:00'
 
-				ports[port] = HostPort()
-				ports[port].name = port
-				ports[port].label = 'BACnet MS/TP ' + pretty_id
-				ports[port].type = HostPortType.PROP_POINT_TO_POINT_SERIAL
-				ports[port].mac = f'00:00:00:00:{network_number}:00'
-				ports[port].speed = tag.find('int', {'name': 'baudRate'}).get('val')
-				ports[port].admin_status = HostPortAdminStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
-				ports[port].user_status = HostPortUserStatus(1 if tag.find('bool', {'name': 'enabled'}).get('val') == 'true' else 2)
+			port = self.host.create_port(port_name, mac)
+			port.name = port_name
+			port.label = f'BACnet MS/TP {pretty_id} ({network_number})'
+			port.type = HostPortType.PROP_POINT_TO_POINT_SERIAL
+			port.speed = self._get_tag_val(tag, 'int', 'baudRate')
+			port.admin_status = HostPortAdminStatus(1 if self._get_tag_val(tag, 'bool', 'enabled') else 2)
+			port.user_status = HostPortUserStatus(1 if self._get_tag_val(tag, 'bool', 'enabled') else 2)
 
-		return ports
+		return self.host.ports
 
 	def _get_tag_val(self, parent: Tag, val_type: str, key: str, recursive=False):
 		node = parent.find(val_type, {'name': key}, recursive=recursive)

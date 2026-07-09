@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!-- --------------------------------------------------------------------------
+* index.html
+*
+* TRANE CONFIDENTIAL
+*
+* 2009 - 2024 Copyright Trane U.S. Inc.
+* All Rights Reserved.
+*
+* NOTICE :  All information contained herein is, and remains the property of
+* Trane U.S. Inc.  The source code, object code, intellectual and technical
+* concepts contained herein are proprietary to Trane U.S. Inc. and may be
+* covered by patents and patent applications and are protected by trade secret
+* and copyright law.  Dissemination of this information or reproduction of
+* this material is strictly forbidden unless prior written permission is
+* obtained from Trane U.S. Inc.  Do not use this software without the prior
+* written permission of Trane U.S. Inc.
+*
+* Main index page for logging into the Synchrony web application.
+*
+* Code Review(s):
+*   ?????, 20437
+*----------------------------------------------------------------------------->
+<html
+  ><head
+    ><meta http-equiv="Content-Type" content="text/html; charset=utf-8"
+    /><meta name="ROBOTS" content="NOINDEX,NOFOLLOW"
+    /><link rel="shortcut icon" href="2115-1734378652/hui/imgs/favicon.ico"
+    /><title>Tracer Synchrony</title
+    ><link href="2115-1734378652/hui/start.css" rel="stylesheet" type="text/css"
+    /><script type="text/javascript" src="2115-1734378652/hui/bootstrap.js"></script>
+    <script type="text/javascript" src="2115-1734378652/hui/index.js"></script>
+  </head
+  ><body
+    ><div id="HuiHeader"
+      ><table
+        ><tr
+          ><td><img id="HuiHeaderLogoImg" src="2115-1734378652/hui/imgs/trane_logo.svg" alt="Trane"/></td
+          ><td
+            ><span id="HuiHeaderProductName"></span
+            ><span id="HuiHeaderProductName1"></span
+            ><span id="HuiHeaderProductName2"></span
+          ></td
+        ></tr
+      ></table
+    ></div
+
+    ><div id="HuiLangSelect" class="HuiLangSelect"
+      ><table id="idSupportedLanguagesTbl" class="LangTable"
+        ><tr id="idSupportedLanguages"
+          ><td id="lang0"></td
+          ><td id="lang1"></td
+          ><td id="lang2"></td
+          ><td id="lang3"></td
+        ></tr
+      ></table
+      ><div id="idAppStoreDiv" class="AppStoreDiv"
+        ><a href="https://itunes.apple.com/us/app/trane-tracer-bas-operator-suite/id583378807?mt=8" style="display:inline-block;overflow:hidden;background:url('imgs/appstore-lrg.svg') no-repeat;width:118px;height:35px;background-size:contain;margin-left:15px"></a
+        ><a href="https://play.google.com/store/apps/details?id=com.trane.bassuite.android&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1" style="display:inline-block;overflow:hidden;background:url('imgs/google.svg') no-repeat;width:118px;height:35px;background-size:contain;margin-right:15px"></a
+      ></div
+    ></div
+
+    ><div id="HuiscTypeId" style="display:none" class="HuiDemo"
+      ><svg height="110" width="110" xmlns="http://www.w3.org/2000/svg"
+        ><polygon points="0, 0, 110, 0, 110, 110" style="fill:#F0F0F0;stroke:gray;stroke-width:1;" > </polygon>
+        <text id="scTypeId" x="5" y="20" transform="rotate(45 20,65)" style="fill:black; font-size:2.5em; font-weight: bold;">Demo</text>
+      </svg>
+    </div
+    ><div id="HuiLogon" class="LogonWindow"
+      ><div id="HuiProductName" class="HuiProductName"></div
+      ><div id="HuiLogonForm" class="HuiLogonForm"
+        ><table
+          ><tr
+            ><td><input name="userid" id="userid" autocorrect="off" autofocus="autofocus" autocomplete="off"  type="text" style="width:225px;" maxlength="64"/></td
+          ></tr><tr
+            ><td><input name="password" id="password" type="password" style="width:225px;" maxlength="64" autocomplete="off"/></td
+          ></tr><tr
+            ><td
+              ><div id="idActiveDirctUAText" class="HuiEULADiv"></div
+            ></td
+          ></tr><tr
+            ><td colspan="2" style="padding-top:15px; text-align:left;"
+              ><input name="logon" id="logon" class="btn" type="button" value="Log In"
+            /></td
+          ></tr><tr
+            ><td
+              ><div id="HuiEULA" class="HuiEULADiv"
+                ><div
+                  ><span id="eulaMsgFirst">By accessing Tracer Synchrony, you accept and agree to be bound by the </span
+                  ><a href="2115-1734378652/hui/webui/apps/eula/nls/EULA.pdf" id="eulalink"
+                      target="_blank" rel="noopener noreferrer"
+                    ><span id="idEula">End-User License Agreement Terms and Conditions</span
+                  ></a
+                ></div
+              ></div
+            ></td
+          ></tr
+        ></table
+        ><br
+      /></div
+    ></div
+
+    ><div id="HuiFooter"
+      ><table
+        ><tr><td>
+          <!-- Update the webui/nls/strings.js entry as well if bumping the year! -->
+          <div id="HuiFooterCopyright"> © 2024 Trane </div
+          ><div id="HuiProductNameFoot"></div
+          ><span> - </span
+          ><div id="HuiProductVersion"> </div
+          ><div id="HuiSerialNumber" class="HuiSerialNumber"> </div
+        ></td></tr
+      ></table
+
+      ><table class="floatRight"
+        ><tr><td
+          ><div id="HuiServerTime"></div
+        ></td></tr
+      ></table
+    ></div
+
+    ><div id="idHuiBrowserAlert" style="display:none" class="BrowserWarning"></div
+  ></body
+></html>
