@@ -609,6 +609,14 @@ class Host:
 			logging.info('Skipping GLPI sync for computers')
 			return
 
+		# Configuration parameters for this sync
+
+		# If glpi_phone is set in the config, use that; default to True (use phone object)
+		if 'glpi_phone' in self.config:
+			glpi_phone = self.config['glpi_phone']
+		else:
+			glpi_phone = True
+
 		# Ensure this device has a hostname
 		self.ensure_hostname()
 
@@ -623,6 +631,9 @@ class Host:
 			# Special case for printers
 			item_type = 'Printer'
 			network_device['type'] = 'Printer'
+		elif glpi_phone and self.type == HostType.PHONE:
+			item_type = 'Phone'
+			network_device['type'] = 'Phone'
 
 		payload = {
 			'deviceid': self.get_identifier(),

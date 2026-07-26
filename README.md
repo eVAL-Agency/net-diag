@@ -158,7 +158,8 @@ and set `--grist-account` to a valid account token for this scan.
 As of v1.1.2, GLPI is supported as a target to store discovery data to;
 this saves scanned devices as network devices.
 
-Requires a user with permission to POST data and an authorization token generated for that user.
+If a token is set, requires a user with permission to POST data and an authorization token generated for that user.
+If toke is omitted, an anonymous inventory submission is attempted.
 
 **Example**
 
@@ -188,6 +189,17 @@ You can also specify a tag to attribute each individual host or network.
 override:
   - net: 10.200.0.0/24
     glpi_tag: Some Client Name
+```
+
+**glpi_phone**
+
+GLPI supports storing phones as actual Phone objects, (requires a patched version of GLPI).
+To disable this support and save phones as standard NetworkEquipment instead, set the following in your config.
+
+```yaml
+override:
+  - net: 10.200.0.0/24
+    glpi_phone: False
 ```
 
 #### Exclude specific IP addresses from report
