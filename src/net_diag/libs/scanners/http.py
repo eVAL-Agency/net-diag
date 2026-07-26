@@ -693,4 +693,4 @@ class GrandstreamPhoneScanner(HTTPScanner):
 			port.label = 'network'
 			port.mac = self.host.mac
 			port.ips = [self.host.ip]
-			self.host.ports['network'] = port
+			self.host.ports.append(port)
