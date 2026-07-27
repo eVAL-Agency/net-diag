@@ -1,3 +1,1 @@
-* Better support for SIP phones
-* Better support for Trane controllers
-* Add support for --dry-run; useful for testing
+* Bump minimum Python version to 3.11

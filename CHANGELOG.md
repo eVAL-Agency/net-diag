@@ -1,3 +1,13 @@
+## v1.1.4 - 2026-07-27
+
+* Bump minimum Python version to 3.11
+
+## v1.1.3 - 2026-07-26
+
+* Better support for SIP phones
+* Better support for Trane controllers
+* Add support for --dry-run; useful for testing
+
 ## v1.1.2 - 2026-07-03
 
 * Add support for saving discovery data to GLPI

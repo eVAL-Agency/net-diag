@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "net_diag"
-version = "1.1.3"
+version = "1.1.4"
 description = "Small collection of network utilities for diagnostics and discovery."
 readme = "README.md"
-requires-python = ">=3.9.16"
+requires-python = ">=3.11.2"
 authors = [
     {name = "Charlie Powell", email = "cdp1337@bitsnbytes.dev"},
 ]
