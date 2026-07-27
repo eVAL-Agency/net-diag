@@ -1,1 +1,3 @@
-* Add support for saving discovery data to GLPI
+* Better support for SIP phones
+* Better support for Trane controllers
+* Add support for --dry-run; useful for testing
