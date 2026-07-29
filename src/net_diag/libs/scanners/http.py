@@ -388,10 +388,17 @@ class TraneTracerSCScanner(HTTPScanner):
 			link = dev.find('list', {'name': 'linkSpecific'})
 			if link:
 				link = link.find('obj', recursive=False)
+
 			if link:
 				link_pretty = link.find('obj', {'name': 'pretty'}, recursive=False)
+				# <int name="rotaryAddress" val="121"/>
+				rotary_address = self._get_tag_val(link, 'int', 'rotaryAddress', recursive=True)
+				if rotary_address == 0:
+					rotary_address = None
 			else:
 				link_pretty = None
+				rotary_address = None
+
 			if link_pretty:
 				# <int name="networkNumber" val="1"/>
 				network_number = self._get_tag_val(link_pretty, 'int', 'networkNumber')
@@ -429,6 +436,10 @@ class TraneTracerSCScanner(HTTPScanner):
 				child_port.ips = [ip]
 				child_port.admin_status = HostPortAdminStatus.UP
 				child_port.user_status = HostPortUserStatus.UP
+
+			if network_number is not None and rotary_address is not None:
+				# Attach a description for this location
+				child.descr = f'Rotary address {rotary_address} on network {network_number}'
 
 			if network_number is not None:
 				# Check if this device is physically attached to the host

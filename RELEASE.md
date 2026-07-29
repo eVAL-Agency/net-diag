@@ -1,1 +1,1 @@
-* Bump minimum Python version to 3.11
+* (HTTP/Trane) Add rotary address into descriptor to help track devices

@@ -1,3 +1,7 @@
+## v1.1.5 - 2026-07-28
+
+* (HTTP/Trane) Add rotary address into descriptor to help track devices
+
 ## v1.1.4 - 2026-07-27
 
 * Bump minimum Python version to 3.11
