@@ -153,54 +153,13 @@ Set `--format grist` to publish to Grist and ensure to set `--grist-url` as the 
 and set `--grist-account` to a valid account token for this scan.
 
 
-#### GLPI
+#### [GLPI](docs/target-glpi.md)
 
 As of v1.1.2, GLPI is supported as a target to store discovery data to;
 this saves scanned devices as network devices.
 
-If a token is set, requires a user with permission to POST data and an authorization token generated for that user.
-If toke is omitted, an anonymous inventory submission is attempted.
+[Documentation for publishing to GLPI](docs/target-glpi.md)
 
-**Example**
-
-```bash
-network_discover --net=192.168.0.0/24 --format=glpi --glpi-url=glpi.yourdomain.tld --glpi-token=123456789abcdef --community public
-```
-
-**glpi_credentials**
-
-Optionally, you can include the default **SNMP Credentials** by adding the following to your configuration:
-
-```yaml
-override:
-  - net: 10.200.0.0/24
-    community: public
-    glpi_credentials: 2
-```
-
-This is the ID of the SNMP credentials to link, as available from {glip_url}/front/snmpcredential.php.
-Does not look up the credentials and still needs the community setting.
-
-**glpi_tag**
-
-You can also specify a tag to attribute each individual host or network.
-
-```yaml
-override:
-  - net: 10.200.0.0/24
-    glpi_tag: Some Client Name
-```
-
-**glpi_phone**
-
-GLPI supports storing phones as actual Phone objects, (requires a patched version of GLPI).
-To disable this support and save phones as standard NetworkEquipment instead, set the following in your config.
-
-```yaml
-override:
-  - net: 10.200.0.0/24
-    glpi_phone: False
-```
 
 #### Exclude specific IP addresses from report
 

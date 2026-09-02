@@ -171,6 +171,10 @@ class SNMPScanner(ScannerInterface):
 			# A description could not be retrieved, assume this device is not reachable via SNMP.
 			return None
 
+		if host.object_id is None:
+			# SNMP object ID couldn't be discovered
+			return None
+
 		# Default is to use the sysObjectID to determine the scanner.
 		for oid, scanner in scanners.items():
 			if host.object_id == oid or host.object_id.startswith(oid + '.'):

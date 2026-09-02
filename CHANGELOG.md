@@ -1,3 +1,9 @@
+## v1.1.6 - 2026-09-02
+
+* (SNMP) Fix if DESCR could not be found
+* (GLPI) Ensure UUID is set on discovered devices
+* (GLPI) Filter out internal-only IP addresses
+
 ## v1.1.5 - 2026-07-28
 
 * (HTTP/Trane) Add rotary address into descriptor to help track devices

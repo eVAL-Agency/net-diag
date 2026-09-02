@@ -4,6 +4,7 @@ from datetime import datetime
 from urllib import request
 import uuid
 from enum import IntEnum, StrEnum
+from net_diag.libs.ignore_ip import filter_ignore_ips
 
 
 class HostPortAdminStatus(IntEnum):
@@ -645,6 +646,7 @@ class Host:
 				'hardware': {
 					'name': self.hostname,
 					'chassis_type': str(self.type),
+					'uuid': self.generate_device_uuid()
 				},
 			},
 		}
@@ -968,6 +970,9 @@ class HostPort:
 
 			if key == 'name' and val is None:
 				val = 'network'
+
+			if key == 'ips' and val is not None:
+				val = filter_ignore_ips(val)
 
 			if val is not None:
 				link_data[key] = val
