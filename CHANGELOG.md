@@ -1,3 +1,7 @@
+## v1.1.7 - 2026-09-02
+
+* (SNMP) Fix for SNMP devices returning mismatched adapter data
+
 ## v1.1.6 - 2026-09-02
 
 * (SNMP) Fix if DESCR could not be found

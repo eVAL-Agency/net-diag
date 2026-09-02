@@ -1,1 +1,1 @@
-* (HTTP/Trane) Add rotary address into descriptor to help track devices
+* (SNMP) Fix for SNMP devices returning mismatched adapter data

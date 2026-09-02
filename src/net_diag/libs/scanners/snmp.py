@@ -329,28 +329,38 @@ class SNMPScanner(ScannerInterface):
 			self.host.log('Device does not contain any port information, skipping')
 			return None
 
-		for port_id, val in names.items():
-			ret[port_id] = HostPort()
-			if val == '':
+		def set_port_field(ret, port_id, key, val):
+			if port_id not in ret:
+				ret[port_id] = HostPort()
+
+			setattr(ret[port_id], key, val)
+			if ret[port_id].name is None:
 				# Some devices don't provide a name for the port
-				val = f'Port{port_id}'
-			ret[port_id].name = val
-			ret[port_id].number = int(port_id)
+				ret[port_id].name = f'Port{port_id}'
+
+			if ret[port_id].number is None:
+				ret[port_id].number = int(port_id)
+
+			return ret
+
+		for port_id, val in names.items():
+			if val != '':
+				ret = set_port_field(ret, port_id, 'name', val)
 
 		labels = self._lookup_bulk('Port Labels', self.port_lookups['label'])
 		for port_id, val in labels.items():
 			if val != '':
 				# Some devices just return a blank string if the alias isn't set.
 				# This can cause issues downstream as a dependent system may set that to all ports.
-				ret[port_id].label = val
+				ret = set_port_field(ret, port_id, 'label', val)
 
 		types = self._lookup_bulk('Port Types', self.port_lookups['type'])
 		for port_id, val in types.items():
-			ret[port_id].type = HostPortType.from_int(int(val))
+			ret = set_port_field(ret, port_id, 'type', HostPortType.from_int(int(val)))
 
 		mtus = self._lookup_bulk('Port MTUs', self.port_lookups['mtu'])
 		for port_id, val in mtus.items():
-			ret[port_id].mtu = int(val)
+			ret = set_port_field(ret, port_id, 'mtu', int(val))
 
 		speeds = self._lookup_bulk('Port Speeds', self.port_lookups['speed_mbps'])
 		if len(speeds) > 0:
@@ -360,35 +370,35 @@ class SNMPScanner(ScannerInterface):
 			speeds = self._lookup_bulk('Port Speeds', self.port_lookups['speed'])
 			multiplier = 1
 		for port_id, val in speeds.items():
-			ret[port_id].speed = int(val) * multiplier
+			ret = set_port_field(ret, port_id, 'speed', int(val) * multiplier)
 
 		macs = self._lookup_bulk('Port MACs', self.port_lookups['mac'])
 		for port_id, val in macs.items():
-			ret[port_id].mac = self._format_snmp_mac(val)
+			ret = set_port_field(ret, port_id, 'mac', self._format_snmp_mac(val))
 
 		admin_statuses = self._lookup_bulk('Admin Status', self.port_lookups['admin'])
 		for port_id, val in admin_statuses.items():
-			ret[port_id].admin_status = HostPortAdminStatus(int(val))
+			ret = set_port_field(ret, port_id, 'admin_status', HostPortAdminStatus(int(val)))
 
 		user_statuses = self._lookup_bulk('User Status', self.port_lookups['status'])
 		for port_id, val in user_statuses.items():
-			ret[port_id].user_status = HostPortUserStatus(int(val))
+			ret = set_port_field(ret, port_id, 'user_status', HostPortUserStatus(int(val)))
 
 		bytes_received = self._lookup_bulk('Bytes Received', self.port_lookups['bytes_rx'])
 		for port_id, val in bytes_received.items():
-			ret[port_id].bytes_rx = int(val)
+			ret = set_port_field(ret, port_id, 'bytes_rx', int(val))
 
 		errors_received = self._lookup_bulk('Errors Received', self.port_lookups['errors_rx'])
 		for port_id, val in errors_received.items():
-			ret[port_id].errors_rx = int(val)
+			ret = set_port_field(ret, port_id, 'errors_rx', int(val))
 
 		bytes_sent = self._lookup_bulk('Bytes Sent', self.port_lookups['bytes_tx'])
 		for port_id, val in bytes_sent.items():
-			ret[port_id].bytes_tx = int(val)
+			ret = set_port_field(ret, port_id, 'bytes_tx', int(val))
 
 		errors_sent = self._lookup_bulk('Errors Sent', self.port_lookups['errors_tx'])
 		for port_id, val in errors_sent.items():
-			ret[port_id].errors_tx = int(val)
+			ret = set_port_field(ret, port_id, 'errors_tx', int(val))
 
 		interface_ips = self._lookup_bulk('IP Addresses', self.port_lookups['ips'])
 		for ip_address, val in interface_ips.items():
@@ -398,7 +408,7 @@ class SNMPScanner(ScannerInterface):
 
 		vlan_pids = self._lookup_bulk('Native VLAN', self.port_lookups['vlan_pid'])
 		for port_id, val in vlan_pids.items():
-			ret[port_id].vlan = val
+			ret = set_port_field(ret, port_id, 'vlan', val)
 
 		vlan_egresses = self._lookup_bulk('VLAN Egress', self.port_lookups['vlan_egress'])
 		for vlan_id, val in vlan_egresses.items():
